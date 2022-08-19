@@ -9,12 +9,38 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var plantsTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         title = "Plants"
+        plantsTableView.delegate = self
+        plantsTableView.dataSource = self
+        plantsTableView.layer.cornerRadius = 10
+        
     }
 
 
 }
 
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("You tapped on \(indexPath.description)")
+    }
+}
+
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell  = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
+        cell.textLabel?.text = "Plants"
+        return cell
+    }
+    
+    
+}
