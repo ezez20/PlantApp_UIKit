@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02428AFFDC6006AF2AA /* AppDelegate.swift */; };
 		5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */; };
-		5102E02928AFFDC6006AF2AA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02828AFFDC6006AF2AA /* ViewController.swift */; };
+		5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02828AFFDC6006AF2AA /* MainViewController.swift */; };
 		5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E02A28AFFDC6006AF2AA /* Main.storyboard */; };
 		5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02D28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld */; };
 		5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03028AFFDC7006AF2AA /* Assets.xcassets */; };
@@ -20,7 +20,7 @@
 		5102E02128AFFDC6006AF2AA /* PlantApp_UIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlantApp_UIKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5102E02428AFFDC6006AF2AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5102E02828AFFDC6006AF2AA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5102E02828AFFDC6006AF2AA /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5102E02B28AFFDC6006AF2AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5102E02E28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp_UIKit.xcdatamodel; sourceTree = "<group>"; };
 		5102E03028AFFDC7006AF2AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 			children = (
 				5102E02428AFFDC6006AF2AA /* AppDelegate.swift */,
 				5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */,
-				5102E02828AFFDC6006AF2AA /* ViewController.swift */,
+				5102E02828AFFDC6006AF2AA /* MainViewController.swift */,
 				5102E02A28AFFDC6006AF2AA /* Main.storyboard */,
 				5102E03028AFFDC7006AF2AA /* Assets.xcassets */,
 				5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */,
@@ -142,7 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */,
-				5102E02928AFFDC6006AF2AA /* ViewController.swift in Sources */,
+				5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */,
 				5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */,
 				5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */,
 			);

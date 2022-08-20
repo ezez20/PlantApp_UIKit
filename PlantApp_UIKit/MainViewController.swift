@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
 
     @IBOutlet weak var plantsTableView: UITableView!
     
@@ -24,13 +24,15 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController: UITableViewDelegate {
+
+// MARK: - extension: UITableViewDelegate/UITableViewDataSource
+extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
