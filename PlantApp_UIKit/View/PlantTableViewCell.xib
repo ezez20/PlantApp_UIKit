@@ -38,7 +38,7 @@
                         <color key="tintColor" systemColor="labelColor"/>
                         <imageReference key="image" image="drop" catalog="system" symbolScale="default"/>
                     </imageView>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="UnknownPlant" translatesAutoresizingMaskIntoConstraints="NO" id="axP-th-LAn">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="monstera" translatesAutoresizingMaskIntoConstraints="NO" id="axP-th-LAn">
                         <rect key="frame" x="250" y="9" width="46" height="49"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
@@ -49,8 +49,8 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="UnknownPlant" width="500" height="500"/>
         <image name="drop" catalog="system" width="101" height="128"/>
+        <image name="monstera" width="2205" height="2205"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
