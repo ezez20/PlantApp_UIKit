@@ -14,6 +14,8 @@
 		5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02D28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld */; };
 		5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03028AFFDC7006AF2AA /* Assets.xcassets */; };
 		5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */; };
+		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
+		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		5102E03028AFFDC7006AF2AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5102E03328AFFDC7006AF2AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5102E03528AFFDC7006AF2AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
+		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,16 +62,42 @@
 		5102E02328AFFDC6006AF2AA /* PlantApp_UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				51C78B9228B18B0F00CD728F /* Model */,
+				51C78B9328B18B1E00CD728F /* Controller */,
+				51C78B9128B18AF400CD728F /* View */,
 				5102E02428AFFDC6006AF2AA /* AppDelegate.swift */,
 				5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */,
-				5102E02828AFFDC6006AF2AA /* MainViewController.swift */,
-				5102E02A28AFFDC6006AF2AA /* Main.storyboard */,
 				5102E03028AFFDC7006AF2AA /* Assets.xcassets */,
 				5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */,
 				5102E03528AFFDC7006AF2AA /* Info.plist */,
 				5102E02D28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld */,
 			);
 			path = PlantApp_UIKit;
+			sourceTree = "<group>";
+		};
+		51C78B9128B18AF400CD728F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5102E02A28AFFDC6006AF2AA /* Main.storyboard */,
+				51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */,
+				51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		51C78B9228B18B0F00CD728F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		51C78B9328B18B1E00CD728F /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5102E02828AFFDC6006AF2AA /* MainViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */,
+				51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */,
 				5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */,
 				5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */,
 			);
@@ -142,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */,
+				51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */,
 				5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */,
 				5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */,
 				5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */,
