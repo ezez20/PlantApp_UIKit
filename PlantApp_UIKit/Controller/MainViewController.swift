@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
         plantsTableView.layer.cornerRadius = 10
         
         // Development TEST comment
+        // Development TEST 2
         plantsTableView.register(UINib(nibName: "PlantTableViewCell", bundle: nil), forCellReuseIdentifier: "PlantTableViewCell")
     
     }

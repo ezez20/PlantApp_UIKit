@@ -39,7 +39,7 @@
                             <constraint firstAttribute="width" constant="42" id="PZF-zU-LfR"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="in 16 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bAx-Pv-x6w">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="in 16 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bAx-Pv-x6w">
                         <rect key="frame" x="202" y="41" width="40" height="10"/>
                         <fontDescription key="fontDescription" type="system" pointSize="8"/>
                         <nil key="textColor"/>
@@ -50,8 +50,8 @@
                     <constraint firstAttribute="bottom" secondItem="bfr-pW-Pmf" secondAttribute="bottom" constant="15" id="A8S-ZQ-CjC"/>
                     <constraint firstItem="bAx-Pv-x6w" firstAttribute="bottom" secondItem="GP6-Ty-R76" secondAttribute="bottom" constant="13" id="Fvn-HO-tSe"/>
                     <constraint firstItem="bfr-pW-Pmf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="G4z-oH-sEC"/>
-                    <constraint firstAttribute="trailing" secondItem="GP6-Ty-R76" secondAttribute="trailing" constant="67.5" id="Jge-1c-CQU"/>
                     <constraint firstAttribute="bottom" secondItem="bAx-Pv-x6w" secondAttribute="bottom" constant="16" id="MW6-2U-vgd"/>
+                    <constraint firstItem="axP-th-LAn" firstAttribute="leading" secondItem="GP6-Ty-R76" secondAttribute="trailing" constant="20" id="PRc-b4-OVZ"/>
                     <constraint firstItem="axP-th-LAn" firstAttribute="leading" secondItem="bAx-Pv-x6w" secondAttribute="trailing" constant="8" symbolic="YES" id="UKM-p4-Ghw"/>
                     <constraint firstItem="bAx-Pv-x6w" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="41" id="XUL-WC-Nin"/>
                     <constraint firstAttribute="trailing" secondItem="axP-th-LAn" secondAttribute="trailing" constant="5.5" id="a68-mf-GUK"/>
