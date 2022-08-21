@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
         plantsTableView.layer.cornerRadius = 10
         
         // Development TEST comment
+        plantsTableView.register(UINib(nibName: "PlantTableViewCell", bundle: nil), forCellReuseIdentifier: "PlantTableViewCell")
     
     }
 
@@ -40,9 +41,9 @@ extension MainViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell  = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell  = tableView.dequeueReusableCell(withIdentifier: "PlantTableViewCell", for: indexPath) as! PlantTableViewCell
         
-        cell.textLabel?.text = "Plants"
+//        cell.textLabel?.text = "Plants"
         return cell
     }
     
