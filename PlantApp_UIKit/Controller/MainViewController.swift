@@ -13,14 +13,14 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
         title = "Plants"
         plantsTableView.delegate = self
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
         
-        // Development TEST comment
-        // Development TEST 2
+        // Resgister: PlantTableViewCell
         plantsTableView.register(UINib(nibName: "PlantTableViewCell", bundle: nil), forCellReuseIdentifier: "PlantTableViewCell")
     
     }
@@ -33,6 +33,7 @@ class MainViewController: UIViewController {
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
+        self.performSegue(withIdentifier: "MainToPlant", sender: self)
     }
 }
 
