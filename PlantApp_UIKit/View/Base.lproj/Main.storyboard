@@ -3,7 +3,6 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -156,7 +155,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="OUl-Ex-Isl" userLabel="Date: Stack View">
                                         <rect key="frame" x="187" y="0.0" width="103" height="41"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="RVv-MF-a8i">
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" verticalCompressionResistancePriority="749" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="RVv-MF-a8i">
                                                 <rect key="frame" x="0.0" y="1" width="103" height="18"/>
                                                 <color key="tintColor" red="0.14509806040000001" green="0.25098040700000002" blue="0.270588249" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             </imageView>
@@ -170,31 +169,40 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1pN-0S-w5w">
-                                <rect key="frame" x="171" y="789" width="73" height="73"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8HI-y8-XxG">
+                                <rect key="frame" x="177" y="783" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="W0t-75-vpM"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="wNw-zX-5mQ"/>
+                                </constraints>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="">
-                                    <imageReference key="image" image="drop.circle.fill" catalog="system" symbolScale="default"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="default"/>
-                                    <color key="baseForegroundColor" systemColor="systemCyanColor"/>
-                                </buttonConfiguration>
+                                <buttonConfiguration key="configuration" style="plain"/>
+                                <connections>
+                                    <action selector="waterButtonPressed:" destination="TFc-O7-hiw" eventType="touchUpInside" id="tbd-09-XiC"/>
+                                </connections>
                             </button>
+                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="drop.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="WZV-No-Ugz">
+                                <rect key="frame" x="177" y="781.5" width="60" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hMg-jo-e77"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="8HI-y8-XxG" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="177" id="0hf-XA-ndU"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" constant="60" id="EM3-dD-MVQ"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="7.5" id="F1d-tj-OP9"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="142" id="KKJ-MU-u18"/>
+                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="8HI-y8-XxG" secondAttribute="trailing" constant="177" id="Pcr-5g-oID"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="52u-DS-iWs" secondAttribute="centerX" id="UpB-Zo-JfX"/>
+                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="8HI-y8-XxG" secondAttribute="trailing" constant="177" id="XNv-f9-bFg"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="4QQ-vK-wFA" secondAttribute="centerX" id="ad0-gf-wck"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="7.5" id="bKb-hu-qRj"/>
+                            <constraint firstItem="8HI-y8-XxG" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="177" id="bvl-Ha-XJk"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="topMargin" constant="79" id="cu4-qS-2Xf"/>
+                            <constraint firstItem="hMg-jo-e77" firstAttribute="bottom" secondItem="8HI-y8-XxG" secondAttribute="bottom" constant="19" id="fwy-dG-tPV"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="4QQ-vK-wFA" secondAttribute="trailing" constant="142" id="ipN-gk-Lsw"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="top" secondItem="52u-DS-iWs" secondAttribute="bottom" constant="7.5" id="mE2-E3-HeW"/>
-                            <constraint firstItem="hMg-jo-e77" firstAttribute="bottom" secondItem="mqd-ol-96G" secondAttribute="bottom" constant="546" id="nTG-fI-QVs"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="96U-eb-oj7" secondAttribute="centerX" id="nqa-mj-8WP"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="top" secondItem="52u-DS-iWs" secondAttribute="bottom" constant="7.5" id="x4q-nt-59j"/>
                         </constraints>
@@ -228,9 +236,6 @@
         <image name="pencil" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemCyanColor">
-            <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGroupedBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
