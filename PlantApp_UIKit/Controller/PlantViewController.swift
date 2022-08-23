@@ -9,22 +9,32 @@ import UIKit
 
 class PlantViewController: UIViewController {
 
+    @IBOutlet weak var plantImage: UIImageView!
+    @IBOutlet weak var plantName: UILabel!
+    @IBOutlet weak var plantHappinessLevel: UILabel!
+    
+    @IBOutlet weak var weatherLogo: UIImageView!
+    @IBOutlet weak var weatherTemp: UILabel!
+    @IBOutlet weak var weatherCity: UILabel!
+    
+    @IBOutlet weak var currentDateDisplayed: UILabel!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-//        let frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-
         
+        // MARK: - Rectangle/Gradient shape for background of Plant Image.
         let shape = CAShapeLayer()
         shape.frame = view.bounds
-        shape.path = UIBezierPath(roundedRect: CGRect(x: 120, y: 64, width: 160, height: 160), cornerRadius: 50).cgPath
+        shape.path = UIBezierPath(roundedRect: CGRect(x: view.frame.minY, y: view.frame.minY, width: view.frame.maxX, height: view.frame.height / 2.5), cornerRadius: 50).cgPath
 
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.colors = [UIColor.white.cgColor, UIColor.green.cgColor]
-        gradient.locations = [0.0 , 1.0]
+        gradient.locations = [0.5 , 1.0]
         gradient.startPoint = CGPoint(x : 0.0, y : 0)
-        gradient.endPoint = CGPoint(x :0.0, y: 0.15) // you need to play with 0.15 to adjust gradient vertically
+        gradient.endPoint = CGPoint(x :0.0, y: 0.5) // you need to play with 0.15 to adjust gradient vertically
         gradient.frame = view.bounds
         gradient.mask = shape
         
