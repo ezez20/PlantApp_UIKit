@@ -3,6 +3,7 @@
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -177,27 +178,76 @@
                             <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="WZV-No-Ugz">
                                 <rect key="frame" x="164" y="792" width="100" height="98.666666666666629"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="AUt-eq-yZf"/>
                                     <constraint firstAttribute="height" constant="100" id="Pcs-bR-l0O"/>
                                     <constraint firstAttribute="width" secondItem="WZV-No-Ugz" secondAttribute="height" multiplier="1:1" id="r0l-K7-lvL"/>
                                     <constraint firstAttribute="width" constant="100" id="rXN-K0-UY6"/>
                                 </constraints>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
+                                <rect key="frame" x="15" y="452.66666666666674" width="398" height="120"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
+                                        <rect key="frame" x="133.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                        <color key="textColor" name="custom_blue_1"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VB2-rw-xB9">
+                                        <rect key="frame" x="142.66666666666666" y="42" width="112.66666666666666" height="20.333333333333329"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TNd-vh-dz2">
+                                                <rect key="frame" x="0.0" y="0.99999999999999822" width="19.666666666666668" height="19"/>
+                                                <color key="tintColor" name="custom_blue_1"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water in 7 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7h-uN-aeG">
+                                                <rect key="frame" x="19.666666666666686" y="0.0" width="93" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" name="custom_blue_1"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av">
+                                        <rect key="frame" x="96.333333333333329" y="81.333333333333314" width="205.66666666666669" height="38.666666666666657"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
+                                                <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="38.666666666666664"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <color key="textColor" name="custom_blue_1"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
+                                                <rect key="frame" x="94.333333333333343" y="0.0" width="111.33333333333334" height="38.666666666666664"/>
+                                            </datePicker>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="uZd-Mg-qBY"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hMg-jo-e77"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="4QQ-vK-wFA" secondAttribute="trailing" constant="131.33000000000001" id="91a-gZ-TKO"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="8.6699999999999999" id="9Ox-Jo-rXq"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Bc7-2B-HXj"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="bottom" secondItem="8HI-y8-XxG" secondAttribute="bottom" constant="1" id="FP9-bg-TKM"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="J2b-sX-DQO"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="15" id="Mfn-ka-PN3"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Nm1-a2-rLK"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="top" secondItem="WZV-No-Ugz" secondAttribute="top" id="Npd-K8-caz"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="5" id="aW8-iw-Ol4"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerY" secondItem="FwL-RT-DQx" secondAttribute="centerY" constant="49.670000000000002" id="ali-tI-1vh"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="fp7-B3-9SK"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="131.66999999999999" id="gWn-c7-Bxr"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" constant="20" symbolic="YES" id="qL7-Sn-XtU"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="sfK-CI-fcm"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="leading" secondItem="WZV-No-Ugz" secondAttribute="leading" id="tDn-J3-pUe"/>
+                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="cF0-gx-NKK" secondAttribute="trailing" constant="15" id="vvw-ZI-pB4"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="top" secondItem="52u-DS-iWs" secondAttribute="bottom" constant="7.6699999999999999" id="yBr-fP-iSu"/>
                         </constraints>
                     </view>
@@ -208,9 +258,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="currentDateDisplayed" destination="kF2-bb-yz2" id="deo-o4-RYR"/>
+                        <outlet property="dropCircleImage" destination="WZV-No-Ugz" id="Ejs-C7-Jf8"/>
                         <outlet property="plantHappinessLevel" destination="7ug-k0-dHe" id="hMI-dN-uTV"/>
                         <outlet property="plantImage" destination="4QQ-vK-wFA" id="KKQ-uP-taR"/>
                         <outlet property="plantName" destination="koV-O4-eVK" id="sso-sF-6jz"/>
+                        <outlet property="waterButton" destination="8HI-y8-XxG" id="TOB-QD-GYT"/>
+                        <outlet property="wateringHabitStackView" destination="cF0-gx-NKK" id="gCU-ay-ctI"/>
                         <outlet property="weatherLogo" destination="qLs-k3-DpW" id="9i7-9C-Hfd"/>
                         <outlet property="weatherTemp" destination="dom-Jc-Vga" id="G5X-5Q-Emf"/>
                     </connections>
@@ -224,10 +277,14 @@
         <image name="UnknownPlant" width="500" height="500"/>
         <image name="calendar" catalog="system" width="128" height="106"/>
         <image name="cloud" catalog="system" width="128" height="88"/>
+        <image name="drop.circle" catalog="system" width="128" height="121"/>
         <image name="drop.circle.fill" catalog="system" width="128" height="121"/>
         <image name="face.smiling" catalog="system" width="128" height="121"/>
         <image name="leaf.circle" catalog="system" width="128" height="121"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
+        <namedColor name="custom_blue_1">
+            <color red="0.2460000067949295" green="0.76800000667572021" blue="0.77999997138977051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
