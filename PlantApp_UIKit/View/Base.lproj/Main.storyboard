@@ -184,8 +184,8 @@
                                     <constraint firstAttribute="width" constant="100" id="rXN-K0-UY6"/>
                                 </constraints>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
-                                <rect key="frame" x="15" y="521" width="398" height="120"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
+                                <rect key="frame" x="20" y="445" width="398" height="120"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
                                         <rect key="frame" x="133.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
@@ -209,7 +209,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av">
-                                        <rect key="frame" x="96.333333333333329" y="81.333333333333314" width="205.66666666666669" height="38.666666666666657"/>
+                                        <rect key="frame" x="96.333333333333329" y="81.333333333333371" width="205.66666666666669" height="38.666666666666657"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
                                                 <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="38.666666666666664"/>
@@ -234,20 +234,20 @@
                         <constraints>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="4QQ-vK-wFA" secondAttribute="trailing" constant="131.33000000000001" id="91a-gZ-TKO"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="8.6699999999999999" id="9Ox-Jo-rXq"/>
-                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Bc7-2B-HXj"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" constant="5" id="Bc7-2B-HXj"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="bottom" secondItem="8HI-y8-XxG" secondAttribute="bottom" constant="1" id="FP9-bg-TKM"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="J2b-sX-DQO"/>
-                            <constraint firstItem="cF0-gx-NKK" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="15" id="Mfn-ka-PN3"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="20" id="Mfn-ka-PN3"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Nm1-a2-rLK"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="top" secondItem="WZV-No-Ugz" secondAttribute="top" id="Npd-K8-caz"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="5" id="aW8-iw-Ol4"/>
-                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerY" secondItem="FwL-RT-DQx" secondAttribute="centerY" constant="49.670000000000002" id="ali-tI-1vh"/>
+                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerY" secondItem="FwL-RT-DQx" secondAttribute="centerY" constant="42" id="ali-tI-1vh"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="fp7-B3-9SK"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="131.66999999999999" id="gWn-c7-Bxr"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" constant="20" symbolic="YES" id="qL7-Sn-XtU"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="sfK-CI-fcm"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="leading" secondItem="WZV-No-Ugz" secondAttribute="leading" id="tDn-J3-pUe"/>
-                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="cF0-gx-NKK" secondAttribute="trailing" constant="15" id="vvw-ZI-pB4"/>
+                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="cF0-gx-NKK" secondAttribute="trailing" constant="10" id="vvw-ZI-pB4"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="top" secondItem="52u-DS-iWs" secondAttribute="bottom" constant="7.6699999999999999" id="yBr-fP-iSu"/>
                         </constraints>
                     </view>
