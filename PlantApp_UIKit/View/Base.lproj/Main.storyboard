@@ -75,6 +75,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9b1-Bl-FJl" userLabel="containerView">
+                                <rect key="frame" x="0.0" y="0.0" width="428" height="333.66666666666669"/>
+                            </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="UnknownPlant" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4QQ-vK-wFA">
                                 <rect key="frame" x="131.66666666666666" y="20" width="164.99999999999997" height="204"/>
                                 <constraints>
@@ -163,6 +166,51 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillProportionally" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
+                                <rect key="frame" x="20" y="435" width="398" height="140"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
+                                        <rect key="frame" x="133.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                        <color key="textColor" name="custom_blue_1"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="VB2-rw-xB9" userLabel="Water in: Stack View">
+                                        <rect key="frame" x="134.33333333333337" y="42" width="129.66666666666663" height="20.333333333333329"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TNd-vh-dz2">
+                                                <rect key="frame" x="0.0" y="-2.3333333333333357" width="25.666666666666668" height="25.666666666666668"/>
+                                                <color key="tintColor" name="custom_blue_1"/>
+                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water in 7 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7h-uN-aeG">
+                                                <rect key="frame" x="30.666666666666657" y="0.0" width="99" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <color key="textColor" name="custom_blue_1"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
+                                        <rect key="frame" x="96.333333333333329" y="81.333333333333371" width="205.33333333333337" height="58.666666666666657"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
+                                                <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="58.666666666666664"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <color key="textColor" name="custom_blue_1"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
+                                                <rect key="frame" x="94.333333333333314" y="0.0" width="111" height="58.666666666666664"/>
+                                            </datePicker>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="140" id="uZd-Mg-qBY"/>
+                                </constraints>
+                            </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8HI-y8-XxG">
                                 <rect key="frame" x="164" y="791" width="100" height="100"/>
                                 <constraints>
@@ -184,54 +232,11 @@
                                     <constraint firstAttribute="width" constant="100" id="rXN-K0-UY6"/>
                                 </constraints>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
-                                <rect key="frame" x="20" y="445" width="398" height="120"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
-                                        <rect key="frame" x="133.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                        <color key="textColor" name="custom_blue_1"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VB2-rw-xB9">
-                                        <rect key="frame" x="142.66666666666666" y="42" width="112.66666666666666" height="20.333333333333329"/>
-                                        <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TNd-vh-dz2">
-                                                <rect key="frame" x="0.0" y="0.99999999999999822" width="19.666666666666668" height="19"/>
-                                                <color key="tintColor" name="custom_blue_1"/>
-                                            </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water in 7 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7h-uN-aeG">
-                                                <rect key="frame" x="19.666666666666686" y="0.0" width="93" height="20.333333333333332"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                                <color key="textColor" name="custom_blue_1"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av">
-                                        <rect key="frame" x="96.333333333333329" y="81.333333333333371" width="205.66666666666669" height="38.666666666666657"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
-                                                <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="38.666666666666664"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                <color key="textColor" name="custom_blue_1"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                <rect key="frame" x="94.333333333333343" y="0.0" width="111.33333333333334" height="38.666666666666664"/>
-                                            </datePicker>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="uZd-Mg-qBY"/>
-                                </constraints>
-                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hMg-jo-e77"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="9b1-Bl-FJl" firstAttribute="trailing" secondItem="hMg-jo-e77" secondAttribute="trailing" id="4XF-oO-9kI"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="4QQ-vK-wFA" secondAttribute="trailing" constant="131.33000000000001" id="91a-gZ-TKO"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="8.6699999999999999" id="9Ox-Jo-rXq"/>
                             <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" constant="5" id="Bc7-2B-HXj"/>
@@ -240,6 +245,9 @@
                             <constraint firstItem="cF0-gx-NKK" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="20" id="Mfn-ka-PN3"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Nm1-a2-rLK"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="top" secondItem="WZV-No-Ugz" secondAttribute="top" id="Npd-K8-caz"/>
+                            <constraint firstItem="9b1-Bl-FJl" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" id="Q0Q-xO-Mby"/>
+                            <constraint firstItem="9b1-Bl-FJl" firstAttribute="bottom" secondItem="mqd-ol-96G" secondAttribute="bottom" constant="10" id="S4k-xe-ext"/>
+                            <constraint firstItem="9b1-Bl-FJl" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" id="Zq6-oq-d1E"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="5" id="aW8-iw-Ol4"/>
                             <constraint firstItem="cF0-gx-NKK" firstAttribute="centerY" secondItem="FwL-RT-DQx" secondAttribute="centerY" constant="42" id="ali-tI-1vh"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="fp7-B3-9SK"/>
@@ -257,6 +265,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="containerView" destination="9b1-Bl-FJl" id="s5j-7L-rxw"/>
                         <outlet property="currentDateDisplayed" destination="kF2-bb-yz2" id="deo-o4-RYR"/>
                         <outlet property="dropCircleImage" destination="WZV-No-Ugz" id="Ejs-C7-Jf8"/>
                         <outlet property="plantHappinessLevel" destination="7ug-k0-dHe" id="hMI-dN-uTV"/>
@@ -264,6 +273,8 @@
                         <outlet property="plantName" destination="koV-O4-eVK" id="sso-sF-6jz"/>
                         <outlet property="waterButton" destination="8HI-y8-XxG" id="TOB-QD-GYT"/>
                         <outlet property="wateringHabitStackView" destination="cF0-gx-NKK" id="gCU-ay-ctI"/>
+                        <outlet property="weatherCity" destination="Ih9-p2-9Oe" id="Arf-0V-Vx9"/>
+                        <outlet property="weatherDateStackView" destination="mqd-ol-96G" id="rpg-xA-aMi"/>
                         <outlet property="weatherLogo" destination="qLs-k3-DpW" id="9i7-9C-Hfd"/>
                         <outlet property="weatherTemp" destination="dom-Jc-Vga" id="G5X-5Q-Emf"/>
                     </connections>
@@ -290,6 +301,9 @@
         </systemColor>
         <systemColor name="systemGroupedBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tertiarySystemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>
