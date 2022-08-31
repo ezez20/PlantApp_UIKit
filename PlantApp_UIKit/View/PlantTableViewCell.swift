@@ -8,6 +8,11 @@
 import UIKit
 
 class PlantTableViewCell: UITableViewCell {
+    
+    @IBOutlet weak var plantName: UILabel!
+    @IBOutlet weak var waterInDays: UILabel!
+    @IBOutlet weak var plantImage: UIImageView!
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()
