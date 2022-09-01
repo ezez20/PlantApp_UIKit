@@ -76,8 +76,65 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9b1-Bl-FJl" userLabel="containerView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9b1-Bl-FJl" userLabel="Top: containerView">
                                 <rect key="frame" x="0.0" y="0.0" width="428" height="333.66666666666669"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3bG-LE-Sg2" userLabel="Middle: containerView">
+                                <rect key="frame" x="0.0" y="333.66666666666674" width="428" height="457.33333333333326"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillProportionally" alignment="center" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
+                                        <rect key="frame" x="20" y="138.66666666666663" width="388" height="180"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
+                                                <rect key="frame" x="128.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                                <color key="textColor" name="custom_blue_1"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="VB2-rw-xB9" userLabel="Water in: Stack View">
+                                                <rect key="frame" x="129.33333333333337" y="25" width="129.66666666666663" height="20.333333333333329"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TNd-vh-dz2">
+                                                        <rect key="frame" x="0.0" y="-2.3333333333333357" width="25.666666666666668" height="25.666666666666668"/>
+                                                        <color key="tintColor" name="custom_blue_1"/>
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water in 7 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7h-uN-aeG">
+                                                        <rect key="frame" x="30.666666666666657" y="0.0" width="99" height="20.333333333333332"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                        <color key="textColor" name="custom_blue_1"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
+                                                <rect key="frame" x="91.333333333333329" y="47.333333333333314" width="205.33333333333337" height="132.66666666666666"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
+                                                        <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="132.66666666666666"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                        <color key="textColor" name="custom_blue_1"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
+                                                        <rect key="frame" x="94.333333333333314" y="0.0" width="111" height="132.66666666666666"/>
+                                                    </datePicker>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="180" id="uZd-Mg-qBY"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="cF0-gx-NKK" secondAttribute="trailing" constant="20" id="S5L-QC-ev9"/>
+                                    <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="3bG-LE-Sg2" secondAttribute="centerX" id="S6z-E7-tgN"/>
+                                    <constraint firstItem="cF0-gx-NKK" firstAttribute="leading" secondItem="3bG-LE-Sg2" secondAttribute="leading" constant="20" id="ffn-uj-xc7"/>
+                                    <constraint firstItem="cF0-gx-NKK" firstAttribute="centerY" secondItem="3bG-LE-Sg2" secondAttribute="centerY" id="wlU-WP-3Xp"/>
+                                </constraints>
                             </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="monstera" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4QQ-vK-wFA">
                                 <rect key="frame" x="131.66666666666666" y="41" width="164.99999999999997" height="173"/>
@@ -167,51 +224,6 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillProportionally" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
-                                <rect key="frame" x="20" y="435" width="388" height="140"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
-                                        <rect key="frame" x="128.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                        <color key="textColor" name="custom_blue_1"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="VB2-rw-xB9" userLabel="Water in: Stack View">
-                                        <rect key="frame" x="129.33333333333337" y="42" width="129.66666666666663" height="20.333333333333329"/>
-                                        <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TNd-vh-dz2">
-                                                <rect key="frame" x="0.0" y="-2.3333333333333357" width="25.666666666666668" height="25.666666666666668"/>
-                                                <color key="tintColor" name="custom_blue_1"/>
-                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
-                                            </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water in 7 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7h-uN-aeG">
-                                                <rect key="frame" x="30.666666666666657" y="0.0" width="99" height="20.333333333333332"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                <color key="textColor" name="custom_blue_1"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                        <rect key="frame" x="91.333333333333329" y="81.333333333333371" width="205.33333333333337" height="58.666666666666657"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-8S-SLv">
-                                                <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="58.666666666666664"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                <color key="textColor" name="custom_blue_1"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                <rect key="frame" x="94.333333333333314" y="0.0" width="111" height="58.666666666666664"/>
-                                            </datePicker>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="140" id="uZd-Mg-qBY"/>
-                                </constraints>
-                            </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8HI-y8-XxG">
                                 <rect key="frame" x="164" y="791" width="100" height="100"/>
                                 <constraints>
@@ -240,22 +252,23 @@
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="trailing" secondItem="hMg-jo-e77" secondAttribute="trailing" id="4XF-oO-9kI"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="4QQ-vK-wFA" secondAttribute="trailing" constant="131.33000000000001" id="91a-gZ-TKO"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="top" secondItem="96U-eb-oj7" secondAttribute="bottom" constant="8.6699999999999999" id="9Ox-Jo-rXq"/>
-                            <constraint firstItem="cF0-gx-NKK" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Bc7-2B-HXj"/>
-                            <constraint firstItem="cF0-gx-NKK" firstAttribute="top" secondItem="mqd-ol-96G" secondAttribute="bottom" constant="121.33333333333331" id="CyY-KY-2aS"/>
                             <constraint firstItem="hMg-jo-e77" firstAttribute="bottom" secondItem="8HI-y8-XxG" secondAttribute="bottom" constant="1" id="FP9-bg-TKM"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="J2b-sX-DQO"/>
+                            <constraint firstAttribute="trailing" secondItem="3bG-LE-Sg2" secondAttribute="trailing" id="M8P-B5-GMX"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="Nm1-a2-rLK"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="top" secondItem="WZV-No-Ugz" secondAttribute="top" id="Npd-K8-caz"/>
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" id="Q0Q-xO-Mby"/>
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="bottom" secondItem="mqd-ol-96G" secondAttribute="bottom" constant="20" id="S4k-xe-ext"/>
+                            <constraint firstItem="WZV-No-Ugz" firstAttribute="top" secondItem="3bG-LE-Sg2" secondAttribute="bottom" id="XCR-ux-HSH"/>
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" id="Zq6-oq-d1E"/>
                             <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="5" id="aW8-iw-Ol4"/>
+                            <constraint firstItem="3bG-LE-Sg2" firstAttribute="top" secondItem="9b1-Bl-FJl" secondAttribute="bottom" id="eEf-U7-8ux"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="fp7-B3-9SK"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="131.66999999999999" id="gWn-c7-Bxr"/>
+                            <constraint firstItem="3bG-LE-Sg2" firstAttribute="leading" secondItem="FwL-RT-DQx" secondAttribute="leading" id="h0W-bz-V3g"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" constant="41" id="qL7-Sn-XtU"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="sfK-CI-fcm"/>
                             <constraint firstItem="8HI-y8-XxG" firstAttribute="leading" secondItem="WZV-No-Ugz" secondAttribute="leading" id="tDn-J3-pUe"/>
-                            <constraint firstItem="hMg-jo-e77" firstAttribute="trailing" secondItem="cF0-gx-NKK" secondAttribute="trailing" constant="20" id="vvw-ZI-pB4"/>
                             <constraint firstItem="mqd-ol-96G" firstAttribute="top" secondItem="52u-DS-iWs" secondAttribute="bottom" constant="7.6699999999999999" id="yBr-fP-iSu"/>
                         </constraints>
                     </view>
