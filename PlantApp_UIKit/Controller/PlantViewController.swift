@@ -21,7 +21,6 @@ class PlantViewController: UIViewController {
     
     // MARK: - Current Date Displayed Variable
     @IBOutlet weak var currentDateDisplayed: UILabel!
-    
     @IBOutlet weak var weatherDateStackView: UIStackView!
     
     // MARK: - waterButton variable
@@ -30,32 +29,14 @@ class PlantViewController: UIViewController {
     
     // MARK: - Watering Habit variable
     @IBOutlet weak var wateringHabitStackView: UIStackView!
-    
     @IBOutlet weak var containerView: UIView!
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
-        
-        // MARK: - UI: Water Button shadow
-//        dropCircleImage.layer.shadowColor = UIColor.black.cgColor
-//        dropCircleImage.layer.shadowOpacity = 0.5
-//        dropCircleImage.layer.shadowRadius = 3
-//        dropCircleImage.layer.masksToBounds = false
-//
-//        dropCircleImage.layer.shadowPath = UIBezierPath(roundedRect: dropCircleImage.frame, cornerRadius: 10).cgPath
 
-        // MARK: - UI: Shadow around Watering Habit StackView
-        wateringHabitStackView.layer.shadowColor = UIColor.black.cgColor
-        wateringHabitStackView.layer.shadowOpacity = 0.5
-        wateringHabitStackView.layer.shadowRadius = 5
-        wateringHabitStackView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        wateringHabitStackView.layer.cornerRadius = 10
-
-       
     }
     
     override func viewDidLayoutSubviews() {
@@ -68,6 +49,14 @@ class PlantViewController: UIViewController {
         gradient.cornerRadius = 40
         containerView.layer.insertSublayer(gradient, at: 0)
         containerView.layer.cornerRadius = 40
+        
+        
+        // MARK: - UI: Shadow around Watering Habit StackView
+        wateringHabitStackView.layer.shadowColor = UIColor.black.cgColor
+        wateringHabitStackView.layer.shadowOpacity = 0.5
+        wateringHabitStackView.layer.shadowRadius = 5
+        wateringHabitStackView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        wateringHabitStackView.layer.cornerRadius = 10
 
     }
     

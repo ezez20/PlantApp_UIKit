@@ -11,6 +11,8 @@ class MainViewController: UIViewController {
 
     @IBOutlet weak var plantsTableView: UITableView!
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -20,13 +22,21 @@ class MainViewController: UIViewController {
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
         
-        // Resgister: PlantTableViewCell
+        // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: "PlantTableViewCell", bundle: nil), forCellReuseIdentifier: "PlantTableViewCell")
     
     }
+    
+    @IBAction func editButtonPressed(_ sender: Any) {
+        
+    }
 
-
+    @IBAction func addButtonPressed(_ sender: Any) {
+        self.performSegue(withIdentifier: "MainToAddPlantView", sender: self)
+    }
 }
+
+
 
 
 // MARK: - extension: UITableViewDelegate/UITableViewDataSource

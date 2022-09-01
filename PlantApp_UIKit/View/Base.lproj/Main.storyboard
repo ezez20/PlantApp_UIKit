@@ -29,6 +29,91 @@
             </objects>
             <point key="canvasLocation" x="135" y="82"/>
         </scene>
+        <!--AddPlant View Controller-->
+        <scene sceneID="YYQ-7P-ppi">
+            <objects>
+                <viewController id="pC5-p4-qVx" userLabel="AddPlant View Controller" customClass="AddPlantViewController" customModule="PlantApp_UIKit" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9Nl-jk-Tq9">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Type of plant" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="loM-xs-Wmd">
+                                <rect key="frame" x="20" y="108" width="388" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="WATERING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fux-Qa-rpP">
+                                <rect key="frame" x="20" y="158" width="388" height="14"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HFT-GR-k9R" userLabel="Watering Section: View">
+                                <rect key="frame" x="20" y="183" width="388" height="92"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ngm-FT-JdW">
+                                        <rect key="frame" x="0.0" y="0.0" width="384" height="46"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <buttonConfiguration key="configuration" style="plain" imagePlacement="trailing" title="Water every 7 days" imagePadding="6">
+                                            <imageReference key="image" image="chevron.forward" catalog="system" symbolScale="small"/>
+                                            <fontDescription key="titleFontDescription" style="UICTFontTextStyleBody"/>
+                                        </buttonConfiguration>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Last Watered:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCz-az-D7l" userLabel="Last Watered:">
+                                        <rect key="frame" x="3" y="48" width="90" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="edK-yg-2AR" userLabel="Divider: View">
+                                        <rect key="frame" x="8" y="45" width="372" height="1"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" systemColor="placeholderTextColor"/>
+                                    </view>
+                                    <datePicker contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU">
+                                        <rect key="frame" x="140" y="54" width="104" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    </datePicker>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Water Habit:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHt-gA-CbJ">
+                                        <rect key="frame" x="3" y="0.0" width="81" height="46"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="I1N-sb-XdK"/>
+                        <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="KyK-WP-2xe">
+                        <barButtonItem key="rightBarButtonItem" id="TGa-na-oAo">
+                            <imageReference key="image" image="camera.viewfinder" catalog="system" symbolScale="default"/>
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="6GI-sJ-bpy">
+                                <rect key="frame" x="313" y="6" width="95" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" imagePadding="0.0">
+                                    <imageReference key="image" image="camera.viewfinder" catalog="system" symbolScale="default"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="font">
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                    </preferredSymbolConfiguration>
+                                </buttonConfiguration>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DLz-wU-sqc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="968.69158878504663" y="-592.22462203023758"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -54,14 +139,21 @@
                     <navigationItem key="navigationItem" id="xZw-nT-lBO">
                         <barButtonItem key="leftBarButtonItem" style="done" systemItem="edit" id="qgj-3U-jyd">
                             <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="editButtonPressed:" destination="BYZ-38-t0r" id="ojF-Q5-NYz"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="RxJ-jo-2Yv">
                             <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="plantsTableView" destination="Gng-un-vIy" id="PJQ-f3-I2e"/>
                         <segue destination="TFc-O7-hiw" kind="show" identifier="MainToPlant" id="Ttx-nR-qOj"/>
+                        <segue destination="hkD-Hg-qKo" kind="presentation" identifier="MainToAddPlantView" id="uWb-IP-9sz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -77,13 +169,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9b1-Bl-FJl" userLabel="Top: containerView">
-                                <rect key="frame" x="0.0" y="0.0" width="428" height="333.66666666666669"/>
+                                <rect key="frame" x="0.0" y="0.0" width="428" height="336.66666666666669"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3bG-LE-Sg2" userLabel="Middle: containerView">
-                                <rect key="frame" x="0.0" y="333.66666666666674" width="428" height="457.33333333333326"/>
+                                <rect key="frame" x="0.0" y="336.66666666666674" width="428" height="454.33333333333326"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillProportionally" alignment="center" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="cF0-gx-NKK" userLabel="Watering Habit: Stack View">
-                                        <rect key="frame" x="20" y="138.66666666666663" width="388" height="180"/>
+                                        <rect key="frame" x="20" y="137" width="388" height="180"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-nX-8CC">
                                                 <rect key="frame" x="128.66666666666666" y="0.0" width="130.99999999999997" height="23"/>
@@ -145,7 +237,7 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="96U-eb-oj7" userLabel="Plant Name: Stack View">
-                                <rect key="frame" x="155.66666666666666" y="219" width="116.66666666666666" height="20.333333333333343"/>
+                                <rect key="frame" x="155.66666666666666" y="222" width="116.66666666666666" height="20.333333333333343"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalCompressionResistancePriority="749" image="leaf.circle" catalog="system" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l2O-89-lFN">
                                         <rect key="frame" x="0.0" y="0.99999999999999822" width="19.666666666666668" height="19"/>
@@ -160,7 +252,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="52u-DS-iWs" userLabel="Happiness Level: Stack View">
-                                <rect key="frame" x="184" y="248.00000000000003" width="60.333333333333343" height="20.333333333333343"/>
+                                <rect key="frame" x="184" y="251.00000000000003" width="60.333333333333343" height="20.333333333333343"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="face.smiling" catalog="system" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="99T-7h-rtI">
                                         <rect key="frame" x="0.0" y="0.99999999999999822" width="19.666666666666668" height="19"/>
@@ -175,7 +267,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="92" translatesAutoresizingMaskIntoConstraints="NO" id="mqd-ol-96G" userLabel="Weather/Date: Stack View">
-                                <rect key="frame" x="71" y="276" width="286" height="37.666666666666686"/>
+                                <rect key="frame" x="71" y="279" width="286" height="37.666666666666686"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="oNl-mv-TnN" userLabel="Weather: Stack View">
                                         <rect key="frame" x="0.0" y="0.0" width="91" height="37.333333333333336"/>
@@ -236,8 +328,10 @@
                                     <action selector="waterButtonPressed:" destination="TFc-O7-hiw" eventType="touchUpInside" id="tbd-09-XiC"/>
                                 </connections>
                             </button>
-                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="WZV-No-Ugz">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="WZV-No-Ugz">
                                 <rect key="frame" x="164" y="792" width="100" height="98.666666666666629"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" name="custom_blue_1"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="AUt-eq-yZf"/>
                                     <constraint firstAttribute="height" constant="100" id="Pcs-bR-l0O"/>
@@ -261,7 +355,7 @@
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="bottom" secondItem="mqd-ol-96G" secondAttribute="bottom" constant="20" id="S4k-xe-ext"/>
                             <constraint firstItem="WZV-No-Ugz" firstAttribute="top" secondItem="3bG-LE-Sg2" secondAttribute="bottom" id="XCR-ux-HSH"/>
                             <constraint firstItem="9b1-Bl-FJl" firstAttribute="top" secondItem="FwL-RT-DQx" secondAttribute="top" id="Zq6-oq-d1E"/>
-                            <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="5" id="aW8-iw-Ol4"/>
+                            <constraint firstItem="96U-eb-oj7" firstAttribute="top" secondItem="4QQ-vK-wFA" secondAttribute="bottom" constant="8" id="aW8-iw-Ol4"/>
                             <constraint firstItem="3bG-LE-Sg2" firstAttribute="top" secondItem="9b1-Bl-FJl" secondAttribute="bottom" id="eEf-U7-8ux"/>
                             <constraint firstItem="52u-DS-iWs" firstAttribute="centerX" secondItem="FwL-RT-DQx" secondAttribute="centerX" id="fp7-B3-9SK"/>
                             <constraint firstItem="4QQ-vK-wFA" firstAttribute="leading" secondItem="hMg-jo-e77" secondAttribute="leading" constant="131.66999999999999" id="gWn-c7-Bxr"/>
@@ -273,7 +367,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Rof-ut-Ynb">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" style="plain" id="0JC-TJ-U7Q" userLabel="Edit">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="0JC-TJ-U7Q" userLabel="Edit">
                             <imageReference key="image" image="pencil" catalog="system" symbolScale="large"/>
                             <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         </barButtonItem>
@@ -297,12 +391,31 @@
             </objects>
             <point key="canvasLocation" x="1739.7196261682243" y="81.641468682505405"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="QIz-kV-bae">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hkD-Hg-qKo" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="T6R-pD-q5l">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="108"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="pC5-p4-qVx" kind="relationship" relationship="rootViewController" id="F8I-hc-GWD"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="94L-ay-GeG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136" y="-592"/>
+        </scene>
     </scenes>
     <resources>
         <image name="calendar" catalog="system" width="128" height="106"/>
+        <image name="camera.viewfinder" catalog="system" width="128" height="115"/>
+        <image name="chevron.forward" catalog="system" width="96" height="128"/>
         <image name="cloud" catalog="system" width="128" height="88"/>
         <image name="drop.circle" catalog="system" width="128" height="121"/>
-        <image name="drop.circle.fill" catalog="system" width="128" height="121"/>
         <image name="face.smiling" catalog="system" width="128" height="121"/>
         <image name="leaf.circle" catalog="system" width="128" height="121"/>
         <image name="monstera" width="2205" height="2205"/>
@@ -310,6 +423,12 @@
         <namedColor name="custom_blue_1">
             <color red="0.2460000067949295" green="0.76800000667572021" blue="0.77999997138977051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="placeholderTextColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="secondarySystemBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
