@@ -62,8 +62,8 @@ class PlantViewController: UIViewController {
         super.viewDidLayoutSubviews()
         // update the layers frame based on the frame of the view.
         let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.colors = [UIColor.white.cgColor, UIColor.green.cgColor]
-        gradient.locations = [0.6 , 1.0]
+        gradient.colors = [UIColor.white.cgColor, UIColor(named: "customGreen")?.cgColor ?? UIColor.green.cgColor]
+        gradient.locations = [0.5 , 1.0]
         gradient.frame = containerView.frame
         gradient.cornerRadius = 40
         containerView.layer.insertSublayer(gradient, at: 0)
