@@ -36,12 +36,26 @@ class PlantViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-
+        // MARK: - UI: add gradient to containerView
+        updateGradientContainerView()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         // update the layers frame based on the frame of the view.
+        // MARK: - UI: Shadow around Watering Habit StackView
+        addShadow(wateringHabitStackView)
+
+    }
+    
+    // MARK: - IBActions functions
+    @IBAction func waterButtonPressed(_ sender: Any) {
+        print("Water button pressed.")
+    }
+    
+    
+    // MARK: - functions
+    func updateGradientContainerView() {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.colors = [UIColor.white.cgColor, UIColor(named: "customGreen")?.cgColor ?? UIColor.green.cgColor]
         gradient.locations = [0.5 , 1.0]
@@ -49,21 +63,15 @@ class PlantViewController: UIViewController {
         gradient.cornerRadius = 40
         containerView.layer.insertSublayer(gradient, at: 0)
         containerView.layer.cornerRadius = 40
-        
-        
-        // MARK: - UI: Shadow around Watering Habit StackView
-        wateringHabitStackView.layer.shadowColor = UIColor.black.cgColor
-        wateringHabitStackView.layer.shadowOpacity = 0.5
-        wateringHabitStackView.layer.shadowRadius = 5
-        wateringHabitStackView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        wateringHabitStackView.layer.cornerRadius = 10
-
     }
     
-    @IBAction func waterButtonPressed(_ sender: Any) {
-        print("Water button pressed.")
+    func addShadow(_ appliedView: UIStackView) {
+        appliedView.layer.shadowColor = UIColor.black.cgColor
+        appliedView.layer.shadowOpacity = 0.5
+        appliedView.layer.shadowRadius = 5
+        appliedView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        appliedView.layer.cornerRadius = 10
     }
-    
 
     /*
     // MARK: - Navigation
