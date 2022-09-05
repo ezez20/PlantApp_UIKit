@@ -333,14 +333,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="HpS-kL-IzJ" userLabel="containerView">
-                                <rect key="frame" x="20" y="108" width="388" height="40"/>
+                                <rect key="frame" x="20" y="108" width="388" height="74"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="  Type of plant" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="loM-xs-Wmd">
-                                        <rect key="frame" x="0.0" y="0.0" width="388" height="40"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ean-US-zjr" userLabel="TextField: View">
+                                        <rect key="frame" x="0.0" y="0.0" width="388" height="45"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type of plant" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="loM-xs-Wmd" userLabel="Type Of Plant: UITextfield">
+                                                <rect key="frame" x="8" y="8" width="372" height="29"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="loM-xs-Wmd" secondAttribute="bottom" constant="8" id="0Im-gv-iUc"/>
+                                            <constraint firstItem="loM-xs-Wmd" firstAttribute="top" secondItem="Ean-US-zjr" secondAttribute="top" constant="8" id="KDb-KD-380"/>
+                                            <constraint firstItem="loM-xs-Wmd" firstAttribute="leading" secondItem="Ean-US-zjr" secondAttribute="leading" constant="8" id="MYY-DQ-jLs"/>
+                                            <constraint firstAttribute="height" constant="45" id="NFi-g9-Kol"/>
+                                            <constraint firstAttribute="trailing" secondItem="loM-xs-Wmd" secondAttribute="trailing" constant="8" id="Nke-qn-vqD"/>
+                                        </constraints>
+                                    </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WATERING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fux-Qa-rpP">
                                         <rect key="frame" x="0.0" y="63" width="388" height="15"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
@@ -372,23 +385,27 @@
                                                 <color key="backgroundColor" systemColor="placeholderTextColor"/>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Watered:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCz-az-D7l" userLabel="Last Watered:">
-                                                <rect key="frame" x="10.000000000000007" y="46" width="124.66666666666669" height="45"/>
+                                                <rect key="frame" x="10" y="46" width="89.666666666666671" height="45"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <datePicker contentMode="scaleAspectFit" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU">
-                                                <rect key="frame" x="142.66666666666666" y="53" width="103" height="31"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="5Cs-ay-bIU" secondAttribute="height" multiplier="103:31" id="fXj-Bv-EHx"/>
-                                                </constraints>
-                                            </datePicker>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uJC-Tt-1z9" userLabel="DatePicker: Stack View">
+                                                <rect key="frame" x="275" y="46" width="103" height="45"/>
+                                                <subviews>
+                                                    <datePicker contentMode="scaleAspectFit" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU" userLabel="DatePicker">
+                                                        <rect key="frame" x="0.0" y="0.0" width="103" height="45"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" priority="250" constant="103" id="XzB-Mx-oMo"/>
+                                                        </constraints>
+                                                    </datePicker>
+                                                </subviews>
+                                            </stackView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="5Cs-ay-bIU" firstAttribute="top" secondItem="Ngm-FT-JdW" secondAttribute="bottom" constant="7" id="DNE-Dd-LMX"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="bottom" secondItem="edK-yg-2AR" secondAttribute="bottom" id="Ekf-IY-vq0"/>
-                                            <constraint firstItem="5Cs-ay-bIU" firstAttribute="leading" secondItem="lCz-az-D7l" secondAttribute="trailing" constant="8" symbolic="YES" id="J5c-ID-x9C"/>
+                                            <constraint firstItem="uJC-Tt-1z9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="lCz-az-D7l" secondAttribute="trailing" constant="8" symbolic="YES" id="Mei-RO-yAl"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="top" secondItem="HFT-GR-k9R" secondAttribute="top" id="Nqx-1o-wP8"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="bottom" secondItem="Ngm-FT-JdW" secondAttribute="bottom" id="Obw-4s-Pn1"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="leading" secondItem="HFT-GR-k9R" secondAttribute="leading" constant="10" id="TS4-jK-kL3"/>
@@ -400,19 +417,21 @@
                                             <constraint firstAttribute="bottom" secondItem="lCz-az-D7l" secondAttribute="bottom" id="gCF-ZK-g7t"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="top" secondItem="Ngm-FT-JdW" secondAttribute="top" id="hKq-ED-tjn"/>
                                             <constraint firstAttribute="trailing" secondItem="Ngm-FT-JdW" secondAttribute="trailing" id="k2c-d5-kgm"/>
+                                            <constraint firstAttribute="trailing" secondItem="uJC-Tt-1z9" secondAttribute="trailing" constant="10" id="kr4-sW-NlY"/>
                                             <constraint firstItem="lCz-az-D7l" firstAttribute="top" secondItem="edK-yg-2AR" secondAttribute="bottom" id="mjJ-LF-f9k"/>
-                                            <constraint firstItem="edK-yg-2AR" firstAttribute="centerX" secondItem="5Cs-ay-bIU" secondAttribute="centerX" id="oMX-6N-Tge"/>
                                             <constraint firstItem="eHt-gA-CbJ" firstAttribute="leading" secondItem="lCz-az-D7l" secondAttribute="leading" id="pT5-9D-daT"/>
                                             <constraint firstItem="Ngm-FT-JdW" firstAttribute="leading" secondItem="HFT-GR-k9R" secondAttribute="leading" id="poE-wP-99y"/>
-                                            <constraint firstAttribute="bottom" secondItem="5Cs-ay-bIU" secondAttribute="bottom" constant="7" id="zSO-KO-OTf"/>
+                                            <constraint firstItem="uJC-Tt-1z9" firstAttribute="top" secondItem="edK-yg-2AR" secondAttribute="bottom" id="q1A-N5-SPW"/>
+                                            <constraint firstAttribute="bottom" secondItem="uJC-Tt-1z9" secondAttribute="bottom" id="zI4-c2-11C"/>
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ZJ-Nf-P4U" userLabel="Add Plant: Button">
-                                        <rect key="frame" x="0.0" y="205" width="388" height="40"/>
+                                        <rect key="frame" x="0.0" y="205" width="388" height="45"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="G1l-tT-deY"/>
-                                            <constraint firstAttribute="height" constant="40" id="Z7U-um-QxY"/>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="45" id="IMn-qI-U2Y"/>
+                                            <constraint firstAttribute="height" constant="45" id="Z7U-um-QxY"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" subtitle="Add Plant">
@@ -430,12 +449,11 @@
                                     </button>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="loM-xs-Wmd" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" id="0GT-UH-RMd"/>
-                                    <constraint firstItem="fux-Qa-rpP" firstAttribute="top" secondItem="loM-xs-Wmd" secondAttribute="bottom" constant="23" id="1Nc-cY-kvm"/>
-                                    <constraint firstAttribute="bottom" secondItem="loM-xs-Wmd" secondAttribute="bottom" id="C3R-Dc-9zK"/>
+                                    <constraint firstItem="Ean-US-zjr" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" id="1GI-WM-EAw"/>
                                     <constraint firstAttribute="trailing" secondItem="6ZJ-Nf-P4U" secondAttribute="trailing" id="CIN-1D-dAt"/>
                                     <constraint firstItem="HFT-GR-k9R" firstAttribute="top" secondItem="fux-Qa-rpP" secondAttribute="bottom" constant="8" id="CgZ-cc-Epd"/>
                                     <constraint firstAttribute="trailing" secondItem="HFT-GR-k9R" secondAttribute="trailing" id="GF1-hF-grs"/>
+                                    <constraint firstItem="fux-Qa-rpP" firstAttribute="top" secondItem="Ean-US-zjr" secondAttribute="bottom" constant="18" id="KIv-mb-Ddo"/>
                                     <constraint firstItem="fux-Qa-rpP" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="NWj-Ak-NH7"/>
                                     <constraint firstAttribute="trailing" secondItem="fux-Qa-rpP" secondAttribute="trailing" id="QtJ-EF-REQ"/>
                                     <constraint firstAttribute="trailing" secondItem="xkH-z3-d1e" secondAttribute="trailing" id="W2m-oU-BjZ"/>
@@ -443,9 +461,9 @@
                                     <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" constant="205" id="aXK-F3-HeV"/>
                                     <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="cMT-Rn-6YT"/>
                                     <constraint firstItem="xkH-z3-d1e" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="ccd-FZ-qba"/>
-                                    <constraint firstItem="loM-xs-Wmd" firstAttribute="trailing" secondItem="fux-Qa-rpP" secondAttribute="trailing" id="cfb-Bx-iJ1"/>
-                                    <constraint firstItem="loM-xs-Wmd" firstAttribute="leading" secondItem="fux-Qa-rpP" secondAttribute="leading" id="gU9-Pq-uJQ"/>
-                                    <constraint firstItem="xkH-z3-d1e" firstAttribute="top" secondItem="6ZJ-Nf-P4U" secondAttribute="bottom" constant="45" id="lGK-Y2-ea1"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ean-US-zjr" secondAttribute="trailing" id="e17-Ku-TU2"/>
+                                    <constraint firstItem="xkH-z3-d1e" firstAttribute="top" secondItem="6ZJ-Nf-P4U" secondAttribute="bottom" constant="40" id="lGK-Y2-ea1"/>
+                                    <constraint firstItem="Ean-US-zjr" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="vt5-6A-fTJ"/>
                                     <constraint firstItem="HFT-GR-k9R" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="zzr-Z8-eML"/>
                                 </constraints>
                             </view>
@@ -456,6 +474,7 @@
                             <constraint firstItem="HpS-kL-IzJ" firstAttribute="leading" secondItem="9Nl-jk-Tq9" secondAttribute="leadingMargin" id="6Vq-X0-oq4"/>
                             <constraint firstItem="HpS-kL-IzJ" firstAttribute="top" secondItem="I1N-sb-XdK" secondAttribute="top" id="Cri-yB-Wxi"/>
                             <constraint firstItem="HpS-kL-IzJ" firstAttribute="trailing" secondItem="9Nl-jk-Tq9" secondAttribute="trailingMargin" id="QAX-Bd-JXT"/>
+                            <constraint firstItem="I1N-sb-XdK" firstAttribute="bottom" secondItem="HpS-kL-IzJ" secondAttribute="bottom" constant="690" id="V3T-5B-S5O"/>
                             <constraint firstItem="HpS-kL-IzJ" firstAttribute="centerX" secondItem="9Nl-jk-Tq9" secondAttribute="centerX" id="hhK-s0-CS2"/>
                         </constraints>
                     </view>
@@ -476,9 +495,10 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="addPlantButton" destination="6ZJ-Nf-P4U" id="m8N-SK-DtS"/>
+                        <outlet property="addPlantButton" destination="6ZJ-Nf-P4U" id="7bR-ra-1gv"/>
                         <outlet property="datePicker" destination="5Cs-ay-bIU" id="dmL-2W-t5f"/>
                         <outlet property="plantImageButton" destination="xkH-z3-d1e" id="CRF-vd-Ksu"/>
+                        <outlet property="textFieldView" destination="Ean-US-zjr" id="dIH-Um-Zfr"/>
                         <outlet property="typeOfPlant" destination="loM-xs-Wmd" id="8gC-QM-orH"/>
                         <outlet property="waterHabitButton" destination="Ngm-FT-JdW" id="b14-bU-4jt"/>
                         <outlet property="wateringSectionView" destination="HFT-GR-k9R" id="twF-TY-MHa"/>

@@ -9,6 +9,7 @@ import UIKit
 
 class AddPlantViewController: UIViewController {
     
+    @IBOutlet weak var textFieldView: UIView!
     @IBOutlet weak var typeOfPlant: UITextField!
     
     @IBOutlet weak var wateringSectionView: UIView!
@@ -19,6 +20,7 @@ class AddPlantViewController: UIViewController {
     
     @IBOutlet weak var plantImageButton: UIButton!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,17 +30,18 @@ class AddPlantViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
-        addCornerRadius(typeOfPlant)
+        addCornerRadius(textFieldView)
         addCornerRadius(wateringSectionView)
         addCornerRadius(addPlantButton)
-        
+
     }
     
     func addCornerRadius(_ appliedView: UIView) {
         appliedView.layer.cornerRadius = 10
     }
 
-
+  
+    
     /*
     // MARK: - Navigation
 
