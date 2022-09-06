@@ -9,6 +9,9 @@ import UIKit
 
 class AddPlantViewController: UIViewController {
     
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     @IBOutlet weak var textFieldView: UIView!
     @IBOutlet weak var typeOfPlant: UITextField!
     
@@ -25,15 +28,15 @@ class AddPlantViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        navigationController?.title = "Add Plant"
-        
+        title = "Add Plant"
     }
     
     override func viewDidLayoutSubviews() {
         addCornerRadius(textFieldView)
         addCornerRadius(wateringSectionView)
         addCornerRadius(addPlantButton)
-
+        scrollView.isDirectionalLockEnabled = true
+        
     }
     
     func addCornerRadius(_ appliedView: UIView) {

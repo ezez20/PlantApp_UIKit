@@ -333,16 +333,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="96Q-xU-KS5">
-                                <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                                <rect key="frame" x="0.0" y="108" width="428" height="764"/>
                                 <subviews>
                                     <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="HpS-kL-IzJ" userLabel="containerView">
-                                        <rect key="frame" x="5" y="5" width="428" height="972"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="428" height="972"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ean-US-zjr" userLabel="TextField: View">
-                                                <rect key="frame" x="0.0" y="0.0" width="428" height="45"/>
+                                                <rect key="frame" x="10" y="0.0" width="408" height="45"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type of plant" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="loM-xs-Wmd" userLabel="Type Of Plant: UITextfield">
-                                                        <rect key="frame" x="8" y="8" width="412" height="29"/>
+                                                        <rect key="frame" x="8" y="8" width="392" height="29"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -358,16 +358,16 @@
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WATERING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fux-Qa-rpP">
-                                                <rect key="frame" x="0.0" y="63" width="428" height="15"/>
+                                                <rect key="frame" x="10" y="63" width="408" height="15"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HFT-GR-k9R" userLabel="Watering Section: View">
-                                                <rect key="frame" x="0.0" y="86" width="428" height="91"/>
+                                                <rect key="frame" x="10" y="86" width="408" height="91"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ngm-FT-JdW" userLabel="Water every 7 days: Button">
-                                                        <rect key="frame" x="0.0" y="0.0" width="428" height="46"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="408" height="46"/>
                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <buttonConfiguration key="configuration" style="plain" imagePlacement="trailing" title="Water every 7 days" imagePadding="6">
                                                             <imageReference key="image" image="chevron.forward" catalog="system" symbolScale="small"/>
@@ -384,7 +384,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="edK-yg-2AR" userLabel="Divider: View">
-                                                        <rect key="frame" x="8" y="45" width="412" height="1"/>
+                                                        <rect key="frame" x="8" y="45" width="392" height="1"/>
                                                         <color key="backgroundColor" systemColor="placeholderTextColor"/>
                                                     </view>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Watered:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCz-az-D7l" userLabel="Last Watered:">
@@ -394,7 +394,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uJC-Tt-1z9" userLabel="DatePicker: Stack View">
-                                                        <rect key="frame" x="315" y="46" width="103" height="45"/>
+                                                        <rect key="frame" x="295" y="46" width="103" height="45"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleAspectFit" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU" userLabel="DatePicker">
                                                                 <rect key="frame" x="0.0" y="0.0" width="103" height="45"/>
@@ -429,20 +429,15 @@
                                                 </constraints>
                                             </view>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ZJ-Nf-P4U" userLabel="Add Plant: Button">
-                                                <rect key="frame" x="0.0" y="205" width="500" height="45"/>
+                                                <rect key="frame" x="10" y="205" width="408" height="31"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="G1l-tT-deY"/>
-                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="45" id="IMn-qI-U2Y"/>
-                                                    <constraint firstAttribute="height" constant="45" id="Z7U-um-QxY"/>
-                                                </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" subtitle="Add Plant">
                                                     <fontDescription key="subtitleFontDescription" style="UICTFontTextStyleBody"/>
                                                 </buttonConfiguration>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xkH-z3-d1e" userLabel="Plant Image: Button">
-                                                <rect key="frame" x="0.0" y="290" width="428" height="353"/>
+                                                <rect key="frame" x="10" y="276" width="408" height="353"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="353" id="Tk6-Z4-1RN"/>
@@ -453,39 +448,39 @@
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="Ean-US-zjr" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" id="1GI-WM-EAw"/>
-                                            <constraint firstAttribute="trailing" secondItem="6ZJ-Nf-P4U" secondAttribute="trailing" constant="-72" id="CIN-1D-dAt"/>
+                                            <constraint firstAttribute="trailing" secondItem="6ZJ-Nf-P4U" secondAttribute="trailing" constant="10" id="CIN-1D-dAt"/>
                                             <constraint firstItem="HFT-GR-k9R" firstAttribute="top" secondItem="fux-Qa-rpP" secondAttribute="bottom" constant="8" id="CgZ-cc-Epd"/>
-                                            <constraint firstAttribute="trailing" secondItem="HFT-GR-k9R" secondAttribute="trailing" id="GF1-hF-grs"/>
+                                            <constraint firstAttribute="trailing" secondItem="HFT-GR-k9R" secondAttribute="trailing" constant="10" id="GF1-hF-grs"/>
                                             <constraint firstItem="fux-Qa-rpP" firstAttribute="top" secondItem="Ean-US-zjr" secondAttribute="bottom" constant="18" id="KIv-mb-Ddo"/>
-                                            <constraint firstItem="fux-Qa-rpP" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="NWj-Ak-NH7"/>
-                                            <constraint firstAttribute="trailing" secondItem="fux-Qa-rpP" secondAttribute="trailing" id="QtJ-EF-REQ"/>
-                                            <constraint firstAttribute="trailing" secondItem="xkH-z3-d1e" secondAttribute="trailing" id="W2m-oU-BjZ"/>
+                                            <constraint firstItem="fux-Qa-rpP" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="NWj-Ak-NH7"/>
+                                            <constraint firstAttribute="trailing" secondItem="fux-Qa-rpP" secondAttribute="trailing" constant="10" id="QtJ-EF-REQ"/>
+                                            <constraint firstAttribute="trailing" secondItem="xkH-z3-d1e" secondAttribute="trailing" constant="10" id="W2m-oU-BjZ"/>
                                             <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="top" secondItem="HFT-GR-k9R" secondAttribute="bottom" constant="28" id="Wkt-VR-gA9"/>
                                             <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" constant="205" id="aXK-F3-HeV"/>
-                                            <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="cMT-Rn-6YT"/>
-                                            <constraint firstItem="xkH-z3-d1e" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="ccd-FZ-qba"/>
-                                            <constraint firstAttribute="trailing" secondItem="Ean-US-zjr" secondAttribute="trailing" id="e17-Ku-TU2"/>
+                                            <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="cMT-Rn-6YT"/>
+                                            <constraint firstItem="xkH-z3-d1e" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="ccd-FZ-qba"/>
+                                            <constraint firstAttribute="trailing" secondItem="Ean-US-zjr" secondAttribute="trailing" constant="10" id="e17-Ku-TU2"/>
                                             <constraint firstItem="xkH-z3-d1e" firstAttribute="top" secondItem="6ZJ-Nf-P4U" secondAttribute="bottom" constant="40" id="lGK-Y2-ea1"/>
-                                            <constraint firstItem="Ean-US-zjr" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="vt5-6A-fTJ"/>
-                                            <constraint firstItem="HFT-GR-k9R" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" id="zzr-Z8-eML"/>
+                                            <constraint firstItem="Ean-US-zjr" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="vt5-6A-fTJ"/>
+                                            <constraint firstItem="HFT-GR-k9R" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="zzr-Z8-eML"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="HpS-kL-IzJ" secondAttribute="trailing" constant="5" id="6qY-T0-vWT"/>
-                                    <constraint firstItem="HpS-kL-IzJ" firstAttribute="top" secondItem="96Q-xU-KS5" secondAttribute="top" constant="5" id="Q4c-qX-E3l"/>
-                                    <constraint firstItem="HpS-kL-IzJ" firstAttribute="leading" secondItem="96Q-xU-KS5" secondAttribute="leading" constant="5" id="TYQ-NI-TSj"/>
-                                    <constraint firstAttribute="bottom" secondItem="HpS-kL-IzJ" secondAttribute="bottom" constant="5" id="lRJ-9j-8df"/>
+                                    <constraint firstAttribute="trailing" secondItem="HpS-kL-IzJ" secondAttribute="trailing" id="6qY-T0-vWT"/>
+                                    <constraint firstItem="HpS-kL-IzJ" firstAttribute="top" secondItem="96Q-xU-KS5" secondAttribute="top" id="Q4c-qX-E3l"/>
+                                    <constraint firstItem="HpS-kL-IzJ" firstAttribute="leading" secondItem="96Q-xU-KS5" secondAttribute="leading" id="TYQ-NI-TSj"/>
+                                    <constraint firstAttribute="bottom" secondItem="HpS-kL-IzJ" secondAttribute="bottom" constant="-208" id="lRJ-9j-8df"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="I1N-sb-XdK"/>
                         <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="96Q-xU-KS5" firstAttribute="top" secondItem="9Nl-jk-Tq9" secondAttribute="top" id="FXO-my-bkV"/>
+                            <constraint firstItem="96Q-xU-KS5" firstAttribute="top" secondItem="9Nl-jk-Tq9" secondAttribute="top" constant="108" id="FXO-my-bkV"/>
                             <constraint firstAttribute="bottom" secondItem="96Q-xU-KS5" secondAttribute="bottom" id="Flt-bn-UnZ"/>
                             <constraint firstItem="HpS-kL-IzJ" firstAttribute="height" secondItem="9Nl-jk-Tq9" secondAttribute="height" constant="100" id="MeV-Sv-FSQ"/>
-                            <constraint firstItem="HpS-kL-IzJ" firstAttribute="width" secondItem="9Nl-jk-Tq9" secondAttribute="width" multiplier="1.16822" constant="-71.998160000000041" id="jTx-yR-ywQ"/>
+                            <constraint firstItem="HpS-kL-IzJ" firstAttribute="width" relation="lessThanOrEqual" secondItem="96Q-xU-KS5" secondAttribute="width" id="jTx-yR-ywQ"/>
                             <constraint firstItem="96Q-xU-KS5" firstAttribute="leading" secondItem="9Nl-jk-Tq9" secondAttribute="leading" id="ltk-1S-2Qu"/>
                             <constraint firstAttribute="trailing" secondItem="96Q-xU-KS5" secondAttribute="trailing" id="wQa-aA-TUP"/>
                         </constraints>
@@ -493,7 +488,7 @@
                     <navigationItem key="navigationItem" title="Title" id="KyK-WP-2xe">
                         <barButtonItem key="rightBarButtonItem" id="TGa-na-oAo">
                             <imageReference key="image" image="camera.viewfinder" catalog="system" symbolScale="default"/>
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="6GI-sJ-bpy">
+                            <button key="customView" opaque="NO" contentMode="right" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="6GI-sJ-bpy">
                                 <rect key="frame" x="313" y="6" width="95" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
@@ -510,6 +505,7 @@
                         <outlet property="addPlantButton" destination="6ZJ-Nf-P4U" id="7bR-ra-1gv"/>
                         <outlet property="datePicker" destination="5Cs-ay-bIU" id="dmL-2W-t5f"/>
                         <outlet property="plantImageButton" destination="xkH-z3-d1e" id="CRF-vd-Ksu"/>
+                        <outlet property="scrollView" destination="96Q-xU-KS5" id="ude-dY-wWz"/>
                         <outlet property="textFieldView" destination="Ean-US-zjr" id="dIH-Um-Zfr"/>
                         <outlet property="typeOfPlant" destination="loM-xs-Wmd" id="8gC-QM-orH"/>
                         <outlet property="waterHabitButton" destination="Ngm-FT-JdW" id="b14-bU-4jt"/>
