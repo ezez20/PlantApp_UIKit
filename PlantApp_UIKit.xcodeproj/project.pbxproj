@@ -14,6 +14,11 @@
 		5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02D28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld */; };
 		5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03028AFFDC7006AF2AA /* Assets.xcassets */; };
 		5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */; };
+		513CBC4828C79E7700CBC760 /* PlantApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4628C79E7700CBC760 /* PlantApp.xcdatamodeld */; };
+		513CBC4A28C79F4B00CBC760 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4928C79F4B00CBC760 /* DataController.swift */; };
+		513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4B28C7A6D100CBC760 /* WeatherData.swift */; };
+		513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */; };
+		513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */; };
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
 		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
@@ -30,6 +35,11 @@
 		5102E03028AFFDC7006AF2AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5102E03328AFFDC7006AF2AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5102E03528AFFDC7006AF2AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		513CBC4728C79E7700CBC760 /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
+		513CBC4928C79F4B00CBC760 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		513CBC4B28C7A6D100CBC760 /* WeatherData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
+		513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
+		513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocationManager.swift; sourceTree = "<group>"; };
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
 		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
@@ -92,6 +102,11 @@
 		51C78B9228B18B0F00CD728F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */,
+				513CBC4B28C7A6D100CBC760 /* WeatherData.swift */,
+				513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */,
+				513CBC4628C79E7700CBC760 /* PlantApp.xcdatamodeld */,
+				513CBC4928C79F4B00CBC760 /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -181,8 +196,13 @@
 				5102E02F28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodeld in Sources */,
 				51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */,
 				51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */,
+				513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */,
 				51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */,
+				513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */,
+				513CBC4A28C79F4B00CBC760 /* DataController.swift in Sources */,
 				5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */,
+				513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */,
+				513CBC4828C79E7700CBC760 /* PlantApp.xcdatamodeld in Sources */,
 				5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */,
 				5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */,
 			);
@@ -334,6 +354,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to get there current weather.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -362,6 +383,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to get there current weather.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -411,6 +433,16 @@
 			);
 			currentVersion = 5102E02E28AFFDC6006AF2AA /* PlantApp_UIKit.xcdatamodel */;
 			path = PlantApp_UIKit.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		513CBC4628C79E7700CBC760 /* PlantApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				513CBC4728C79E7700CBC760 /* PlantApp.xcdatamodel */,
+			);
+			currentVersion = 513CBC4728C79E7700CBC760 /* PlantApp.xcdatamodel */;
+			path = PlantApp.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

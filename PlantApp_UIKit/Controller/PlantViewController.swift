@@ -18,6 +18,9 @@ class PlantViewController: UIViewController {
     @IBOutlet weak var weatherLogo: UIImageView!
     @IBOutlet weak var weatherTemp: UILabel!
     @IBOutlet weak var weatherCity: UILabel!
+    var inputLogo = ""
+    var inputTemp = ""
+    var inputCity = ""
     
     // MARK: - Current Date Displayed Variable
     @IBOutlet weak var currentDateDisplayed: UILabel!
@@ -33,11 +36,15 @@ class PlantViewController: UIViewController {
     
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         // MARK: - UI: add gradient to containerView
         updateGradientContainerView()
+        weatherLogo.image = UIImage(systemName: inputLogo)
+        weatherTemp.text = inputTemp
+        weatherCity.text = inputCity
     }
     
     override func viewDidLayoutSubviews() {
