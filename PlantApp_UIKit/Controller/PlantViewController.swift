@@ -41,7 +41,7 @@ class PlantViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         // MARK: - UI: add gradient to containerView
-        updateGradientContainerView()
+       
         weatherLogo.image = UIImage(systemName: inputLogo)
         weatherTemp.text = inputTemp
         weatherCity.text = inputCity
@@ -51,6 +51,7 @@ class PlantViewController: UIViewController {
         super.viewDidLayoutSubviews()
         // update the layers frame based on the frame of the view.
         // MARK: - UI: Shadow around Watering Habit StackView
+        updateGradientContainerView()
         addShadow(wateringHabitStackView)
 
     }

@@ -366,13 +366,15 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HFT-GR-k9R" userLabel="Watering Section: View">
                                                 <rect key="frame" x="10" y="86" width="408" height="91"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ngm-FT-JdW" userLabel="Water every 7 days: Button">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ngm-FT-JdW" userLabel="Water every 7 days: Button">
                                                         <rect key="frame" x="0.0" y="0.0" width="408" height="46"/>
                                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <buttonConfiguration key="configuration" style="plain" imagePlacement="trailing" title="Water every 7 days" imagePadding="6">
-                                                            <imageReference key="image" image="chevron.forward" catalog="system" symbolScale="small"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Water every 7 days">
                                                             <fontDescription key="titleFontDescription" style="UICTFontTextStyleBody"/>
                                                         </buttonConfiguration>
+                                                        <connections>
+                                                            <action selector="waterHabitButtonPressed:" destination="pC5-p4-qVx" eventType="touchUpInside" id="xow-g5-Dim"/>
+                                                        </connections>
                                                     </button>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water Habit:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHt-gA-CbJ">
                                                         <rect key="frame" x="10" y="0.0" width="80.666666666666671" height="46"/>
@@ -435,6 +437,9 @@
                                                 <buttonConfiguration key="configuration" style="plain" subtitle="Add Plant">
                                                     <fontDescription key="subtitleFontDescription" style="UICTFontTextStyleBody"/>
                                                 </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="addPlantButtonPressed:" destination="pC5-p4-qVx" eventType="touchUpInside" id="kic-LB-mht"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xkH-z3-d1e" userLabel="Plant Image: Button">
                                                 <rect key="frame" x="10" y="276" width="408" height="353"/>
@@ -503,25 +508,56 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addPlantButton" destination="6ZJ-Nf-P4U" id="7bR-ra-1gv"/>
+                        <outlet property="cameraButton" destination="6GI-sJ-bpy" id="ZQj-RG-Fn1"/>
                         <outlet property="datePicker" destination="5Cs-ay-bIU" id="dmL-2W-t5f"/>
                         <outlet property="plantImageButton" destination="xkH-z3-d1e" id="CRF-vd-Ksu"/>
                         <outlet property="scrollView" destination="96Q-xU-KS5" id="ude-dY-wWz"/>
                         <outlet property="textFieldView" destination="Ean-US-zjr" id="dIH-Um-Zfr"/>
                         <outlet property="typeOfPlant" destination="loM-xs-Wmd" id="8gC-QM-orH"/>
-                        <outlet property="waterHabitButton" destination="Ngm-FT-JdW" id="b14-bU-4jt"/>
+                        <outlet property="waterHabitButton" destination="Ngm-FT-JdW" id="etD-km-5DB"/>
                         <outlet property="wateringSectionView" destination="HFT-GR-k9R" id="twF-TY-MHa"/>
+                        <segue destination="zzj-EE-Sf4" kind="show" identifier="AddPlantToWaterHabit" id="AmK-fd-Xnp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DLz-wU-sqc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="968.69158878504663" y="-592.22462203023758"/>
+            <point key="canvasLocation" x="949" y="-592"/>
+        </scene>
+        <!--Water Habit Days View Controller-->
+        <scene sceneID="Wcr-p6-4Fn">
+            <objects>
+                <viewController id="zzj-EE-Sf4" customClass="WaterHabitDaysViewController" customModule="PlantApp_UIKit" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="15X-g1-G11">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="wxc-vH-L53" userLabel="Water days: Table View">
+                                <rect key="frame" x="0.0" y="108" width="428" height="764"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fgx-to-o49"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="wxc-vH-L53" firstAttribute="bottom" secondItem="fgx-to-o49" secondAttribute="bottom" id="AYT-Iu-Rak"/>
+                            <constraint firstItem="wxc-vH-L53" firstAttribute="trailing" secondItem="fgx-to-o49" secondAttribute="trailing" id="LEr-Do-mfh"/>
+                            <constraint firstItem="wxc-vH-L53" firstAttribute="top" secondItem="fgx-to-o49" secondAttribute="top" id="OGX-fe-A8L"/>
+                            <constraint firstItem="wxc-vH-L53" firstAttribute="leading" secondItem="fgx-to-o49" secondAttribute="leading" id="e8w-ZT-YRW"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="cu9-PM-Nye"/>
+                    <connections>
+                        <outlet property="waterDaysTableView" destination="wxc-vH-L53" id="xkN-tC-0kJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LM5-lR-uEZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1692.0560747663551" y="-592.22462203023758"/>
         </scene>
     </scenes>
     <resources>
         <image name="UnknownPlant" width="500" height="500"/>
         <image name="calendar" catalog="system" width="128" height="106"/>
         <image name="camera.viewfinder" catalog="system" width="128" height="115"/>
-        <image name="chevron.forward" catalog="system" width="96" height="128"/>
         <image name="cloud" catalog="system" width="128" height="88"/>
         <image name="drop.circle" catalog="system" width="128" height="121"/>
         <image name="face.smiling" catalog="system" width="128" height="121"/>
