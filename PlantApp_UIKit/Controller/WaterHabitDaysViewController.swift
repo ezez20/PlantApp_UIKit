@@ -7,13 +7,19 @@
 
 import UIKit
 
+protocol PassDataDelegate {
+    func passData(Data: Int)
+}
+
 class WaterHabitDaysViewController: UIViewController {
 
     @IBOutlet weak var waterDaysTableView: UITableView!
-    let cellReuseID = "AddPlantToWaterHabit"
+    private let cellReuseID = "Cell"
 
     let habitDays = Array(2...14)
     var selectedHabitDays = 7
+    
+    var delegate: PassDataDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,16 +27,19 @@ class WaterHabitDaysViewController: UIViewController {
         // Do any additional setup after loading the view.
         waterDaysTableView.delegate = self
         waterDaysTableView.dataSource = self
-        self.waterDaysTableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
+        waterDaysTableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
+        
     }
+    
+    
     
     /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+         Get the new view controller using segue.destination.
+         Pass the selected object to the new view controller.
     }
     */
 
@@ -41,13 +50,13 @@ extension WaterHabitDaysViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
         selectedHabitDays = habitDays[indexPath.row]
+        print("SelectedHabitDays: VC2 = \(selectedHabitDays)")
         tableView.reloadData()
         
+        delegate?.passData(Data: selectedHabitDays)
+   
     }
-    
 
-    
-  
 }
 
 extension WaterHabitDaysViewController: UITableViewDataSource {
@@ -55,7 +64,11 @@ extension WaterHabitDaysViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       
         let cell  = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath)
+        
         cell.textLabel?.text = "\(self.habitDays[indexPath.row].formatted()) days"
+        
+        // UI Update: Tick on cell when selected.
+
         if selectedHabitDays == self.habitDays[indexPath.row] {
             cell.accessoryType = .checkmark
         } else {
@@ -63,6 +76,8 @@ extension WaterHabitDaysViewController: UITableViewDataSource {
         }
         
         return cell
+        
+      
     }
     
   
@@ -71,7 +86,7 @@ extension WaterHabitDaysViewController: UITableViewDataSource {
         return habitDays.count
     }
     
-    
-    
-    
+
 }
+
+

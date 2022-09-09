@@ -327,7 +327,7 @@
         <!--AddPlant View Controller-->
         <scene sceneID="YYQ-7P-ppi">
             <objects>
-                <viewController id="pC5-p4-qVx" userLabel="AddPlant View Controller" customClass="AddPlantViewController" customModule="PlantApp_UIKit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddPlantID" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pC5-p4-qVx" userLabel="AddPlant View Controller" customClass="AddPlantViewController" customModule="PlantApp_UIKit" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9Nl-jk-Tq9">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

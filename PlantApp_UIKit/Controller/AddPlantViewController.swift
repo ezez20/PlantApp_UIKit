@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+
 class AddPlantViewController: UIViewController {
     
     @IBOutlet weak var cameraButton: UIButton!
@@ -40,6 +41,11 @@ class AddPlantViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        updateUI()
+        print(selectedHabitDay)
+    }
+    
     override func viewDidLayoutSubviews() {
         addCornerRadius(textFieldView)
         addCornerRadius(wateringSectionView)
@@ -51,12 +57,11 @@ class AddPlantViewController: UIViewController {
         waterHabitButton.configuration?.imagePlacement = .trailing
         waterHabitButton.configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        waterHabitButton.titleLabel?.text = "Water every \(selectedHabitDay.formatted()) days"
-        print(selectedHabitDay)
+
+    func updateUI() {
+        waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
     }
-    
+
     func addCornerRadius(_ appliedView: UIView) {
         appliedView.layer.cornerRadius = 10
     }
@@ -85,14 +90,20 @@ class AddPlantViewController: UIViewController {
         
     }
     
-    func updateUI() {
-        waterHabitButton.titleLabel?.text = "Water every \(selectedHabitDay.formatted()) days"
-    }
+  
     
     // MARK: - waterHabitButton Pressed
     @IBAction func waterHabitButtonPressed(_ sender: Any) {
-        
         self.performSegue(withIdentifier: "AddPlantToWaterHabit", sender: self)
+    }
+    
+   // MARK: - Handles DATA between: AddPlantViewController & WaterHabitDaysViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AddPlantToWaterHabit" {
+            let secondVC: WaterHabitDaysViewController = segue.destination as! WaterHabitDaysViewController
+            secondVC.selectedHabitDays = selectedHabitDay
+            secondVC.delegate = self
+        }
     }
     
     //MARK: - Add Plant Button Pressed
@@ -109,16 +120,12 @@ class AddPlantViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
+extension AddPlantViewController: PassDataDelegate {
+    func passData(Data: Int) {
+        selectedHabitDay = Data
+        print(Data)
+    }
+    
+}
