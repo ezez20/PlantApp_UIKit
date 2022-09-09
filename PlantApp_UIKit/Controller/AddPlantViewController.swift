@@ -30,15 +30,24 @@ class AddPlantViewController: UIViewController {
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    var selectedHabitDay = 7
+
+  
+    private var selectedHabitDay = 7
+
+    // ADD: add more plants and images
+    let imageSetNames = ["monstera", "pothos"]
+    private var plantImageString = ""
+    private var showingImagePicker = false
+    private var inputImage: UIImage?
+    private var sourceType: UIImagePickerController.SourceType = .camera
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         title = "Add Plant"
-        
+        typeOfPlant.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,7 +76,6 @@ class AddPlantViewController: UIViewController {
     }
     
     //MARK: - Data Manipulation Methods
-    
     func savePlant() {
         do {
             try context.save()
@@ -77,24 +85,23 @@ class AddPlantViewController: UIViewController {
         
     }
     
-    func loadCategories() {
-        
-        let request : NSFetchRequest<Plant> = Plant.fetchRequest()
-        
-        do {
-            plants = try context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
+    func updateInputImage() {
+        if imageSetNames.contains(typeOfPlant.text!) && inputImage == nil {
+            plantImageButton.setImage(UIImage(named: typeOfPlant.text!), for: .normal)
+        } else if imageSetNames.contains(typeOfPlant.text!) && inputImage != nil {
+            plantImageButton.setImage(inputImage, for: .normal)
+        } else if inputImage != nil  {
+            plantImageButton.setImage(inputImage, for: .normal)
+        } else {
+            plantImageButton.setImage(UIImage(named: K.unknownPlant), for: .normal)
         }
-
-        
+        print("updateInputImage: triggered")
     }
-    
   
     
     // MARK: - waterHabitButton Pressed
     @IBAction func waterHabitButtonPressed(_ sender: Any) {
-        self.performSegue(withIdentifier: "AddPlantToWaterHabit", sender: self)
+        self.performSegue(withIdentifier: K.AddPlantToWaterHabitID, sender: self)
     }
     
    // MARK: - Handles DATA between: AddPlantViewController & WaterHabitDaysViewController
@@ -109,17 +116,43 @@ class AddPlantViewController: UIViewController {
     //MARK: - Add Plant Button Pressed
     @IBAction func addPlantButtonPressed(_ sender: Any) {
         
-//            let newPlant = Plant(context: self.context)
-//            newPlant.plant = self.typeOfPlant.text
-//
-//            self.plants.append(newPlant)
-//
-//            self.savePlant()
+        let newPlant = Plant(context: self.context)
+        newPlant.id = UUID()
+        newPlant.plant = self.typeOfPlant.text
+        newPlant.waterHabit = Int16(selectedHabitDay)
+        newPlant.dateAdded = Date.now
+        newPlant.lastWateredDate = datePicker.date
         
-            // dismiss AddPlantVIew
-        dismiss(animated: true)
+        if imageSetNames.contains(plantImageString) && inputImage == nil {
+            newPlant.plantImageString = plantImageString
+        } else if imageSetNames.contains(plantImageString) && inputImage != nil {
+            newPlant.plantImageString = ""
+        } else if inputImage != nil {
+            newPlant.plantImageString = ""
+        } else {
+            newPlant.plantImageString = "UnknownPlant"
+        }
+        
+        if customImageData() != nil {
+            newPlant.imageData = customImageData()
+        }
+        
+        self.plants.append(newPlant)
+        self.savePlant()
+        
+        // dismiss AddPlantVIew.
+//        dismiss(animated: true)
+        
+        // Debug area
+        print(self.typeOfPlant.text!)
+        print(self)
+        print(datePicker.date)
     }
     
+    func customImageData () -> Data? {
+        let pickedImage = inputImage?.jpegData(compressionQuality: 0.80)
+        return pickedImage
+    }
 }
 
 extension AddPlantViewController: PassDataDelegate {
@@ -128,4 +161,11 @@ extension AddPlantViewController: PassDataDelegate {
         print(Data)
     }
     
+}
+
+extension AddPlantViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        updateInputImage()
+       
+    }
 }

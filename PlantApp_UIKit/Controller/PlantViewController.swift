@@ -25,6 +25,8 @@ class PlantViewController: UIViewController {
     // MARK: - Current Date Displayed Variable
     @IBOutlet weak var currentDateDisplayed: UILabel!
     @IBOutlet weak var weatherDateStackView: UIStackView!
+    @IBOutlet weak var datePicker: UIDatePicker!
+    
     
     // MARK: - waterButton variable
     @IBOutlet weak var waterButton: UIButton!
@@ -45,6 +47,8 @@ class PlantViewController: UIViewController {
         weatherLogo.image = UIImage(systemName: inputLogo)
         weatherTemp.text = inputTemp
         weatherCity.text = inputCity
+        
+        datePicker.minimumDate = Date.now
     }
     
     override func viewDidLayoutSubviews() {
@@ -65,7 +69,7 @@ class PlantViewController: UIViewController {
     // MARK: - functions
     func updateGradientContainerView() {
         let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.colors = [UIColor.white.cgColor, UIColor(named: "customGreen")?.cgColor ?? UIColor.green.cgColor]
+        gradient.colors = [UIColor.white.cgColor, UIColor(named: K.customGreenColor)?.cgColor ?? UIColor.green.cgColor]
         gradient.locations = [0.5 , 1.0]
         gradient.frame = containerView.frame
         gradient.cornerRadius = 40
