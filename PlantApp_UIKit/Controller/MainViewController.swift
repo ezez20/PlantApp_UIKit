@@ -23,6 +23,10 @@ class MainViewController: UIViewController {
     var weatherTemp = ""
     var weatherCity = ""
     
+
+    
+    let imageSetNames = ["monstera", "pothos"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -39,9 +43,13 @@ class MainViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         weatherManager.delegate = self
+        
+        // Load plants from Core Data
+        loadPlants()
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name:NSNotification.Name("triggerLoadPlants"), object: nil)
 
     }
-    
+
     
     @IBAction func editButtonPressed(_ sender: Any) {
         // Future feature: Edit button to allow re-order tableView.
@@ -73,7 +81,57 @@ class MainViewController: UIViewController {
         }
         
         plantsTableView.reloadData()
+        print("Plants loaded")
     }
+    
+    
+    @objc func notificationReceived() {
+        loadPlants()
+    }
+    
+    // MARK: - convert retrieved Data to UIImage 
+        func loadedImage(with imageData: Data?) -> UIImage {
+            guard let imageData = imageData else {
+    //            print("Error outputing imageData")
+                return UIImage(named: "UnknownPlant")!
+            }
+            let loadedImage = UIImage(data: imageData)
+            return loadedImage!
+        }
+    
+    // MARK: - Formatting displayedNextWaterDate
+    func displayedNextWaterDate(lastWateredDate: Date, waterHabit: Int) -> String {
+        // Work on implementing in ForEach List.
+        var nextWaterDate: Date {
+            let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
+            return calculatedDate!
+        }
+        
+        var waterStatus: String {
+            
+            let dateIntervalFormat = DateComponentsFormatter()
+            dateIntervalFormat.allowedUnits = .day
+            dateIntervalFormat.unitsStyle = .short
+            let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
+            if formatted == "0 days" || nextWaterDate < Date.now {
+                return "Please water me ):"
+            } else if dateFormatter.string(from: lastWateredDate) == dateFormatter.string(from: Date.now) {
+                return "in \(waterHabit) days"
+            } else {
+                return "in \(formatted)"
+            }
+            
+        }
+        
+        var dateFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            return formatter
+        }
+        return waterStatus
+    }
+
+
     
 }
 
@@ -83,7 +141,7 @@ extension MainViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
-        self.performSegue(withIdentifier: K.mainToPlantID, sender: self)
+        performSegue(withIdentifier: K.mainToPlantID, sender: self)
         
     }
     
@@ -93,6 +151,7 @@ extension MainViewController: UITableViewDelegate {
             vc?.inputLogo = weatherLogo
             vc?.inputTemp = weatherTemp
             vc?.inputCity = weatherCity
+            
         }
     }
   
@@ -102,7 +161,8 @@ extension MainViewController: UITableViewDataSource {
     
     // Tells how many rows to list out in tableView.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+//        return 3
+        return plants.count
     }
     
     // Inputs custom UITableViewCell.
@@ -110,7 +170,21 @@ extension MainViewController: UITableViewDataSource {
         let cell  = tableView.dequeueReusableCell(withIdentifier: K.plantTableViewCellID, for: indexPath) as! PlantTableViewCell
         
         // Later, assign values to cell's properties: EX below
-//        cell.textLabel?.text = "Plants"
+        cell.plantName.text = plants[indexPath.row].plant
+        
+        if imageSetNames.contains(plants[indexPath.row].plantImageString!) {
+            cell.plantImage.image = UIImage(named: plants[indexPath.row].plantImageString!)
+        } else if plants[indexPath.row].plantImageString! == "UnknownPlant" && plants[indexPath.row].imageData != nil {
+            cell.plantImage.image = UIImage(named: K.unknownPlant)
+        } else {
+            if plants[indexPath.row].imageData != nil {
+                cell.plantImage.image = UIImage(data: plants[indexPath.row].imageData!)
+            } else {
+                cell.plantImage.image = UIImage(named: K.unknownPlant)
+            }
+        }
+        
+        cell.waterInDays.text = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate! , waterHabit: Int(plants[indexPath.row].waterHabit))
         
         return cell
     }
@@ -132,6 +206,7 @@ extension MainViewController: WeatherManagerDelegate {
     func didFailWithError(error: Error) {
         print(error)
     }
+    
 
 }
 
@@ -149,3 +224,4 @@ extension MainViewController: CLLocationManagerDelegate {
         print(error)
     }
 }
+

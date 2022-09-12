@@ -8,6 +8,9 @@
 import UIKit
 import CoreData
 
+protocol ReloadDataDelegate {
+    func reloadData()
+}
 
 class AddPlantViewController: UIViewController {
     
@@ -30,7 +33,7 @@ class AddPlantViewController: UIViewController {
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
+    var delegate: ReloadDataDelegate?
   
     private var selectedHabitDay = 7
 
@@ -48,6 +51,7 @@ class AddPlantViewController: UIViewController {
         // Do any additional setup after loading the view.
         title = "Add Plant"
         typeOfPlant.delegate = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,6 +70,8 @@ class AddPlantViewController: UIViewController {
         waterHabitButton.configuration?.imagePlacement = .trailing
         waterHabitButton.configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
     }
+    
+   
 
     func updateUI() {
         waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
@@ -140,13 +146,18 @@ class AddPlantViewController: UIViewController {
         self.plants.append(newPlant)
         self.savePlant()
         
-        // dismiss AddPlantVIew.
-//        dismiss(animated: true)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+        
+        
+        //ADD: dismiss AddPlantView.
+        dismiss(animated: true)
         
         // Debug area
         print(self.typeOfPlant.text!)
         print(self)
         print(datePicker.date)
+        
+
     }
     
     func customImageData () -> Data? {
@@ -166,6 +177,27 @@ extension AddPlantViewController: PassDataDelegate {
 extension AddPlantViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         updateInputImage()
-       
+        
+        let trimmedAndLoweredText = typeOfPlant.text?.trimmingCharacters(in: .whitespaces).lowercased()
+        
+        guard typeOfPlant.text!.count >= 1, trimmedAndLoweredText != "" else {
+            plantImageString = ""
+            return
+        }
+        
+        // ADD FEATURE LATER: Plants suggestion
+//        if plant != "" {
+//            showSuggestionsList = true
+//        } else {
+//            showSuggestionsList = false
+//        }
+        
+        plantImageString = trimmedAndLoweredText!
+        print(plantImageString)
+ 
+//        showSuggestionsList = false
+//        UIApplication.shared.endEditing()
+    
     }
 }
+

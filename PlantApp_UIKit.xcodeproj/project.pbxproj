@@ -15,7 +15,6 @@
 		5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */; };
 		51180ABA28CA80080072BC8E /* WaterHabitDaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */; };
 		513CBC4828C79E7700CBC760 /* PlantApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4628C79E7700CBC760 /* PlantApp.xcdatamodeld */; };
-		513CBC4A28C79F4B00CBC760 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4928C79F4B00CBC760 /* DataController.swift */; };
 		513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4B28C7A6D100CBC760 /* WeatherData.swift */; };
 		513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */; };
 		513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */; };
@@ -37,7 +36,6 @@
 		5102E03528AFFDC7006AF2AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterHabitDaysViewController.swift; sourceTree = "<group>"; };
 		513CBC4728C79E7700CBC760 /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
-		513CBC4928C79F4B00CBC760 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		513CBC4B28C7A6D100CBC760 /* WeatherData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
 		513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocationManager.swift; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 				513CBC4B28C7A6D100CBC760 /* WeatherData.swift */,
 				513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */,
 				513CBC4628C79E7700CBC760 /* PlantApp.xcdatamodeld */,
-				513CBC4928C79F4B00CBC760 /* DataController.swift */,
 				51E6D9D628CBB11A0053E4EE /* Constants.swift */,
 			);
 			path = Model;
@@ -209,7 +206,6 @@
 				513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */,
 				51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */,
 				513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */,
-				513CBC4A28C79F4B00CBC760 /* DataController.swift in Sources */,
 				5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */,
 				513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */,
 				513CBC4828C79E7700CBC760 /* PlantApp.xcdatamodeld in Sources */,
