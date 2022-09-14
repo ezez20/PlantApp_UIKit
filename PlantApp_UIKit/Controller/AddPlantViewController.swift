@@ -18,7 +18,7 @@ class AddPlantViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet weak var textFieldView: UIView!
-    @IBOutlet weak var typeOfPlant: UITextField!
+    @IBOutlet weak var plantName: UITextField!
 
     @IBOutlet weak var wateringSectionView: UIView!
     @IBOutlet weak var waterHabitButton: UIButton!
@@ -29,6 +29,8 @@ class AddPlantViewController: UIViewController {
     @IBOutlet weak var addPlantButton: UIButton!
     
     @IBOutlet weak var plantImageButton: UIButton!
+    
+    
     
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
@@ -50,7 +52,7 @@ class AddPlantViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         title = "Add Plant"
-        typeOfPlant.delegate = self
+        plantName.delegate = self
         
     }
     
@@ -92,9 +94,9 @@ class AddPlantViewController: UIViewController {
     }
     
     func updateInputImage() {
-        if imageSetNames.contains(typeOfPlant.text!) && inputImage == nil {
-            plantImageButton.setImage(UIImage(named: typeOfPlant.text!), for: .normal)
-        } else if imageSetNames.contains(typeOfPlant.text!) && inputImage != nil {
+        if imageSetNames.contains(plantName.text!) && inputImage == nil {
+            plantImageButton.setImage(UIImage(named: plantName.text!), for: .normal)
+        } else if imageSetNames.contains(plantName.text!) && inputImage != nil {
             plantImageButton.setImage(inputImage, for: .normal)
         } else if inputImage != nil  {
             plantImageButton.setImage(inputImage, for: .normal)
@@ -124,7 +126,7 @@ class AddPlantViewController: UIViewController {
         
         let newPlant = Plant(context: self.context)
         newPlant.id = UUID()
-        newPlant.plant = self.typeOfPlant.text
+        newPlant.plant = self.plantName.text
         newPlant.waterHabit = Int16(selectedHabitDay)
         newPlant.dateAdded = Date.now
         newPlant.lastWateredDate = datePicker.date
@@ -146,6 +148,7 @@ class AddPlantViewController: UIViewController {
         self.plants.append(newPlant)
         self.savePlant()
         
+        // Tells MainViewController to "loadPlants" 
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
         
         
@@ -153,11 +156,19 @@ class AddPlantViewController: UIViewController {
         dismiss(animated: true)
         
         // Debug area
-        print(self.typeOfPlant.text!)
+        print(self.plantName.text!)
         print(self)
         print(datePicker.date)
         
 
+    }
+    
+    @IBAction func plantImageButtonTapped(_ sender: Any) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
     
     func customImageData () -> Data? {
@@ -178,11 +189,24 @@ extension AddPlantViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         updateInputImage()
         
-        let trimmedAndLoweredText = typeOfPlant.text?.trimmingCharacters(in: .whitespaces).lowercased()
+        let trimmedAndLoweredText = plantName.text?.trimmingCharacters(in: .whitespaces).lowercased()
         
-        guard typeOfPlant.text!.count >= 1, trimmedAndLoweredText != "" else {
+        guard plantName.text!.count >= 1, trimmedAndLoweredText != "" else {
             plantImageString = ""
+            addPlantButton.isEnabled = false
             return
+        }
+        
+        if validateEntry() {
+            addPlantButton.isEnabled = true
+        }
+        
+        func validateEntry() -> Bool {
+            if plantName.text!.isEmpty {
+                return false
+            } else {
+                return true
+            }
         }
         
         // ADD FEATURE LATER: Plants suggestion
@@ -199,5 +223,21 @@ extension AddPlantViewController: UITextFieldDelegate {
 //        UIApplication.shared.endEditing()
     
     }
+ 
 }
 
+extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+            inputImage = image
+            plantImageButton.setImage(inputImage, for: .normal)
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+}

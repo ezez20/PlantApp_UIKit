@@ -13,14 +13,17 @@ class PlantViewController: UIViewController {
     @IBOutlet weak var plantImage: UIImageView!
     @IBOutlet weak var plantName: UILabel!
     @IBOutlet weak var plantHappinessLevel: UILabel!
+    var plantNameIn = ""
+    var plantImageStringIn = ""
+    var plantImageLoadedIn = UIImage()
     
     // MARK: - Weather variables
     @IBOutlet weak var weatherLogo: UIImageView!
     @IBOutlet weak var weatherTemp: UILabel!
     @IBOutlet weak var weatherCity: UILabel!
-    var inputLogo = ""
-    var inputTemp = ""
-    var inputCity = ""
+    var inputLogoIn = ""
+    var inputTempIn = ""
+    var inputCityIn = ""
     
     // MARK: - Current Date Displayed Variable
     @IBOutlet weak var currentDateDisplayed: UILabel!
@@ -35,8 +38,65 @@ class PlantViewController: UIViewController {
     // MARK: - Watering Habit variable
     @IBOutlet weak var wateringHabitStackView: UIStackView!
     @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var waterStatusView: UILabel!
     
+    var waterHabitIn = 7
+    var lastWateredDateIn = Date()
     
+   
+    // TO DO: add more plants and images
+    var currentDate = Date.now
+    let imageSetNames = ["monstera", "pothos"]
+    
+    // MARK: - Core Data
+    var plants = [Plant]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var currentPlant = Plant()
+    
+
+    
+    var happinessLevelFormatted: Int {
+        var happiness = 80.0
+        
+        if lastWateredDateIn != currentDate {
+            if nextWaterDate < currentDate {
+                happiness = 0
+            } else {
+                let happinessLevelCalc = ((Double(DateInterval(start: currentDate, end: nextWaterDate).duration))) / ((Double(DateInterval(start: lastWateredDateIn, end: nextWaterDate).duration))) * 100
+                happiness = Double(happinessLevelCalc)
+            }
+        } else if lastWateredDateIn == currentDate {
+            happiness = 100
+        }
+        return Int(happiness)
+    }
+    
+    var nextWaterDate: Date {
+        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn.advanced(by: 86400))
+        return calculatedDate!
+    }
+    
+    var waterStatus: String {
+        
+        let dateIntervalFormat = DateComponentsFormatter()
+        dateIntervalFormat.allowedUnits = .day
+        dateIntervalFormat.unitsStyle = .short
+        let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
+        if formatted == "0 days" || nextWaterDate < currentDate {
+            return "water me ):"
+        } else if dateFormatter.string(from:  datePicker.date) == dateFormatter.string(from: currentDate) {
+            return "Water in \(waterHabitIn) days"
+        } else {
+            return "Water in: \(formatted)"
+        }
+        
+    }
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter
+    }
     
     
     override func viewDidLoad() {
@@ -44,11 +104,19 @@ class PlantViewController: UIViewController {
         // Do any additional setup after loading the view.
         // MARK: - UI: add gradient to containerView
        
-        weatherLogo.image = UIImage(systemName: inputLogo)
-        weatherTemp.text = inputTemp
-        weatherCity.text = inputCity
+        updateWeatherUI()
+        loadData()
+        updateUI()
+        datePicker.maximumDate = Date.now
+        datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
-        datePicker.minimumDate = Date.now
+    }
+   
+    
+    @objc func datePickerValueChanged(sender: UIDatePicker) {
+        lastWateredDateIn = sender.date
+        updateUI()
     }
     
     override func viewDidLayoutSubviews() {
@@ -60,8 +128,15 @@ class PlantViewController: UIViewController {
 
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        updatePlant()
+    }
+
     // MARK: - IBActions functions
     @IBAction func waterButtonPressed(_ sender: Any) {
+        lastWateredDateIn = Date.now
+        currentDate = Date.now
+        updateUI()
         print("Water button pressed.")
     }
     
@@ -84,6 +159,55 @@ class PlantViewController: UIViewController {
         appliedView.layer.shadowOffset = CGSize(width: 0, height: 0)
         appliedView.layer.cornerRadius = 10
     }
+    
+    func updateWeatherUI() {
+        if inputLogoIn   == "" {
+            weatherLogo.image = UIImage(systemName: "questionmark")
+            weatherTemp.text = "loading.."
+            weatherCity.text = "loading.."
+        } else {
+            weatherLogo.image = UIImage(systemName: inputLogoIn)
+            weatherTemp.text = inputTempIn
+            weatherCity.text = inputCityIn
+        }
+    }
+    
+    func updateUI() {
+        waterStatusView.text = waterStatus
+    }
+    
+    func loadData() {
+        plantName.text = currentPlant.plant
+        waterHabitIn = Int(currentPlant.waterHabit)
+        lastWateredDateIn = currentPlant.lastWateredDate!
+        plantImage.image = plantImageLoadedIn
+        waterStatusView.text = waterStatus
+    }
+    
+    func updatePlant() {
+        // ADD PLANT ENTITY TO UPDATE DATA
+        currentPlant.lastWateredDate = lastWateredDateIn
+        print("Updated current plant to: \(lastWateredDateIn)" )
+ 
+        do {
+            try context.save()
+        } catch {
+            print("Error updating plant \(error)")
+        }
+    }
+    
+    
+    
+//    func loadedImage(with imageData: Data?) -> UIImage {
+//        guard let imageData = imageData else {
+//            //            print("Error outputing imageData")
+//            return UIImage(named: "UnknownPlant")!
+//        }
+//        let loadedImage = UIImage(data: imageData)
+//        return loadedImage!
+//    }
+    
+   
 
     /*
     // MARK: - Navigation
@@ -96,3 +220,5 @@ class PlantViewController: UIViewController {
     */
 
 }
+
+

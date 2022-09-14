@@ -14,7 +14,7 @@ class MainViewController: UIViewController {
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
+    
     @IBOutlet weak var plantsTableView: UITableView!
     
     var weatherManager = WeatherManager()
@@ -23,7 +23,7 @@ class MainViewController: UIViewController {
     var weatherTemp = ""
     var weatherCity = ""
     
-
+    
     
     let imageSetNames = ["monstera", "pothos"]
     
@@ -38,7 +38,7 @@ class MainViewController: UIViewController {
         // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
         
-      
+        
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
@@ -46,20 +46,26 @@ class MainViewController: UIViewController {
         
         // Load plants from Core Data
         loadPlants()
-        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name:NSNotification.Name("triggerLoadPlants"), object: nil)
-
+      
+        
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        loadPlants()
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
+    }
+    
+  
     
     @IBAction func editButtonPressed(_ sender: Any) {
         // Future feature: Edit button to allow re-order tableView.
     }
-
+    
     @IBAction func addButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
     }
     
-
+    
     //MARK: - Data Manipulation Methods
     func savePlant() {
         do {
@@ -89,19 +95,18 @@ class MainViewController: UIViewController {
         loadPlants()
     }
     
-    // MARK: - convert retrieved Data to UIImage 
-        func loadedImage(with imageData: Data?) -> UIImage {
-            guard let imageData = imageData else {
-    //            print("Error outputing imageData")
-                return UIImage(named: "UnknownPlant")!
-            }
-            let loadedImage = UIImage(data: imageData)
-            return loadedImage!
+    // MARK: - convert retrieved Data to UIImage
+    func loadedImage(with imageData: Data?) -> UIImage {
+        guard let imageData = imageData else {
+            //            print("Error outputing imageData")
+            return UIImage(named: "UnknownPlant")!
         }
+        let loadedImage = UIImage(data: imageData)
+        return loadedImage!
+    }
     
     // MARK: - Formatting displayedNextWaterDate
     func displayedNextWaterDate(lastWateredDate: Date, waterHabit: Int) -> String {
-        // Work on implementing in ForEach List.
         var nextWaterDate: Date {
             let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
             return calculatedDate!
@@ -130,7 +135,7 @@ class MainViewController: UIViewController {
         }
         return waterStatus
     }
-
+    
 
     
 }
@@ -142,26 +147,48 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
         performSegue(withIdentifier: K.mainToPlantID, sender: self)
-        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is PlantViewController {
-            let vc = segue.destination as? PlantViewController
-            vc?.inputLogo = weatherLogo
-            vc?.inputTemp = weatherTemp
-            vc?.inputCity = weatherCity
-            
+            if let indexPath = plantsTableView.indexPathForSelectedRow {
+                let vc = segue.destination as? PlantViewController
+                vc?.inputLogoIn = weatherLogo
+                vc?.inputTempIn = weatherTemp
+                vc?.inputCityIn = weatherCity
+                
+//                vc?.currentPlant = plants[indexPath.row]
+//                vc?.lastWateredDateIn = plants[indexPath.row].lastWateredDate!
+//                vc?.waterHabitIn = Int(plants[indexPath.row].waterHabit)
+//                vc?.plantNameIn = plants[indexPath.row].plant!
+//                vc?.plantImageStringIn = plants[indexPath.row].plantImageString!
+                
+                let plant = plants[indexPath.row]
+                vc?.currentPlant = plant
+//                vc?.lastWateredDateIn = plant.lastWateredDate
+//                vc?.waterHabitIn = Int(plants[indexPath.row].waterHabit)
+//                vc?.plantNameIn = plants[indexPath.row].plant!
+//                vc?.plantImageStringIn = plants[indexPath.row].plantImageString!
+                
+                if imageSetNames.contains(plants[indexPath.row].plantImageString!) {
+                    vc?.plantImageLoadedIn = UIImage(named: plants[indexPath.row].plantImageString!)!
+                } else {
+                    vc?.plantImageLoadedIn = loadedImage(with: plants[indexPath.row].imageData)
+                }
+               
+                
+            }
         }
     }
-  
+    
 }
 
 extension MainViewController: UITableViewDataSource {
     
     // Tells how many rows to list out in tableView.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return 3
+        //        return 3
         return plants.count
     }
     
@@ -174,14 +201,8 @@ extension MainViewController: UITableViewDataSource {
         
         if imageSetNames.contains(plants[indexPath.row].plantImageString!) {
             cell.plantImage.image = UIImage(named: plants[indexPath.row].plantImageString!)
-        } else if plants[indexPath.row].plantImageString! == "UnknownPlant" && plants[indexPath.row].imageData != nil {
-            cell.plantImage.image = UIImage(named: K.unknownPlant)
         } else {
-            if plants[indexPath.row].imageData != nil {
-                cell.plantImage.image = UIImage(data: plants[indexPath.row].imageData!)
-            } else {
-                cell.plantImage.image = UIImage(named: K.unknownPlant)
-            }
+            cell.plantImage.image = loadedImage(with: plants[indexPath.row].imageData)
         }
         
         cell.waterInDays.text = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate! , waterHabit: Int(plants[indexPath.row].waterHabit))
@@ -193,21 +214,21 @@ extension MainViewController: UITableViewDataSource {
 
 
 extension MainViewController: WeatherManagerDelegate {
-
+    
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             self.weatherLogo = weather.conditionName
             self.weatherTemp = weather.teperatureString
             self.weatherCity = weather.cityName
-            
+
         }
     }
-
+    
     func didFailWithError(error: Error) {
         print(error)
     }
     
-
+    
 }
 
 extension MainViewController: CLLocationManagerDelegate {
