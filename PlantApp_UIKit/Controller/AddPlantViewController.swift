@@ -8,9 +8,6 @@
 import UIKit
 import CoreData
 
-protocol ReloadDataDelegate {
-    func reloadData()
-}
 
 class AddPlantViewController: UIViewController {
     
@@ -19,7 +16,7 @@ class AddPlantViewController: UIViewController {
     
     @IBOutlet weak var textFieldView: UIView!
     @IBOutlet weak var plantName: UITextField!
-
+    
     @IBOutlet weak var wateringSectionView: UIView!
     @IBOutlet weak var waterHabitButton: UIButton!
     
@@ -36,20 +33,20 @@ class AddPlantViewController: UIViewController {
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var delegate: ReloadDataDelegate?
-  
+    
     private var selectedHabitDay = 7
-
+    
     // ADD: add more plants and images
     let imageSetNames = ["monstera", "pothos"]
     private var plantImageString = ""
     private var showingImagePicker = false
     private var inputImage: UIImage?
     private var sourceType: UIImagePickerController.SourceType = .camera
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         title = "Add Plant"
         plantName.delegate = self
@@ -73,24 +70,9 @@ class AddPlantViewController: UIViewController {
         waterHabitButton.configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
     }
     
-   
-
-    func updateUI() {
-        waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
-    }
-
+// MARK: - UI Update Methods
     func addCornerRadius(_ appliedView: UIView) {
         appliedView.layer.cornerRadius = 10
-    }
-    
-    //MARK: - Data Manipulation Methods
-    func savePlant() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving category \(error)")
-        }
-        
     }
     
     func updateInputImage() {
@@ -105,14 +87,34 @@ class AddPlantViewController: UIViewController {
         }
         print("updateInputImage: triggered")
     }
-  
     
-    // MARK: - waterHabitButton Pressed
+    func customImageData () -> Data? {
+        let pickedImage = inputImage?.jpegData(compressionQuality: 0.80)
+        return pickedImage
+    }
+    
+    func updateUI() {
+        waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
+    }
+    
+    
+//MARK: - Data Manipulation Methods
+    func savePlant() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving category \(error)")
+        }
+    }
+
+    
+    
+//MARK: - IBActions Buttons
     @IBAction func waterHabitButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: K.AddPlantToWaterHabitID, sender: self)
     }
     
-   // MARK: - Handles DATA between: AddPlantViewController & WaterHabitDaysViewController
+    // MARK: - Handles DATA between: AddPlantViewController & WaterHabitDaysViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "AddPlantToWaterHabit" {
             let secondVC: WaterHabitDaysViewController = segue.destination as! WaterHabitDaysViewController
@@ -121,7 +123,7 @@ class AddPlantViewController: UIViewController {
         }
     }
     
-    //MARK: - Add Plant Button Pressed
+    
     @IBAction func addPlantButtonPressed(_ sender: Any) {
         
         let newPlant = Plant(context: self.context)
@@ -148,7 +150,7 @@ class AddPlantViewController: UIViewController {
         self.plants.append(newPlant)
         self.savePlant()
         
-        // Tells MainViewController to "loadPlants" 
+        // Tells MainViewController to "loadPlants"
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
         
         
@@ -160,7 +162,7 @@ class AddPlantViewController: UIViewController {
         print(self)
         print(datePicker.date)
         
-
+        
     }
     
     @IBAction func plantImageButtonTapped(_ sender: Any) {
@@ -171,12 +173,16 @@ class AddPlantViewController: UIViewController {
         present(imagePicker, animated: true)
     }
     
-    func customImageData () -> Data? {
-        let pickedImage = inputImage?.jpegData(compressionQuality: 0.80)
-        return pickedImage
-    }
+    
 }
 
+// MARK: - Protocols
+protocol ReloadDataDelegate {
+    func reloadData()
+}
+
+
+// MARK: - Extensions
 extension AddPlantViewController: PassDataDelegate {
     func passData(Data: Int) {
         selectedHabitDay = Data
@@ -186,6 +192,7 @@ extension AddPlantViewController: PassDataDelegate {
 }
 
 extension AddPlantViewController: UITextFieldDelegate {
+    
     func textFieldDidChangeSelection(_ textField: UITextField) {
         updateInputImage()
         
@@ -209,21 +216,23 @@ extension AddPlantViewController: UITextFieldDelegate {
             }
         }
         
-        // ADD FEATURE LATER: Plants suggestion
-//        if plant != "" {
-//            showSuggestionsList = true
-//        } else {
-//            showSuggestionsList = false
-//        }
         
         plantImageString = trimmedAndLoweredText!
         print(plantImageString)
- 
-//        showSuggestionsList = false
-//        UIApplication.shared.endEditing()
-    
+        
+        // ADD FEATURE LATER: Plants suggestion
+        //        if plant != "" {
+        //            showSuggestionsList = true
+        //        } else {
+        //            showSuggestionsList = false
+        //        }
+        
+        
+        //        showSuggestionsList = false
+        //        UIApplication.shared.endEditing()
+        
     }
- 
+    
 }
 
 extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -240,4 +249,6 @@ extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
+    
 }
+

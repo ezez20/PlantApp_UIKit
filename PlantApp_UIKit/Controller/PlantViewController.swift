@@ -83,7 +83,7 @@ class PlantViewController: UIViewController {
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
-            return "water me ):"
+            return "pls water me ):"
         } else if dateFormatter.string(from:  datePicker.date) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
         } else {
@@ -111,6 +111,7 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
+    
     }
    
     
@@ -136,6 +137,7 @@ class PlantViewController: UIViewController {
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = Date.now
         currentDate = Date.now
+        lastWateredDateIn = currentDate
         updateUI()
         print("Water button pressed.")
     }
@@ -173,6 +175,7 @@ class PlantViewController: UIViewController {
     }
     
     func updateUI() {
+        plantHappinessLevel.text = "\(String(happinessLevelFormatted))%"
         waterStatusView.text = waterStatus
     }
     
@@ -180,6 +183,7 @@ class PlantViewController: UIViewController {
         plantName.text = currentPlant.plant
         waterHabitIn = Int(currentPlant.waterHabit)
         lastWateredDateIn = currentPlant.lastWateredDate!
+        datePicker.date = lastWateredDateIn
         plantImage.image = plantImageLoadedIn
         waterStatusView.text = waterStatus
     }
@@ -196,16 +200,6 @@ class PlantViewController: UIViewController {
         }
     }
     
-    
-    
-//    func loadedImage(with imageData: Data?) -> UIImage {
-//        guard let imageData = imageData else {
-//            //            print("Error outputing imageData")
-//            return UIImage(named: "UnknownPlant")!
-//        }
-//        let loadedImage = UIImage(data: imageData)
-//        return loadedImage!
-//    }
     
    
 

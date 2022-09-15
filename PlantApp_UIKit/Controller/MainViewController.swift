@@ -27,6 +27,7 @@ class MainViewController: UIViewController {
     
     let imageSetNames = ["monstera", "pothos"]
     
+    // MARK: - Views load
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -46,7 +47,6 @@ class MainViewController: UIViewController {
         
         // Load plants from Core Data
         loadPlants()
-      
         
     }
     
@@ -55,8 +55,13 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
     }
     
-  
     
+    @objc func notificationReceived() {
+        loadPlants()
+    }
+    
+    
+    // MARK: - Button IBActions
     @IBAction func editButtonPressed(_ sender: Any) {
         // Future feature: Edit button to allow re-order tableView.
     }
@@ -90,10 +95,13 @@ class MainViewController: UIViewController {
         print("Plants loaded")
     }
     
-    
-    @objc func notificationReceived() {
-        loadPlants()
+    func deletePlant(indexPath: IndexPath) {
+        context.delete(plants[indexPath.row])
+        self.plants.remove(at: indexPath.row)
+        self.plantsTableView.deleteRows(at: [indexPath], with: .automatic)
+        self.savePlant()
     }
+    
     
     // MARK: - convert retrieved Data to UIImage
     func loadedImage(with imageData: Data?) -> UIImage {
@@ -119,7 +127,7 @@ class MainViewController: UIViewController {
             dateIntervalFormat.unitsStyle = .short
             let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
             if formatted == "0 days" || nextWaterDate < Date.now {
-                return "Please water me ):"
+                return "pls water me ):"
             } else if dateFormatter.string(from: lastWateredDate) == dateFormatter.string(from: Date.now) {
                 return "in \(waterHabit) days"
             } else {
@@ -141,13 +149,24 @@ class MainViewController: UIViewController {
 }
 
 
-// MARK: - extension: UITableViewDelegate/UITableViewDataSource
+// MARK: - Extensions: UITableViewDelegate, UITableViewDataSource, WeatherManagerDelegate, CLLocationManagerDelegate
 extension MainViewController: UITableViewDelegate {
     
+    // TableView cell selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped on \(indexPath.description)")
         performSegue(withIdentifier: K.mainToPlantID, sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    // SwipeToDelete
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let contextItem = UIContextualAction(style: .destructive, title: "Delete") { [self]  (contextualAction, view, boolValue) in
+            deletePlant(indexPath: indexPath)
+        }
+        let swipeActions = UISwipeActionsConfiguration(actions: [contextItem])
+        
+        return swipeActions
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -205,10 +224,12 @@ extension MainViewController: UITableViewDataSource {
             cell.plantImage.image = loadedImage(with: plants[indexPath.row].imageData)
         }
         
-        cell.waterInDays.text = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate! , waterHabit: Int(plants[indexPath.row].waterHabit))
+        cell.waterInDays.text = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate!, waterHabit: Int(plants[indexPath.row].waterHabit))
         
         return cell
     }
+    
+ 
     
 }
 
