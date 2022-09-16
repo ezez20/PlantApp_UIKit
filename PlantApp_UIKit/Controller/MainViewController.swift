@@ -27,7 +27,7 @@ class MainViewController: UIViewController {
     
     let imageSetNames = ["monstera", "pothos"]
     
-    // MARK: - Views load
+// MARK: - Views load state
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -40,9 +40,7 @@ class MainViewController: UIViewController {
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
         
         
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
+       
         weatherManager.delegate = self
         
         // Load plants from Core Data
@@ -51,6 +49,12 @@ class MainViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+        locationManager.startUpdatingLocation()
+        
+        
         loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
     }
@@ -106,7 +110,6 @@ class MainViewController: UIViewController {
     // MARK: - convert retrieved Data to UIImage
     func loadedImage(with imageData: Data?) -> UIImage {
         guard let imageData = imageData else {
-            //            print("Error outputing imageData")
             return UIImage(named: "UnknownPlant")!
         }
         let loadedImage = UIImage(data: imageData)
@@ -177,25 +180,16 @@ extension MainViewController: UITableViewDelegate {
                 vc?.inputTempIn = weatherTemp
                 vc?.inputCityIn = weatherCity
                 
-//                vc?.currentPlant = plants[indexPath.row]
-//                vc?.lastWateredDateIn = plants[indexPath.row].lastWateredDate!
-//                vc?.waterHabitIn = Int(plants[indexPath.row].waterHabit)
-//                vc?.plantNameIn = plants[indexPath.row].plant!
-//                vc?.plantImageStringIn = plants[indexPath.row].plantImageString!
-                
+                // pass selected Plant's data from tableView into PlantViewController
                 let plant = plants[indexPath.row]
                 vc?.currentPlant = plant
-//                vc?.lastWateredDateIn = plant.lastWateredDate
-//                vc?.waterHabitIn = Int(plants[indexPath.row].waterHabit)
-//                vc?.plantNameIn = plants[indexPath.row].plant!
-//                vc?.plantImageStringIn = plants[indexPath.row].plantImageString!
                 
-                if imageSetNames.contains(plants[indexPath.row].plantImageString!) {
-                    vc?.plantImageLoadedIn = UIImage(named: plants[indexPath.row].plantImageString!)!
+                // Assigns plant's image to tableView.
+                if imageSetNames.contains(plant.plantImageString!) {
+                    vc?.plantImageLoadedIn = UIImage(named: plant.plantImageString!)!
                 } else {
-                    vc?.plantImageLoadedIn = loadedImage(with: plants[indexPath.row].imageData)
+                    vc?.plantImageLoadedIn = loadedImage(with: plant.imageData)
                 }
-               
                 
             }
         }
@@ -241,12 +235,11 @@ extension MainViewController: WeatherManagerDelegate {
             self.weatherLogo = weather.conditionName
             self.weatherTemp = weather.teperatureString
             self.weatherCity = weather.cityName
-
         }
     }
     
     func didFailWithError(error: Error) {
-        print(error)
+        print("Error updating weather. Error: \(error)")
     }
     
     
@@ -263,7 +256,7 @@ extension MainViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
+        print("Error updating location. Error: \(error)")
     }
 }
 

@@ -53,8 +53,8 @@ class PlantViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant = Plant()
     
-
     
+// MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
     var happinessLevelFormatted: Int {
         var happiness = 80.0
         
@@ -84,7 +84,7 @@ class PlantViewController: UIViewController {
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
             return "pls water me ):"
-        } else if dateFormatter.string(from:  datePicker.date) == dateFormatter.string(from: currentDate) {
+        } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
         } else {
             return "Water in: \(formatted)"
@@ -98,12 +98,10 @@ class PlantViewController: UIViewController {
         return formatter
     }
     
-    
+// MARK: - Views load state
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        // MARK: - UI: add gradient to containerView
-       
+        
         updateWeatherUI()
         loadData()
         updateUI()
@@ -111,7 +109,6 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
-    
     }
    
     
@@ -135,8 +132,6 @@ class PlantViewController: UIViewController {
 
     // MARK: - IBActions functions
     @IBAction func waterButtonPressed(_ sender: Any) {
-        lastWateredDateIn = Date.now
-        currentDate = Date.now
         lastWateredDateIn = currentDate
         updateUI()
         print("Water button pressed.")
@@ -183,20 +178,21 @@ class PlantViewController: UIViewController {
         plantName.text = currentPlant.plant
         waterHabitIn = Int(currentPlant.waterHabit)
         lastWateredDateIn = currentPlant.lastWateredDate!
+        
         datePicker.date = lastWateredDateIn
         plantImage.image = plantImageLoadedIn
         waterStatusView.text = waterStatus
     }
     
     func updatePlant() {
-        // ADD PLANT ENTITY TO UPDATE DATA
+        // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
-        print("Updated current plant to: \(lastWateredDateIn)" )
+        print("Plant: \(currentPlant.plant!) updated." )
  
         do {
             try context.save()
         } catch {
-            print("Error updating plant \(error)")
+            print("Error updating plant. Error: \(error)")
         }
     }
     

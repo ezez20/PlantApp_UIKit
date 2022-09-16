@@ -20,7 +20,8 @@ class WaterHabitDaysViewController: UIViewController {
     var selectedHabitDays = 7
     
     var delegate: PassDataDelegate?
-    
+
+// MARK: - Views load state
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,18 +31,6 @@ class WaterHabitDaysViewController: UIViewController {
         waterDaysTableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
         
     }
-    
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-         Get the new view controller using segue.destination.
-         Pass the selected object to the new view controller.
-    }
-    */
 
 }
 

@@ -44,6 +44,7 @@ class AddPlantViewController: UIViewController {
     private var sourceType: UIImagePickerController.SourceType = .camera
     
     
+// MARK: - Views load state
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,7 +53,7 @@ class AddPlantViewController: UIViewController {
         plantName.delegate = self
         
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         updateUI()
         print(selectedHabitDay)
@@ -158,9 +159,7 @@ class AddPlantViewController: UIViewController {
         dismiss(animated: true)
         
         // Debug area
-        print(self.plantName.text!)
-        print(self)
-        print(datePicker.date)
+        print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantName.text!)")
         
         
     }
