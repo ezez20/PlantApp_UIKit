@@ -15,6 +15,7 @@ class MainViewController: UIViewController {
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var plantsTableView: UITableView!
     
     var weatherManager = WeatherManager()
@@ -23,9 +24,8 @@ class MainViewController: UIViewController {
     var weatherTemp = ""
     var weatherCity = ""
     
-    
-    
     let imageSetNames = ["monstera", "pothos"]
+    
     
 // MARK: - Views load state
     override func viewDidLoad() {
@@ -35,6 +35,7 @@ class MainViewController: UIViewController {
         plantsTableView.delegate = self
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
+        
         
         // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
@@ -68,6 +69,15 @@ class MainViewController: UIViewController {
     // MARK: - Button IBActions
     @IBAction func editButtonPressed(_ sender: Any) {
         // Future feature: Edit button to allow re-order tableView.
+        self.plantsTableView.isEditing.toggle()
+        
+        if self.plantsTableView.isEditing == true {
+            editButton.title = "Done"
+        } else {
+            editButton.title = "Edit"
+        }
+        
+        
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
@@ -172,6 +182,7 @@ extension MainViewController: UITableViewDelegate {
         return swipeActions
     }
     
+  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is PlantViewController {
             if let indexPath = plantsTableView.indexPathForSelectedRow {
@@ -223,7 +234,22 @@ extension MainViewController: UITableViewDataSource {
         return cell
     }
     
- 
+    
+    // MARK: - methods needed for editing/re-ordering tableViews
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = self.plants[sourceIndexPath.row]
+        plants.remove(at: sourceIndexPath.row)
+        plants.insert(movedObject, at: destinationIndexPath.row)
+    }
     
 }
 
