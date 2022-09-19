@@ -40,8 +40,6 @@ class MainViewController: UIViewController {
         // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
         
-        
-       
         weatherManager.delegate = self
         
         // Load plants from Core Data
@@ -76,8 +74,7 @@ class MainViewController: UIViewController {
         } else {
             editButton.title = "Edit"
         }
-        
-        
+    
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
@@ -86,20 +83,22 @@ class MainViewController: UIViewController {
     
     
     //MARK: - Data Manipulation Methods
-    func savePlant() {
+    func savePlants() {
         do {
             try context.save()
         } catch {
             print("Error saving category \(error)")
         }
         
-        plantsTableView.reloadData()
+        loadPlants()
     }
     
     func loadPlants() {
-        let request : NSFetchRequest<Plant> = Plant.fetchRequest()
         
         do {
+            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+            let sort = NSSortDescriptor(key: "order", ascending: true)
+            request.sortDescriptors = [sort]
             plants = try context.fetch(request)
         } catch {
             print("Error loading categories \(error)")
@@ -107,13 +106,14 @@ class MainViewController: UIViewController {
         
         plantsTableView.reloadData()
         print("Plants loaded")
+        
     }
     
     func deletePlant(indexPath: IndexPath) {
         context.delete(plants[indexPath.row])
         self.plants.remove(at: indexPath.row)
         self.plantsTableView.deleteRows(at: [indexPath], with: .automatic)
-        self.savePlant()
+        self.savePlants()
     }
     
     
@@ -167,7 +167,7 @@ extension MainViewController: UITableViewDelegate {
     
     // TableView cell selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("You tapped on \(indexPath.description)")
+//        print("You tapped on \(indexPath.description)")
         performSegue(withIdentifier: K.mainToPlantID, sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -237,19 +237,26 @@ extension MainViewController: UITableViewDataSource {
     
     // MARK: - methods needed for editing/re-ordering tableViews
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .none
+        return .delete
     }
 
     func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let movedObject = self.plants[sourceIndexPath.row]
         plants.remove(at: sourceIndexPath.row)
         plants.insert(movedObject, at: destinationIndexPath.row)
+        
+        for (index, item) in plants.enumerated() {
+            item.order = Int32(index)
+        }
+        
+        savePlants()
+        
     }
+    
     
 }
 

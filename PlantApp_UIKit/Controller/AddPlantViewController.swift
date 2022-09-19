@@ -51,7 +51,7 @@ class AddPlantViewController: UIViewController {
         // Do any additional setup after loading the view.
         title = "Add Plant"
         plantName.delegate = self
-        
+        loadPlants()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -132,6 +132,7 @@ class AddPlantViewController: UIViewController {
         newPlant.plant = self.plantName.text
         newPlant.waterHabit = Int16(selectedHabitDay)
         newPlant.dateAdded = Date.now
+        newPlant.order = Int32(plants.count + 1)
         newPlant.lastWateredDate = datePicker.date
         
         if imageSetNames.contains(plantImageString) && inputImage == nil {
@@ -160,6 +161,7 @@ class AddPlantViewController: UIViewController {
         
         // Debug area
         print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantName.text!)")
+        print("Plant order: \(newPlant.order)")
         
         
     }
@@ -172,6 +174,20 @@ class AddPlantViewController: UIViewController {
         present(imagePicker, animated: true)
     }
     
+    func loadPlants() {
+        let request : NSFetchRequest<Plant> = Plant.fetchRequest()
+        
+        do {
+//            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+//            let sort = NSSortDescriptor(key: "order", ascending: false)
+//            request.sortDescriptors = [sort]
+            plants = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+
+        print("Plants loaded")
+    }
     
 }
 

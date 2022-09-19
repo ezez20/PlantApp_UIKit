@@ -369,13 +369,13 @@
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WATERING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fux-Qa-rpP">
-                                                <rect key="frame" x="10" y="63" width="408" height="15"/>
+                                                <rect key="frame" x="10" y="63.000000000000007" width="408" height="14.333333333333336"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HFT-GR-k9R" userLabel="Watering Section: View">
-                                                <rect key="frame" x="10" y="86" width="408" height="91"/>
+                                                <rect key="frame" x="10" y="85.333333333333343" width="408" height="91"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ngm-FT-JdW" userLabel="Water every 7 days: Button">
                                                         <rect key="frame" x="0.0" y="0.0" width="408" height="46"/>
@@ -412,7 +412,7 @@
                                                             <datePicker contentMode="scaleAspectFit" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU" userLabel="DatePicker">
                                                                 <rect key="frame" x="0.0" y="0.0" width="109" height="45"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="width" priority="250" constant="103" id="XzB-Mx-oMo"/>
+                                                                    <constraint firstAttribute="width" priority="250" constant="109" id="XzB-Mx-oMo"/>
                                                                 </constraints>
                                                             </datePicker>
                                                         </subviews>
@@ -442,8 +442,11 @@
                                                 </constraints>
                                             </view>
                                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ZJ-Nf-P4U" userLabel="Add Plant: Button">
-                                                <rect key="frame" x="10" y="205" width="408" height="31"/>
+                                                <rect key="frame" x="10" y="204.33333333333331" width="408" height="40"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="hpd-F9-67A"/>
+                                                </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" subtitle="Add Plant">
                                                     <fontDescription key="subtitleFontDescription" style="UICTFontTextStyleBody"/>
@@ -453,7 +456,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xkH-z3-d1e" userLabel="Plant Image: Button">
-                                                <rect key="frame" x="10" y="276" width="408" height="353"/>
+                                                <rect key="frame" x="10" y="279.33333333333331" width="408" height="352.99999999999994"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="353" id="Tk6-Z4-1RN"/>
@@ -475,11 +478,10 @@
                                             <constraint firstAttribute="trailing" secondItem="fux-Qa-rpP" secondAttribute="trailing" constant="10" id="QtJ-EF-REQ"/>
                                             <constraint firstAttribute="trailing" secondItem="xkH-z3-d1e" secondAttribute="trailing" constant="10" id="W2m-oU-BjZ"/>
                                             <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="top" secondItem="HFT-GR-k9R" secondAttribute="bottom" constant="28" id="Wkt-VR-gA9"/>
-                                            <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="top" secondItem="HpS-kL-IzJ" secondAttribute="top" constant="205" id="aXK-F3-HeV"/>
                                             <constraint firstItem="6ZJ-Nf-P4U" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="cMT-Rn-6YT"/>
                                             <constraint firstItem="xkH-z3-d1e" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="ccd-FZ-qba"/>
                                             <constraint firstAttribute="trailing" secondItem="Ean-US-zjr" secondAttribute="trailing" constant="10" id="e17-Ku-TU2"/>
-                                            <constraint firstItem="xkH-z3-d1e" firstAttribute="top" secondItem="6ZJ-Nf-P4U" secondAttribute="bottom" constant="40" id="lGK-Y2-ea1"/>
+                                            <constraint firstItem="xkH-z3-d1e" firstAttribute="top" secondItem="6ZJ-Nf-P4U" secondAttribute="bottom" constant="35" id="lGK-Y2-ea1"/>
                                             <constraint firstItem="Ean-US-zjr" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="vt5-6A-fTJ"/>
                                             <constraint firstItem="HFT-GR-k9R" firstAttribute="leading" secondItem="HpS-kL-IzJ" secondAttribute="leading" constant="10" id="zzr-Z8-eML"/>
                                         </constraints>
@@ -535,7 +537,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DLz-wU-sqc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="949" y="-592"/>
+            <point key="canvasLocation" x="947.66355140186909" y="-592.22462203023758"/>
         </scene>
         <!--Water Habit Days View Controller-->
         <scene sceneID="Wcr-p6-4Fn">
