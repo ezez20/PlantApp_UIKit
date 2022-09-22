@@ -10,6 +10,7 @@ import CoreData
 
 
 class AddPlantViewController: UIViewController {
+    
     @IBOutlet weak var containerView: UIView!
     
     @IBOutlet weak var cameraButton: UIButton!
@@ -38,13 +39,14 @@ class AddPlantViewController: UIViewController {
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     var filteredSuggestion = [String]()
+    var showSuggestionList = false
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var delegate: ReloadDataDelegate?
     
     private var selectedHabitDay = 7
     
     // ADD: add more plants and images
-    let imageSetNames = ["monstera", "pothos", "fiddle leaf"]
+    let imageSetNames = K.imageSetNames
     private var plantImageString = ""
     private var showingImagePicker = false
     private var inputImage: UIImage?
@@ -63,7 +65,7 @@ class AddPlantViewController: UIViewController {
         suggestionTableView.delegate = self
         suggestionTableView.dataSource = self
         suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
-        
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -204,7 +206,7 @@ class AddPlantViewController: UIViewController {
         
         print("Plants loaded")
     }
-    
+
 }
 
 // MARK: - Protocols
@@ -242,6 +244,11 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            plantName.text = filteredSuggestion[indexPath.row]
+            removeSuggestionScrollView()
+    }
+    
     func textFieldDidChangeSelection(_ textField: UITextField) {
         
         // Updates plantImageButton.Image if textfield contains imageSetNames
@@ -253,15 +260,13 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         guard plantName.text!.count >= 1, trimmedAndLoweredText != "" else {
             plantImageString = ""
             addPlantButton.isEnabled = false
-            removeSuggestionView()
+            removeSuggestionScrollView()
             print("has no text")
             return
         }
         
         if validateEntry() {
             addPlantButton.isEnabled = true
-            addScrollView()
-            showSuggestionTableView()
         }
         
         func validateEntry() -> Bool {
@@ -272,43 +277,9 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
             }
         }
         
+        
         plantImageString = trimmedAndLoweredText!
         print(plantImageString)
-
-        func addScrollView() {
-            suggestionScrollView.backgroundColor = UIColor.white
-            containerView.addSubview(suggestionScrollView)
-            
-            suggestionScrollView.translatesAutoresizingMaskIntoConstraints = false
-            
-            let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
-            let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-            let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
-            let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringLabel, attribute: .top, multiplier: 1.0, constant: 10)
-            
-            containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, bottomConstraint])
-            containerView.updateConstraints()
-            
-        }
-        
-        func removeSuggestionView() {
-            suggestionScrollView.removeFromSuperview()
-            suggestionTableView.removeFromSuperview()
-        }
-        
-        func showSuggestionTableView() {
-            // Setup tableview
-            suggestionTableView.backgroundColor = UIColor.white
-            containerView.addSubview(suggestionTableView)
-            
-            suggestionTableView.translatesAutoresizingMaskIntoConstraints = false
-            
-            suggestionTableView.topAnchor.constraint(equalTo: suggestionScrollView.topAnchor).isActive = true
-            suggestionTableView.bottomAnchor.constraint(equalTo: suggestionScrollView.bottomAnchor).isActive = true
-            suggestionTableView.leftAnchor.constraint(equalTo: suggestionScrollView.leftAnchor).isActive = true
-            suggestionTableView.rightAnchor.constraint(equalTo: suggestionScrollView.rightAnchor).isActive = true
-            
-        }
 
     }
     
@@ -319,9 +290,11 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
             for plant in imageSetNames {
                 if plant.lowercased().starts(with: query.lowercased()) {
                     filteredSuggestion.append(plant)
+                    showSuggestionScrollView()
                 }
             }
             suggestionTableView.reloadData()
+            print(filteredSuggestion)
         }
         
         if let text = textField.text {
@@ -329,6 +302,49 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         }
         
         return true
+    }
+    
+    func showSuggestionScrollView() {
+        suggestionScrollView.backgroundColor = UIColor.white
+        containerView.addSubview(suggestionScrollView)
+        addSuggestionTableView()
+        
+        suggestionScrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
+        let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
+        let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringSectionView, attribute: .top, multiplier: 1.0, constant: 10)
+        
+        containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, bottomConstraint])
+        containerView.updateConstraints()
+        
+        
+    }
+    
+    func removeSuggestionScrollView() {
+        suggestionScrollView.removeFromSuperview()
+        suggestionTableView.removeFromSuperview()
+    }
+    
+    func addSuggestionTableView() {
+        // Setup tableview
+        suggestionTableView.backgroundColor = UIColor.white
+        containerView.addSubview(suggestionTableView)
+        
+        suggestionTableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        suggestionTableView.topAnchor.constraint(equalTo: suggestionScrollView.topAnchor).isActive = true
+        suggestionTableView.bottomAnchor.constraint(equalTo: suggestionScrollView.bottomAnchor).isActive = true
+        suggestionTableView.leftAnchor.constraint(equalTo: suggestionScrollView.leftAnchor).isActive = true
+        suggestionTableView.rightAnchor.constraint(equalTo: suggestionScrollView.rightAnchor).isActive = true
+        
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        removeSuggestionScrollView()
+        self.view.endEditing(true)
+        return false
     }
     
 }

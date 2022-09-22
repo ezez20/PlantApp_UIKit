@@ -24,7 +24,7 @@ class MainViewController: UIViewController {
     var weatherTemp = ""
     var weatherCity = ""
     
-    let imageSetNames = ["monstera", "pothos"]
+    let imageSetNames = K.imageSetNames
     
     
 // MARK: - Views load state

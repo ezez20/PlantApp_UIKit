@@ -18,4 +18,6 @@ struct K {
     static let plantTableViewCellID = "PlantTableViewCell"
     
     static let AddPlantToWaterHabitID = "AddPlantToWaterHabit"
+    
+    static let imageSetNames = ["monstera", "pothos", "fiddle leaf"]
 }
