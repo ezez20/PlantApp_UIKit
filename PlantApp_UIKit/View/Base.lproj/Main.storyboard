@@ -204,7 +204,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                                <rect key="frame" x="91.666666666666686" y="103.66666666666669" width="205" height="76.333333333333314"/>
+                                                <rect key="frame" x="92.333333333333329" y="103.66666666666669" width="203.33333333333337" height="76.333333333333314"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="KUl-8S-SLv">
                                                         <rect key="frame" x="0.0" y="0.0" width="87.333333333333329" height="76.333333333333329"/>
@@ -214,11 +214,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" id="gHH-X1-3wl">
-                                                        <rect key="frame" x="94.333333333333314" y="0.0" width="110.66666666666669" height="76.333333333333329"/>
+                                                        <rect key="frame" x="94.333333333333314" y="0.0" width="109" height="76.333333333333329"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="110.66666666666667" height="76.333333333333329"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="109" height="76.333333333333329"/>
                                                             </datePicker>
                                                         </subviews>
                                                     </stackView>
@@ -293,6 +293,9 @@
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="0JC-TJ-U7Q" userLabel="Edit">
                             <imageReference key="image" image="pencil" catalog="system" symbolScale="large"/>
                             <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="editButtonPressed:" destination="TFc-O7-hiw" id="lKe-YY-AMz"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -374,6 +377,18 @@
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xkH-z3-d1e" userLabel="Plant Image: Button">
+                                                <rect key="frame" x="10" y="279.33333333333331" width="408" height="352.99999999999994"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="353" id="Tk6-Z4-1RN"/>
+                                                </constraints>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="UnknownPlant"/>
+                                                <connections>
+                                                    <action selector="plantImageButtonTapped:" destination="pC5-p4-qVx" eventType="touchUpInside" id="NJv-4S-2yo"/>
+                                                </connections>
+                                            </button>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HFT-GR-k9R" userLabel="Watering Section: View">
                                                 <rect key="frame" x="10" y="85.333333333333343" width="408" height="91"/>
                                                 <subviews>
@@ -407,10 +422,10 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uJC-Tt-1z9" userLabel="DatePicker: Stack View">
-                                                        <rect key="frame" x="287.33333333333331" y="46" width="110.66666666666669" height="45"/>
+                                                        <rect key="frame" x="287" y="46" width="111" height="45"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleAspectFit" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="5Cs-ay-bIU" userLabel="DatePicker">
-                                                                <rect key="frame" x="0.0" y="0.0" width="110.66666666666667" height="45"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="111" height="45"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" priority="250" constant="109" id="XzB-Mx-oMo"/>
                                                                 </constraints>
@@ -453,18 +468,6 @@
                                                 </buttonConfiguration>
                                                 <connections>
                                                     <action selector="addPlantButtonPressed:" destination="pC5-p4-qVx" eventType="touchUpInside" id="kic-LB-mht"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xkH-z3-d1e" userLabel="Plant Image: Button">
-                                                <rect key="frame" x="10" y="279.33333333333331" width="408" height="352.99999999999994"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="353" id="Tk6-Z4-1RN"/>
-                                                </constraints>
-                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" image="UnknownPlant"/>
-                                                <connections>
-                                                    <action selector="plantImageButtonTapped:" destination="pC5-p4-qVx" eventType="touchUpInside" id="NJv-4S-2yo"/>
                                                 </connections>
                                             </button>
                                         </subviews>

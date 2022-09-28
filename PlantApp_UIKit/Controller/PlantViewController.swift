@@ -8,7 +8,7 @@
 import UIKit
 
 class PlantViewController: UIViewController {
-
+    
     // MARK: - Plant displayed variables
     @IBOutlet weak var plantImage: UIImageView!
     @IBOutlet weak var plantName: UILabel!
@@ -131,6 +131,16 @@ class PlantViewController: UIViewController {
     }
 
     // MARK: - IBActions functions
+    
+    @IBAction func editButtonPressed(_ sender: Any) {
+
+        let editPlantVC = EditPlantViewController()
+        let editPlantNavVC = UINavigationController(rootViewController: editPlantVC)
+        editPlantNavVC.modalPresentationStyle = .formSheet
+        present(editPlantNavVC, animated: true, completion: nil)
+    }
+    
+    
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
         updateUI()

@@ -19,6 +19,7 @@
 		513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */; };
 		513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */; };
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
+		5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */; };
 		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
 		51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E6D9D628CBB11A0053E4EE /* Constants.swift */; };
@@ -40,6 +41,7 @@
 		513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocationManager.swift; sourceTree = "<group>"; };
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
+		5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPlantViewController.swift; sourceTree = "<group>"; };
 		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
 		51E6D9D628CBB11A0053E4EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */,
 				51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */,
 				51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */,
+				5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -205,6 +208,7 @@
 				51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */,
 				513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */,
 				51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */,
+				5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */,
 				513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */,
 				5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */,
 				513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */,
