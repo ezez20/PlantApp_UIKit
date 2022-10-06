@@ -39,7 +39,6 @@ class AddPlantViewController: UIViewController {
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     var filteredSuggestion = [String]()
-    var showSuggestionList = false
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var delegate: ReloadDataDelegate?
     
@@ -48,9 +47,9 @@ class AddPlantViewController: UIViewController {
     // ADD: add more plants and images
     let imageSetNames = K.imageSetNames
     private var plantImageString = ""
-    private var showingImagePicker = false
     private var inputImage: UIImage?
     private var sourceType: UIImagePickerController.SourceType = .camera
+    let imagePicker = UIImagePickerController()
     
     
     // MARK: - Views load state
@@ -65,7 +64,9 @@ class AddPlantViewController: UIViewController {
         suggestionTableView.delegate = self
         suggestionTableView.dataSource = self
         suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
-
+        
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -129,6 +130,13 @@ class AddPlantViewController: UIViewController {
     
     
     //MARK: - IBActions Buttons
+    
+    @IBAction func cameraButtonPressed(_ sender: Any) {
+        imagePicker.sourceType = .camera
+        present(imagePicker, animated: true)
+    }
+    
+    
     @IBAction func waterHabitButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: K.AddPlantToWaterHabitID, sender: self)
     }
@@ -162,6 +170,7 @@ class AddPlantViewController: UIViewController {
         } else {
             newPlant.plantImageString = "UnknownPlant"
         }
+
         
         if customImageData() != nil {
             newPlant.imageData = customImageData()
@@ -181,14 +190,10 @@ class AddPlantViewController: UIViewController {
         print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantName.text!)")
         print("Plant order: \(newPlant.order)")
         
-        
     }
     
     @IBAction func plantImageButtonTapped(_ sender: Any) {
-        let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
         present(imagePicker, animated: true)
     }
     
@@ -220,6 +225,7 @@ extension AddPlantViewController: PassDataDelegate {
     func passData(Data: Int) {
         selectedHabitDay = Data
         print(Data)
+        print("pass data triggered")
     }
     
 }
@@ -366,16 +372,5 @@ extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationC
     
 }
 
-//extension AddPlantViewController {
-//    func animateConstraint() {
-//        self.textFieldTopWateringLabelBottomConstraint.constant = 50
-//
-//        [UIView .animate(withDuration: 1.2, delay: 1, options: .curveEaseInOut, animations: {
-//            self.textFieldTopWateringLabelBottomConstraint.constant = 50 ;
-//            self.view.layoutIfNeeded();
-//        }, completion: nil)];
-//    }
-//
-//}
 
 

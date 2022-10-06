@@ -19,9 +19,11 @@ class WaterHabitDaysViewController: UIViewController {
     let habitDays = Array(2...14)
     var selectedHabitDays = 7
     
-    var delegate: PassDataDelegate?
+    var delegate: PassDataDelegate!
+ 
 
 // MARK: - Views load state
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,9 +32,13 @@ class WaterHabitDaysViewController: UIViewController {
         waterDaysTableView.dataSource = self
         waterDaysTableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
         
-    }
+        print("current selected day: \(selectedHabitDays)")
+        }
+
 
 }
+    
+   
 
 extension WaterHabitDaysViewController: UITableViewDelegate {
     
@@ -43,6 +49,9 @@ extension WaterHabitDaysViewController: UITableViewDelegate {
         tableView.reloadData()
         
         delegate?.passData(Data: selectedHabitDays)
+        
+        let dataSent = selectedHabitDays
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "habitDaysNotification"), object: dataSent)
    
     }
 

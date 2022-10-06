@@ -366,12 +366,15 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow the app to access your camera for this feature.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to get there current weather.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow the app to access your photo library for this feature.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -395,12 +398,15 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow the app to access your camera for this feature.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to get there current weather.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow the app to access your photo library for this feature.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

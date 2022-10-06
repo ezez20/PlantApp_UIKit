@@ -57,12 +57,15 @@ class MainViewController: UIViewController {
         
         loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
+      
     }
     
     
     @objc func notificationReceived() {
         loadPlants()
     }
+    
+
     
     
     // MARK: - Button IBActions

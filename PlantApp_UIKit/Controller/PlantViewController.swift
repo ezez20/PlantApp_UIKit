@@ -46,12 +46,13 @@ class PlantViewController: UIViewController {
    
     // TO DO: add more plants and images
     var currentDate = Date.now
-    let imageSetNames = ["monstera", "pothos"]
+    let imageSetNames = K.imageSetNames
     
     // MARK: - Core Data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant = Plant()
+    
     
     
 // MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
@@ -109,6 +110,7 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
+      
     }
    
     
@@ -135,9 +137,13 @@ class PlantViewController: UIViewController {
     @IBAction func editButtonPressed(_ sender: Any) {
 
         let editPlantVC = EditPlantViewController()
+        editPlantVC.currentPlant = currentPlant
+        editPlantVC.inputImage = plantImageLoadedIn
         let editPlantNavVC = UINavigationController(rootViewController: editPlantVC)
         editPlantNavVC.modalPresentationStyle = .formSheet
         present(editPlantNavVC, animated: true, completion: nil)
+        
+        editPlantVC.delegate = self
     }
     
     
@@ -179,9 +185,33 @@ class PlantViewController: UIViewController {
         }
     }
     
+    func updateInputImage() {
+        
+        if imageSetNames.contains(currentPlant.plantImageString!) {
+            plantImage.image = UIImage(named: currentPlant.plantImageString!)
+        } else {
+            plantImage.image = loadedImage(with: currentPlant.imageData)
+        }
+        print("plantImageString: \(currentPlant.plantImageString!)")
+        print("updateInputImage: triggered")
+    }
+    
+    func loadedImage(with imageData: Data?) -> UIImage {
+        guard let imageData = imageData else {
+            print("loaded image = unknown")
+            return UIImage(named: K.unknownPlant)!
+            
+        }
+        let loadedImage = UIImage(data: imageData)
+        return loadedImage!
+    }
+    
     func updateUI() {
         plantHappinessLevel.text = "\(String(happinessLevelFormatted))%"
         waterStatusView.text = waterStatus
+        datePicker.date = lastWateredDateIn
+        updateInputImage()
+        updatePlant()
     }
     
     func loadData() {
@@ -221,4 +251,11 @@ class PlantViewController: UIViewController {
 
 }
 
-
+extension PlantViewController: ModalViewControllerDelegate {
+    func modalControllerWillDisapear(_ modal: EditPlantViewController) {
+            // This is called when your modal will disappear. You can reload your data.
+            print("reload")
+            loadData()
+            updateUI()
+        }
+}
