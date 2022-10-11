@@ -15,7 +15,7 @@ class EditPlantViewController: UIViewController {
     let navController = UINavigationController()
     let navigationBar = UINavigationBar()
   
-    private var sourceType: UIImagePickerController.SourceType = .camera
+    private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
     let plantTextFieldView = UIView()
     let plantTextField = UITextField()
@@ -67,7 +67,10 @@ class EditPlantViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
         title = "Edit Plant"
+        
         loadPlant()
         
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "camera.viewfinder"), style: .plain, target: self, action: #selector(cameraButtonPressed))
@@ -87,15 +90,15 @@ class EditPlantViewController: UIViewController {
         containerView.addSubview(plantTextFieldView)
         plantTextFieldView.translatesAutoresizingMaskIntoConstraints = false
         plantTextFieldView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
-        plantTextFieldView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-        plantTextFieldView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        plantTextFieldView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        plantTextFieldView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         plantTextFieldView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         plantTextFieldView.backgroundColor = .white
-        plantTextFieldView.layer.cornerRadius = 10
+        
         
         // plantTextField
-        addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 5, right: plantTextFieldView.rightAnchor, rightConst: -5)
+        addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 20, right: plantTextFieldView.rightAnchor, rightConst: -20)
         
         plantTextField.backgroundColor = .white
         plantTextField.placeholder = "Type of plant"
@@ -105,8 +108,8 @@ class EditPlantViewController: UIViewController {
         containerView.addSubview(wateringLabel)
         wateringLabel.translatesAutoresizingMaskIntoConstraints = false
         wateringLabel.topAnchor.constraint(equalTo: plantTextFieldView.bottomAnchor, constant: 10).isActive = true
-        wateringLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-        wateringLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        wateringLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        wateringLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         
         wateringLabel.text = "WATERING"
         wateringLabel.textColor = .darkGray
@@ -117,40 +120,59 @@ class EditPlantViewController: UIViewController {
         containerView.addSubview(wateringSectionView)
         wateringSectionView.translatesAutoresizingMaskIntoConstraints = false
         wateringSectionView.topAnchor.constraint(equalTo: wateringLabel.bottomAnchor, constant: 10).isActive = true
-        wateringSectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-        wateringSectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        wateringSectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        wateringSectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         wateringSectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         wateringSectionView.backgroundColor = .white
-        wateringSectionView.layer.cornerRadius = 10
+        wateringSectionView.clipsToBounds = true
     
         
         // updatePlantButton
         containerView.addSubview(updatePlantButton)
         updatePlantButton.translatesAutoresizingMaskIntoConstraints = false
         updatePlantButton.topAnchor.constraint(equalTo: wateringSectionView.bottomAnchor, constant: 20).isActive = true
-        updatePlantButton.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-        updatePlantButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        updatePlantButton.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        updatePlantButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         updatePlantButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         updatePlantButton.addTarget(self, action: #selector(updatePlantButtonClicked(sender:)), for: .touchUpInside)
         updatePlantButton.setTitle("Update Plant", for: .normal)
         updatePlantButton.setTitleColor(.systemBlue, for: .normal)
+        updatePlantButton.setTitleColor(.placeholderText, for: .disabled)
         updatePlantButton.backgroundColor = .white
-        updatePlantButton.layer.cornerRadius = 10
+        
         
         // inputImageButton
         containerView.addSubview(plantImageButton)
         plantImageButton.translatesAutoresizingMaskIntoConstraints = false
         plantImageButton.topAnchor.constraint(equalTo: updatePlantButton.bottomAnchor, constant: 20).isActive = true
         plantImageButton.heightAnchor.constraint(equalToConstant: 350).isActive = true
-        plantImageButton.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-        plantImageButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10).isActive = true
+        plantImageButton.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        plantImageButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         plantImageButton.backgroundColor = .white
+        plantImageButton.clipsToBounds = true
+        
         
         plantImageButton.addTarget(self, action: #selector(plantImageButtonPressed), for: .touchUpInside)
         
-
+        plantTextField.delegate = self
+        suggestionTableView.delegate = self
+        suggestionTableView.dataSource = self
+        suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
+        
+        print("View did load")
+    }
+    
+    
+    
+    override func viewDidLayoutSubviews() {
+        
+        plantTextFieldView.layer.cornerRadius = 10
+        wateringSectionView.layer.cornerRadius = 10
+        updatePlantButton.layer.cornerRadius = 10
+        plantImageButton.layer.cornerRadius = 10
+       
         
         // waterHabitButton
         wateringSectionView.addSubview(waterHabitButton)
@@ -176,25 +198,12 @@ class EditPlantViewController: UIViewController {
         waterHabitLabel.translatesAutoresizingMaskIntoConstraints = false
         waterHabitLabel.topAnchor.constraint(equalTo: waterHabitButton.topAnchor, constant: 0).isActive = true
         waterHabitLabel.bottomAnchor.constraint(equalTo: waterHabitButton.bottomAnchor, constant: 0).isActive = true
-        waterHabitLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 10).isActive = true
+        waterHabitLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 20).isActive = true
         
         waterHabitLabel.text = "Water Habit:"
         
         
         NotificationCenter.default.addObserver(self, selector: #selector(onNotification(notification:)), name: NSNotification.Name("habitDaysNotification"), object: nil)
-        
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        plantTextField.delegate = self
-        suggestionTableView.delegate = self
-        suggestionTableView.dataSource = self
-        suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
-        
-        print("View did load")
-    }
-    
-    override func viewDidLayoutSubviews() {
         
         // dividerView
         dividerView.frame = CGRect(x: 10, y: wateringSectionView.frame.height/2, width: wateringSectionView.frame.width - 20, height: 1.0)
@@ -212,7 +221,7 @@ class EditPlantViewController: UIViewController {
         lastWateredLabel.translatesAutoresizingMaskIntoConstraints = false
         lastWateredLabel.topAnchor.constraint(equalTo: wateringSectionView.centerYAnchor, constant: 0).isActive = true
         lastWateredLabel.bottomAnchor.constraint(equalTo: wateringSectionView.bottomAnchor, constant: 0).isActive = true
-        lastWateredLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 10).isActive = true
+        lastWateredLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 20).isActive = true
         
         lastWateredLabel.backgroundColor = .white
         lastWateredLabel.text = "Last watered:"
@@ -222,7 +231,7 @@ class EditPlantViewController: UIViewController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: 0).isActive = true
         datePicker.bottomAnchor.constraint(equalTo: wateringSectionView.bottomAnchor, constant: 0).isActive = true
-        datePicker.rightAnchor.constraint(equalTo: wateringSectionView.rightAnchor, constant: -10).isActive = true
+        datePicker.rightAnchor.constraint(equalTo: wateringSectionView.rightAnchor, constant: -20).isActive = true
         
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
@@ -333,24 +342,20 @@ class EditPlantViewController: UIViewController {
     
     func updateInputImage() {
         
-        if imageSetNames.contains(currentPlant.plantImageString!) && inputImage == nil {
-            plantImageButton.setImage(UIImage(named: currentPlant.plantImageString!), for: .normal)
-            print("debug image: 1")
-        } else if imageSetNames.contains(currentPlant.plantImageString!) && inputImage != nil {
-            plantImageButton.setImage(UIImage(named: currentPlant.plantImageString!), for: .normal)
-            print("debug image: 2")
-        } else if currentPlant.imageData != nil && inputImage == nil {
+        // loads currentPlant's image if imageData has data.
+        if currentPlant.imageData != nil {
+            inputImage = loadedImage(with: currentPlant.imageData)
+        }
+        
+        if imageSetNames.contains(plantTextField.text!.lowercased()) && inputImage == nil {
+            plantImageButton.setImage(UIImage(named: plantTextField.text!.lowercased()), for: .normal)
+        } else if imageSetNames.contains(plantTextField.text!) && inputImage != nil {
             plantImageButton.setImage(loadedImage(with: currentPlant.imageData), for: .normal)
-            print("debug image: 3")
         } else if inputImage != nil  {
             plantImageButton.setImage(inputImage, for: .normal)
-            print("debug image: 4")
         } else {
             plantImageButton.setImage(UIImage(named: K.unknownPlant), for: .normal)
-            print("debug image: 5")
         }
-        print("updateInputImage: triggered")
-        
     }
     
     func customImageData () -> Data? {
@@ -417,6 +422,10 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
         if validateEntry() {
             updatePlantButton.isEnabled = true
+        }
+        
+        if validateEntry() == false {
+            inputImage = nil
         }
         
         func validateEntry() -> Bool {

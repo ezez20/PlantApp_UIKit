@@ -84,7 +84,7 @@ class PlantViewController: UIViewController {
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
-            return "pls water me ):"
+            return "):"
         } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
         } else {
@@ -138,7 +138,7 @@ class PlantViewController: UIViewController {
 
         let editPlantVC = EditPlantViewController()
         editPlantVC.currentPlant = currentPlant
-        editPlantVC.inputImage = plantImageLoadedIn
+//        editPlantVC.inputImage = plantImageLoadedIn
         let editPlantNavVC = UINavigationController(rootViewController: editPlantVC)
         editPlantNavVC.modalPresentationStyle = .formSheet
         present(editPlantNavVC, animated: true, completion: nil)
@@ -191,6 +191,7 @@ class PlantViewController: UIViewController {
             plantImage.image = UIImage(named: currentPlant.plantImageString!)
         } else {
             plantImage.image = loadedImage(with: currentPlant.imageData)
+            plantImage.layer.cornerRadius = 10
         }
         print("plantImageString: \(currentPlant.plantImageString!)")
         print("updateInputImage: triggered")

@@ -8,6 +8,7 @@
 import UIKit
 import CoreLocation
 import CoreData
+import UserNotifications
 
 class MainViewController: UIViewController {
     
@@ -36,8 +37,6 @@ class MainViewController: UIViewController {
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
         
-        
-        
         // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
         
@@ -46,6 +45,8 @@ class MainViewController: UIViewController {
         // Load plants from Core Data
         loadPlants()
         
+        // add Local UserNotification
+        setupLocalUserNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +80,18 @@ class MainViewController: UIViewController {
             editButton.title = "Edit"
         }
     
+    }
+    
+    
+    @IBAction func settingButtonPressed(_ sender: Any) {
+        // lead to settings page
+        let settingsVC = SettingsViewController()
+//        editPlantVC.currentPlant = currentPlant
+//        editPlantVC.inputImage = plantImageLoadedIn
+        let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
+        settingsVC.modalPresentationStyle = .formSheet
+        present(settingsPlantNavVC, animated: true, completion: nil)
+        
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
@@ -144,11 +157,11 @@ class MainViewController: UIViewController {
             dateIntervalFormat.unitsStyle = .short
             let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
             if formatted == "0 days" || nextWaterDate < Date.now {
-                return "pls water me ):"
+                return "due"
             } else if dateFormatter.string(from: lastWateredDate) == dateFormatter.string(from: Date.now) {
-                return "in \(waterHabit) days"
+                return "\(waterHabit) days"
             } else {
-                return "in \(formatted)"
+                return "\(formatted)"
             }
             
         }
@@ -268,7 +281,7 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             self.weatherLogo = weather.conditionName
             self.weatherTemp = weather.teperatureString
             self.weatherCity = weather.cityName
@@ -295,5 +308,40 @@ extension MainViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Error updating location. Error: \(error)")
     }
+}
+
+// MARK: - Local User Notification
+extension MainViewController {
+    
+    func setupLocalUserNotification() {
+        let center = UNUserNotificationCenter.current()
+        
+        // 1: Ask for permission
+        center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+        }
+        
+        // 2: Create the notification content
+        let content = UNMutableNotificationContent()
+        content.title = "Notification alert!"
+        content.body = "Make sure to water your plant"
+        
+        // 3: Create the notification trigger
+            // "5 seconds" added
+        let notificationDate = Date().addingTimeInterval(5)
+        let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+        
+        let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
+        
+        // 4: Create the request
+        let uuidString = UUID().uuidString
+        let notificationRequest = UNNotificationRequest(identifier: uuidString, content: content, trigger: notificationTrigger)
+        
+        // 5: Register the request
+        center.add(notificationRequest) { (error) in
+            // check the error parameter or handle any errors
+            print(error.debugDescription)
+        }
+    }
+    
 }
 

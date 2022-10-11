@@ -78,6 +78,9 @@ class AddPlantViewController: UIViewController {
         addCornerRadius(textFieldView)
         addCornerRadius(wateringSectionView)
         addCornerRadius(addPlantButton)
+        plantImageButton.clipsToBounds = true
+        addCornerRadius(plantImageButton)
+        
         scrollView.isDirectionalLockEnabled = true
         
         waterHabitButton.configuration?.image = UIImage(systemName: "chevron.right")
@@ -96,8 +99,8 @@ class AddPlantViewController: UIViewController {
     }
     
     func updateInputImage() {
-        if imageSetNames.contains(plantName.text!) && inputImage == nil {
-            plantImageButton.setImage(UIImage(named: plantName.text!), for: .normal)
+        if imageSetNames.contains(plantName.text!.lowercased()) && inputImage == nil {
+            plantImageButton.setImage(UIImage(named: plantName.text!.lowercased()), for: .normal)
         } else if imageSetNames.contains(plantName.text!) && inputImage != nil {
             plantImageButton.setImage(inputImage, for: .normal)
         } else if inputImage != nil  {
