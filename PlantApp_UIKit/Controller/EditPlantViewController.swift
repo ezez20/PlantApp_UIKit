@@ -159,7 +159,7 @@ class EditPlantViewController: UIViewController {
         plantTextField.delegate = self
         suggestionTableView.delegate = self
         suggestionTableView.dataSource = self
-        suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
+        suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: K.suggestionCell)
         
         print("View did load")
     }

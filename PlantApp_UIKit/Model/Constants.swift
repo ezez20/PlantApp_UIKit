@@ -16,6 +16,8 @@ struct K {
     static let mainToAddPlantID = "MainToAddPlantView"
     
     static let plantTableViewCellID = "PlantTableViewCell"
+    static let cellReuseID = "cellReuseID"
+    static let suggestionCell = "suggestionCell"
     
     static let AddPlantToWaterHabitID = "AddPlantToWaterHabit"
     

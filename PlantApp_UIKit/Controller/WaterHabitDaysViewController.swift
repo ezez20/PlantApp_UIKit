@@ -14,7 +14,7 @@ protocol PassDataDelegate {
 class WaterHabitDaysViewController: UIViewController {
 
     @IBOutlet weak var waterDaysTableView: UITableView!
-    private let cellReuseID = "Cell"
+    private let cellReuseID = K.cellReuseID
 
     let habitDays = Array(2...14)
     var selectedHabitDays = 7

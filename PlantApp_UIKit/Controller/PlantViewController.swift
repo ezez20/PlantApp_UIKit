@@ -107,15 +107,17 @@ class PlantViewController: UIViewController {
         loadData()
         updateUI()
         datePicker.maximumDate = Date.now
+        datePicker.timeZone = .current
+        datePicker.locale = .current
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
-      
     }
    
     
     @objc func datePickerValueChanged(sender: UIDatePicker) {
         lastWateredDateIn = sender.date
+        print("Last Watered Date changed to: \(sender.date)")
         updateUI()
     }
     
@@ -149,6 +151,7 @@ class PlantViewController: UIViewController {
     
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
+        datePicker.date = lastWateredDateIn
         updateUI()
         print("Water button pressed.")
     }
@@ -210,7 +213,6 @@ class PlantViewController: UIViewController {
     func updateUI() {
         plantHappinessLevel.text = "\(String(happinessLevelFormatted))%"
         waterStatusView.text = waterStatus
-        datePicker.date = lastWateredDateIn
         updateInputImage()
         updatePlant()
     }

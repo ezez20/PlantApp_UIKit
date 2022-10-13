@@ -246,7 +246,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell  = tableView.dequeueReusableCell(withIdentifier: "suggestionCell", for: indexPath)
+        let cell  = tableView.dequeueReusableCell(withIdentifier: K.suggestionCell, for: indexPath)
         if !filteredSuggestion.isEmpty {
             cell.textLabel?.text = filteredSuggestion[indexPath.row]
         }
