@@ -156,15 +156,17 @@ class SettingsViewController: UIViewController {
 }
 
 // MARK: - Local User Notification
-extension SettingsViewController {
+extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func switchStateDidChange(_ sender:UISwitch!) {
-        if (sender.isOn == true){
+        if (sender.isOn == true) {
+            UNUserNotificationCenter.current().delegate = self
             setupLocalUserNotification(selectedAlert: selectedAlertOption)
             defaults.set(true, forKey: "notificationOn")
             print("UISwitch state is now ON")
-        } else{
+        } else {
             center.removeAllPendingNotificationRequests()
+            center.removeAllDeliveredNotifications()
             defaults.set(false, forKey: "notificationOn")
             print("UISwitch state is now Off")
         }
@@ -185,11 +187,20 @@ extension SettingsViewController {
         
     }
     
-    func setupLocalUserNotification(selectedAlert: Int) {
-        
-        // 1: Ask for permission
-        center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+    func updatePlant() {
+        do {
+            try context.save()
+        } catch {
+            print("Error updating plant. Error: \(error)")
         }
+    }
+    
+    func setupLocalUserNotification(selectedAlert: Int) {
+    
+        loadPlants()
+        registerUNNotificationCategories()
+        
+//        let center = UNUserNotificationCenter.current()
         
         // For each/every plant, this will create a notification
         for plant in plants {
@@ -198,6 +209,9 @@ extension SettingsViewController {
             let content = UNMutableNotificationContent()
             content.title = "Notification alert!"
             content.body = "Make sure to water your plant: \(plant.plant!)"
+            content.badge = 1
+            content.sound = .default
+            content.categoryIdentifier = "notificationActionsCategoryID"
             
             // 3: Create the notification trigger
                 // "5 seconds" added
@@ -208,10 +222,12 @@ extension SettingsViewController {
             
             print(nextWaterDate)
             var selectedNotificationTime = Date()
+            
             switch selectedAlertOption {
             case 0:
                 // day of event
-                selectedNotificationTime = nextWaterDate.advanced(by: 20)
+//                selectedNotificationTime = nextWaterDate.advanced(by: 20)
+                selectedNotificationTime = Date.now.advanced(by: 10)
                 print("selectedNotificationTime: \(selectedNotificationTime)")
                 print("current time: \(Date.now)")
             case 1:
@@ -235,17 +251,75 @@ extension SettingsViewController {
             let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
             
             // 4: Create the request
-            let uuidString = UUID().uuidString
-            let notificationRequest = UNNotificationRequest(identifier: uuidString, content: content, trigger: notificationTrigger)
+            let uuidString = UUID()
+            plant.notificationRequestID = uuidString
+            print("notificationActionID: \(uuidString)")
+            let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
             
             // 5: Register the request
             center.add(notificationRequest) { (error) in
                 // check the error parameter or handle any errors
-                print(error.debugDescription)
+                guard error == nil else {
+                    print("NotificationRequest error: \(error.debugDescription)")
+                    return
+                }
+                
             }
             
+            updatePlant()
         }
         
+      
+    }
+    
+    func registerUNNotificationCategories() {
+        let center = UNUserNotificationCenter.current()
+        
+        center.delegate = self
+        
+            //UNNotificationAction
+            let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: .destructive)
+            let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: .destructive)
+            
+            let notificationActionsCategory = UNNotificationCategory(identifier: "notificationActionsCategoryID", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+            
+        UNUserNotificationCenter.current().setNotificationCategories([notificationActionsCategory])
+//        center.setNotificationCategories([notificationActionsCategory])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.badge,.sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        for plant in plants {
+            if response.notification.request.identifier == plant.notificationRequestID!.uuidString {
+                if response.actionIdentifier == "plantNotificationWateredActionID" {
+                    print(" \(plant.plant!): Watered")
+                    plant.lastWateredDate = Date.now
+                    print("Updated to: \(plant.lastWateredDate!)")
+                    center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
+                    plant.notificationRequestID = nil
+                    updatePlant()
+                }
+            } else {
+                print("Cancel")
+
+            }
+        }
+
+
+//                if response.actionIdentifier == "plantNotificationWateredActionID" {
+//                    print("Watered Response")
+//                    completionHandler()
+//                } else {
+//                print("Cancel")
+//
+//            }
+        
+    
+        completionHandler()
     }
     
 }
@@ -254,8 +328,12 @@ extension SettingsViewController: PassAlertDelegate {
     
     func passAlert(Alert: Int) {
         selectedAlertOption = Alert
-        center.removeAllPendingNotificationRequests()
-        setupLocalUserNotification(selectedAlert: selectedAlertOption)
+        if notificationToggleSwitch.isOn {
+            center.removeAllPendingNotificationRequests()
+            center.removeAllDeliveredNotifications()
+            setupLocalUserNotification(selectedAlert: selectedAlertOption)
+            print("Notification Time switched")
+        }
     }
     
 }

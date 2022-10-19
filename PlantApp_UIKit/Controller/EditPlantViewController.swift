@@ -49,7 +49,9 @@ class EditPlantViewController: UIViewController {
     // MARK: - Core Data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var currentPlant = Plant()
+//    var currentPlant = Plant()
+    var currentPlant: Plant!
+    
     
     override func viewWillAppear(_ animated: Bool) {
         updateUI()
@@ -185,8 +187,6 @@ class EditPlantViewController: UIViewController {
         // Temporary Soluton: to add padding for button.
             //NOTE: 'contentEdgeInsets' was deprecated in iOS 15.0: This property is ignored when using UIButtonConfiguration
         waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        
-        waterHabitButton.setTitle("Water every 2 days", for: .normal)
         waterHabitButton.setTitleColor(.placeholderText, for: .normal)
         waterHabitButton.contentHorizontalAlignment = .trailing
         waterHabitButton.backgroundColor = .white
@@ -270,27 +270,27 @@ class EditPlantViewController: UIViewController {
         
         print("Update Plant button clicked")
         
-        let plantToUpdate = currentPlant
-        plantToUpdate.id = UUID()
-        plantToUpdate.plant = plantTextField.text
-        plantToUpdate.waterHabit = Int16(selectedHabitDay)
-        plantToUpdate.dateAdded = Date.now
-        plantToUpdate.lastWateredDate = datePicker.date
+//        let plantToUpdate = currentPlant
+        currentPlant.id = UUID()
+        currentPlant.plant = plantTextField.text
+        currentPlant.waterHabit = Int16(selectedHabitDay)
+        currentPlant.dateAdded = Date.now
+        currentPlant.lastWateredDate = datePicker.date
         
         if imageSetNames.contains(plantImageString) && inputImage == nil {
-            plantToUpdate.plantImageString = plantImageString
+            currentPlant.plantImageString = plantImageString
         } else if imageSetNames.contains(plantImageString) && inputImage != nil {
-            plantToUpdate.plantImageString = ""
+            currentPlant.plantImageString = ""
         } else if imageSetNames.contains(currentPlant.plantImageString!) {
-            plantToUpdate.plantImageString = currentPlant.plantImageString
+            currentPlant.plantImageString = currentPlant.plantImageString
         } else if inputImage != nil {
-            plantToUpdate.plantImageString = ""
+            currentPlant.plantImageString = ""
         } else {
-            plantToUpdate.plantImageString = "UnknownPlant"
+            currentPlant.plantImageString = "UnknownPlant"
         }
         
         if customImageData() != nil {
-            plantToUpdate.imageData = customImageData()
+            currentPlant.imageData = customImageData()
         }
 
 
@@ -319,6 +319,7 @@ class EditPlantViewController: UIViewController {
     func updateUI() {
         waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
         print("UI Updated")
+        print("WaterButton title updated to: \(selectedHabitDay)")
     }
     
     

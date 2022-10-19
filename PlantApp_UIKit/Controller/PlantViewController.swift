@@ -51,7 +51,7 @@ class PlantViewController: UIViewController {
     // MARK: - Core Data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var currentPlant = Plant()
+    var currentPlant: Plant!
     
     
     

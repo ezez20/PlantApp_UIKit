@@ -85,8 +85,6 @@ class MainViewController: UIViewController {
     @IBAction func settingButtonPressed(_ sender: Any) {
         // lead to settings page
         let settingsVC = SettingsViewController()
-//        editPlantVC.currentPlant = currentPlant
-//        editPlantVC.inputImage = plantImageLoadedIn
         let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
         settingsVC.modalPresentationStyle = .formSheet
         present(settingsPlantNavVC, animated: true, completion: nil)

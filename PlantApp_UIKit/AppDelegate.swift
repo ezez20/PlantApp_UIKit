@@ -8,15 +8,25 @@
 import UIKit
 import CoreData
 
+
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+//
+//    var plants = [Plant]()
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let center = UNUserNotificationCenter.current()
+        
+        // 1: Ask for permission
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+        }
+        
         return true
     }
+
 
     // MARK: UISceneSession Lifecycle
 
