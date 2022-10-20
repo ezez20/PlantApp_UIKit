@@ -160,7 +160,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func switchStateDidChange(_ sender:UISwitch!) {
         if (sender.isOn == true) {
-            UNUserNotificationCenter.current().delegate = self
+            center.removeAllPendingNotificationRequests()
             setupLocalUserNotification(selectedAlert: selectedAlertOption)
             defaults.set(true, forKey: "notificationOn")
             print("UISwitch state is now ON")
@@ -198,9 +198,10 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     func setupLocalUserNotification(selectedAlert: Int) {
     
         loadPlants()
-        registerUNNotificationCategories()
+//        registerUNNotificationCategories()
         
-//        let center = UNUserNotificationCenter.current()
+        let center = UNUserNotificationCenter.current()
+//        center.removeAllPendingNotificationRequests()
         
         // For each/every plant, this will create a notification
         for plant in plants {
@@ -211,7 +212,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             content.body = "Make sure to water your plant: \(plant.plant!)"
             content.badge = 1
             content.sound = .default
-            content.categoryIdentifier = "notificationActionsCategoryID"
+//            content.categoryIdentifier = "notificationActionsCategoryID"
+            content.categoryIdentifier = "categoryIdentifier"
             
             // 3: Create the notification trigger
                 // "5 seconds" added
@@ -273,26 +275,26 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     }
     
     func registerUNNotificationCategories() {
+
         let center = UNUserNotificationCenter.current()
-        
-        center.delegate = self
-        
+//        center.delegate = self
+
             //UNNotificationAction
             let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: .destructive)
             let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: .destructive)
-            
+
             let notificationActionsCategory = UNNotificationCategory(identifier: "notificationActionsCategoryID", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
-            
-        UNUserNotificationCenter.current().setNotificationCategories([notificationActionsCategory])
+
+        center.setNotificationCategories([notificationActionsCategory])
 //        center.setNotificationCategories([notificationActionsCategory])
     }
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.badge,.sound])
     }
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
+
         for plant in plants {
             if response.notification.request.identifier == plant.notificationRequestID!.uuidString {
                 if response.actionIdentifier == "plantNotificationWateredActionID" {
@@ -300,12 +302,12 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                     plant.lastWateredDate = Date.now
                     print("Updated to: \(plant.lastWateredDate!)")
                     center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
-                    plant.notificationRequestID = nil
+//                    plant.notificationRequestID = nil
                     updatePlant()
+
                 }
             } else {
                 print("Cancel")
-
             }
         }
 
@@ -317,8 +319,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
 //                print("Cancel")
 //
 //            }
-        
-    
         completionHandler()
     }
     
