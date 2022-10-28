@@ -168,6 +168,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             center.removeAllPendingNotificationRequests()
             center.removeAllDeliveredNotifications()
             defaults.set(false, forKey: "notificationOn")
+            defaults.set(0, forKey: "NotificationBadgeCount")
+            UIApplication.shared.applicationIconBadgeNumber = 0
             print("UISwitch state is now Off")
         }
     }
@@ -198,10 +200,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     func setupLocalUserNotification(selectedAlert: Int) {
     
         loadPlants()
-//        registerUNNotificationCategories()
         
         let center = UNUserNotificationCenter.current()
-//        center.removeAllPendingNotificationRequests()
         
         // For each/every plant, this will create a notification
         for plant in plants {
@@ -210,9 +210,14 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             let content = UNMutableNotificationContent()
             content.title = "Notification alert!"
             content.body = "Make sure to water your plant: \(plant.plant!)"
-            content.badge = 1
+            
+            //Retreive the value from User Defaults and increase it by 1
+            let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int + 1
+            //Save the new value to User Defaults
+            defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+            //Set the value as the current badge count
+            content.badge = badgeCount as NSNumber
             content.sound = .default
-//            content.categoryIdentifier = "notificationActionsCategoryID"
             content.categoryIdentifier = "categoryIdentifier"
             
             // 3: Create the notification trigger
@@ -222,26 +227,23 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                 return calculatedDate!
             }
             
-            print(nextWaterDate)
             var selectedNotificationTime = Date()
             
             switch selectedAlertOption {
-            case 0:
-                // day of event
-//                selectedNotificationTime = nextWaterDate.advanced(by: 20)
+            case 0: // day of event
+                // For debug purpose: Notification time - 10 seconds
                 selectedNotificationTime = Date.now.advanced(by: 10)
+                
+//                selectedNotificationTime = nextWaterDate.advanced(by: 20)
                 print("selectedNotificationTime: \(selectedNotificationTime)")
                 print("current time: \(Date.now)")
-            case 1:
-                // 1 day before
-                selectedNotificationTime = nextWaterDate
+            case 1: // 1 day before
+                selectedNotificationTime = nextWaterDate.advanced(by: -86400)
                 print("Notification Time: \(selectedNotificationTime)")
-            case 2:
-                // 2 days before
+            case 2: // 2 days before
                 selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
                 print("Notification Time: \(selectedNotificationTime)")
-            default:
-                // 3 days before
+            default: // 3 days before
                 selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
                 print("Notification Time: \(selectedNotificationTime)")
             }
@@ -265,61 +267,12 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                     print("NotificationRequest error: \(error.debugDescription)")
                     return
                 }
-                
             }
             
             updatePlant()
+            
         }
-        
       
-    }
-    
-    func registerUNNotificationCategories() {
-
-        let center = UNUserNotificationCenter.current()
-//        center.delegate = self
-
-            //UNNotificationAction
-            let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: .destructive)
-            let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: .destructive)
-
-            let notificationActionsCategory = UNNotificationCategory(identifier: "notificationActionsCategoryID", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
-
-        center.setNotificationCategories([notificationActionsCategory])
-//        center.setNotificationCategories([notificationActionsCategory])
-    }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.badge,.sound])
-    }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-
-        for plant in plants {
-            if response.notification.request.identifier == plant.notificationRequestID!.uuidString {
-                if response.actionIdentifier == "plantNotificationWateredActionID" {
-                    print(" \(plant.plant!): Watered")
-                    plant.lastWateredDate = Date.now
-                    print("Updated to: \(plant.lastWateredDate!)")
-                    center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
-//                    plant.notificationRequestID = nil
-                    updatePlant()
-
-                }
-            } else {
-                print("Cancel")
-            }
-        }
-
-
-//                if response.actionIdentifier == "plantNotificationWateredActionID" {
-//                    print("Watered Response")
-//                    completionHandler()
-//                } else {
-//                print("Cancel")
-//
-//            }
-        completionHandler()
     }
     
 }

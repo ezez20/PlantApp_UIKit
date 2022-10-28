@@ -15,6 +15,8 @@ class MainViewController: UIViewController {
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    let defaults = UserDefaults.standard
+    
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var plantsTableView: UITableView!
     
@@ -25,6 +27,7 @@ class MainViewController: UIViewController {
     var weatherCity = ""
     
     let imageSetNames = K.imageSetNames
+
     
     
 // MARK: - Views load state
@@ -44,8 +47,7 @@ class MainViewController: UIViewController {
         // Load plants from Core Data
         loadPlants()
         
-        // add Local UserNotification
-//        setupLocalUserNotification()
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,7 +55,7 @@ class MainViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         locationManager.startUpdatingLocation()
-        
+
         
         loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
@@ -64,6 +66,7 @@ class MainViewController: UIViewController {
     
     @objc func notificationReceived() {
         loadPlants()
+   
     }
     
 
@@ -121,6 +124,7 @@ class MainViewController: UIViewController {
         
         plantsTableView.reloadData()
         print("Plants loaded")
+        refreshUserNotification()
         
     }
     
@@ -172,7 +176,40 @@ class MainViewController: UIViewController {
         return waterStatus
     }
     
+    func refreshUserNotification() {
+        print("refreshUserNotification triggered")
+        var notificationCount = 0
+        
+        for plant in plants {
 
+            var nextWaterDate: Date {
+                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to: plant.lastWateredDate!.advanced(by: 86400))
+                return calculatedDate!
+            }
+
+            var waterStatus: String {
+
+                let dateIntervalFormat = DateComponentsFormatter()
+                dateIntervalFormat.allowedUnits = .day
+                dateIntervalFormat.unitsStyle = .short
+                let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
+                if formatted == "0 days" || nextWaterDate < Date.now {
+                    plant.wateredBool = false
+                    notificationCount += 1
+                    return "due"
+                } else {
+                    plant.wateredBool = true
+                    return "\(formatted)"
+                }
+            }
+            print(waterStatus)
+        }
+        print("Notification count: \(notificationCount)")
+        //Save the new value to User Defaults
+        defaults.set(notificationCount, forKey: "NotificationBadgeCount")
+        UIApplication.shared.applicationIconBadgeNumber = notificationCount
+        
+    }
     
 }
 
@@ -308,39 +345,4 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
-//// MARK: - Local User Notification
-//extension MainViewController {
-//    
-//    func setupLocalUserNotification() {
-//        
-//        let center = UNUserNotificationCenter.current()
-//        
-//        // 1: Ask for permission
-//        center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
-//        }
-//        
-//        // 2: Create the notification content
-//        let content = UNMutableNotificationContent()
-//        content.title = "Notification alert!"
-//        content.body = "Make sure to water your plant"
-//        
-//        // 3: Create the notification trigger
-//            // "5 seconds" added
-//        let notificationDate = Date().addingTimeInterval(5)
-//        let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
-//        
-//        let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
-//        
-//        // 4: Create the request
-//        let uuidString = UUID().uuidString
-//        let notificationRequest = UNNotificationRequest(identifier: uuidString, content: content, trigger: notificationTrigger)
-//        
-//        // 5: Register the request
-//        center.add(notificationRequest) { (error) in
-//            // check the error parameter or handle any errors
-//            print(error.debugDescription)
-//        }
-//    }
-//    
-//}
 

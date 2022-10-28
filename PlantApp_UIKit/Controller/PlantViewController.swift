@@ -84,6 +84,7 @@ class PlantViewController: UIViewController {
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
+            currentPlant.wateredBool = false
             return "):"
         } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
@@ -152,6 +153,8 @@ class PlantViewController: UIViewController {
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
         datePicker.date = lastWateredDateIn
+        currentPlant.wateredBool = true
+        updatePlant()
         updateUI()
         print("Water button pressed.")
     }
