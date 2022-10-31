@@ -1,0 +1,6 @@
+framework module Pods_PlantApp_UIKit {
+  umbrella header "Pods-PlantApp_UIKit-umbrella.h"
+
+  export *
+  module * { export * }
+}
