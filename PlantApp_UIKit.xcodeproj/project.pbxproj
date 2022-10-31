@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B995BD91D9CF2E638D9DBDB /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E10BF82C9957CB9085454189 /* Pods_PlantApp_UIKit.framework */; };
 		5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02428AFFDC6006AF2AA /* AppDelegate.swift */; };
 		5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */; };
 		5102E02928AFFDC6006AF2AA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5102E02828AFFDC6006AF2AA /* MainViewController.swift */; };
@@ -26,6 +27,7 @@
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
 		51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E6D9D628CBB11A0053E4EE /* Constants.swift */; };
 		51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */; };
+		51EF04322910161B0095990D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51EF04312910161B0095990D /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +52,10 @@
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
 		51E6D9D628CBB11A0053E4EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantViewController.swift; sourceTree = "<group>"; };
+		51EF04312910161B0095990D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		70AC7E9404568475D3CF5AE1 /* Pods-PlantApp_UIKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.debug.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.debug.xcconfig"; sourceTree = "<group>"; };
+		79F962D811243DDE2388712A /* Pods-PlantApp_UIKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.release.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.release.xcconfig"; sourceTree = "<group>"; };
+		E10BF82C9957CB9085454189 /* Pods_PlantApp_UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlantApp_UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,17 +63,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B995BD91D9CF2E638D9DBDB /* Pods_PlantApp_UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C524263EEB24A1EC24B1BF8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				70AC7E9404568475D3CF5AE1 /* Pods-PlantApp_UIKit.debug.xcconfig */,
+				79F962D811243DDE2388712A /* Pods-PlantApp_UIKit.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		5102E01828AFFDC6006AF2AA = {
 			isa = PBXGroup;
 			children = (
 				5102E02328AFFDC6006AF2AA /* PlantApp_UIKit */,
 				5102E02228AFFDC6006AF2AA /* Products */,
+				0C524263EEB24A1EC24B1BF8 /* Pods */,
+				8800367C4076BCAAAF3C6A04 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,6 +103,7 @@
 				5102E03028AFFDC7006AF2AA /* Assets.xcassets */,
 				5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */,
 				5102E03528AFFDC7006AF2AA /* Info.plist */,
+				51EF04312910161B0095990D /* GoogleService-Info.plist */,
 				5102E02428AFFDC6006AF2AA /* AppDelegate.swift */,
 				5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */,
 				51C78B9228B18B0F00CD728F /* Model */,
@@ -138,6 +157,14 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		8800367C4076BCAAAF3C6A04 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E10BF82C9957CB9085454189 /* Pods_PlantApp_UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -145,9 +172,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5102E03828AFFDC7006AF2AA /* Build configuration list for PBXNativeTarget "PlantApp_UIKit" */;
 			buildPhases = (
+				7835CEF21DAAF35EB4112360 /* [CP] Check Pods Manifest.lock */,
 				5102E01D28AFFDC6006AF2AA /* Sources */,
 				5102E01E28AFFDC6006AF2AA /* Frameworks */,
 				5102E01F28AFFDC6006AF2AA /* Resources */,
+				A54CF6E34093DB6EF6CC56CB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -198,12 +227,55 @@
 			files = (
 				5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */,
 				51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */,
+				51EF04322910161B0095990D /* GoogleService-Info.plist in Resources */,
 				5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */,
 				5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7835CEF21DAAF35EB4112360 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PlantApp_UIKit-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A54CF6E34093DB6EF6CC56CB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5102E01D28AFFDC6006AF2AA /* Sources */ = {
@@ -366,12 +438,14 @@
 		};
 		5102E03928AFFDC7006AF2AA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70AC7E9404568475D3CF5AE1 /* Pods-PlantApp_UIKit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XUZG54S76B;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow the app to access your camera for this feature.";
@@ -398,12 +472,14 @@
 		};
 		5102E03A28AFFDC7006AF2AA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79F962D811243DDE2388712A /* Pods-PlantApp_UIKit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XUZG54S76B;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlantApp_UIKit/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow the app to access your camera for this feature.";

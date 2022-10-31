@@ -17,30 +17,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-//        UIApplication.shared.applicationIconBadgeNumber = 0
-        
-        
-        let center = UNUserNotificationCenter.current()
         
         // 1: Ask for permission
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
         center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-        }
-        
-        UNUserNotificationCenter.current().delegate = self
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
             if granted {
                 // Access granted
+                print("UserNotifcation Granted")
             } else {
                 // Access denied
+                print("UserNotifcation Denied")
             }
         }
         
         self.registerNotificationAction()
-        
-//        UIApplication.shared.applicationIconBadgeNumber = 0
-//
-//        defaults.set(0, forKey: "NotificationBadgeCount")
-        
+
         return true
     }
     
