@@ -7,6 +7,9 @@
 
 import UIKit
 import CoreData
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 
 @main
@@ -32,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         self.registerNotificationAction()
+        
+        // Use Firebase library to configure APIs
+        FirebaseApp.configure()
 
         return true
     }
