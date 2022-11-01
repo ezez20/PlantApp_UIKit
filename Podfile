@@ -11,4 +11,6 @@ pod 'FirebaseAnalytics'
 pod 'FirebaseAuth'
 pod 'FirebaseFirestore'
 
+pod 'FirebaseUI'
+
 end

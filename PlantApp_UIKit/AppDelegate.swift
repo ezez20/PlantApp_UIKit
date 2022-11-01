@@ -10,6 +10,7 @@ import CoreData
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseAnalytics
 
 
 @main
