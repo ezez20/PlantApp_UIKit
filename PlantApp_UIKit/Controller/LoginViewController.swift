@@ -22,6 +22,7 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
         
+        //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
         titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
@@ -31,6 +32,7 @@ class LoginViewController: UIViewController {
         
         titleLogo.image = UIImage(named: K.unknownPlant)
         
+        // App Name: UILabel
         view.addSubview(appName)
         appName.translatesAutoresizingMaskIntoConstraints = false
         appName.topAnchor.constraint(equalTo: titleLogo.bottomAnchor, constant: 5).isActive = true
@@ -42,6 +44,7 @@ class LoginViewController: UIViewController {
         appName.font = UIFont.boldSystemFont(ofSize: 50)
         appName.textAlignment = .center
         
+        // useWithoutAccountButton: UIButton
         view.addSubview(useWithoutAccountButton)
         useWithoutAccountButton.translatesAutoresizingMaskIntoConstraints = false
         useWithoutAccountButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
@@ -51,18 +54,35 @@ class LoginViewController: UIViewController {
         
         useWithoutAccountButton.setTitle("Use without login account", for: .normal)
         useWithoutAccountButton.backgroundColor = .red
-//        useWithoutAccountButton.setTitleColor(.black, for: .normal)
         useWithoutAccountButton.layer.cornerRadius = 20
         useWithoutAccountButton.addTarget(self, action: #selector(useWithoutAccountButtonClicked(sender:)), for: .touchUpInside)
+        
+        view.addSubview(signUpButton)
+        signUpButton.translatesAutoresizingMaskIntoConstraints = false
+        signUpButton.bottomAnchor.constraint(equalTo: useWithoutAccountButton.topAnchor, constant: -5).isActive = true
+        signUpButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        signUpButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        signUpButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        signUpButton.setTitle("Sign Up for an account", for: .normal)
+        signUpButton.backgroundColor = .blue
+        signUpButton.layer.cornerRadius = 20
+        signUpButton.addTarget(self, action: #selector(signUpButtonClicked(sender:)), for: .touchUpInside)
     }
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
         // Add segue to WaterHabitDaysViewController
-        print("Water Habit button clicked")
+        print("Use without login account - button clicked")
         
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
         self.navigationController?.pushViewController(mainVC, animated: true)
+        
+    }
+    
+    @objc func signUpButtonClicked(sender: UIButton) {
+        // Add segue to SignUpViewController
+        print("Sign up an account - button clicked")
         
     }
 
