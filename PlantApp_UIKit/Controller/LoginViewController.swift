@@ -28,7 +28,7 @@ class LoginViewController: UIViewController {
         titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         titleLogo.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         titleLogo.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        titleLogo.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        titleLogo.heightAnchor.constraint(equalToConstant: 310).isActive = true
         
         titleLogo.image = UIImage(named: K.unknownPlant)
         

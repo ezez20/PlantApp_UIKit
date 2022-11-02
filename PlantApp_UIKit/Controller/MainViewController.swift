@@ -60,15 +60,22 @@ class MainViewController: UIViewController {
         loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("notificationResponseClickedID"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
       
     }
     
     
     @objc func notificationReceived() {
         loadPlants()
-   
     }
     
+    @objc func logoutNotificationReceived() {
+        print("Logout triggered")
+//        let viewController = LoginViewController()
+//        let navigation = UINavigationController(rootViewController: viewController)
+        self.navigationController?.popToRootViewController(animated: true)
+    }
 
     
     

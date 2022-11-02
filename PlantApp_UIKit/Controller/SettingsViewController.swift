@@ -26,6 +26,10 @@ class SettingsViewController: UIViewController {
     let alertTimeButton = UIButton()
     let alertLogo = UIImageView()
     let alertLabel = UILabel()
+    
+    // Login/Logout Button
+    let loginButton = UIButton()
+    
     let center = UNUserNotificationCenter.current()
     var selectedAlertOption = 0
     let options = ["day of event", "1 day before", "2 days before", "3 day before"]
@@ -138,6 +142,16 @@ class SettingsViewController: UIViewController {
         alertLabel.leftAnchor.constraint(equalTo: alertLogo.rightAnchor, constant: 20).isActive = true
         alertLabel.text = "Alert"
         
+        containerView.addSubview(loginButton)
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        loginButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
+        loginButton.setTitle("Login using an account", for: .normal)
+        loginButton.setTitleColor(.blue, for: .normal)
+        loginButton.setTitleColor(.placeholderText, for: .highlighted)
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+        
+        
         // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"
         sectionView.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
     }
@@ -154,6 +168,7 @@ class SettingsViewController: UIViewController {
 
     
 }
+
 
 // MARK: - Local User Notification
 extension SettingsViewController: UNUserNotificationCenterDelegate {
@@ -172,6 +187,13 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             UIApplication.shared.applicationIconBadgeNumber = 0
             print("UISwitch state is now Off")
         }
+    }
+    
+    @objc func loginButtonPressed(_ sender:UISwitch!) {
+        print("LoginButtonPressed")
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
+        dismiss(animated: true)
+        
     }
     
     func loadPlants() {
