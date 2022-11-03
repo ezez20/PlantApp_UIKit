@@ -22,6 +22,7 @@
 		5164153428F4B6B20053C05D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5164153328F4B6B20053C05D /* SettingsViewController.swift */; };
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
 		5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */; };
+		5183A1F029140F00003E9666 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5183A1EF29140F00003E9666 /* SignUpViewController.swift */; };
 		51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3BF1F2911936D0024E812 /* LoginViewController.swift */; };
 		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
@@ -50,6 +51,7 @@
 		5164153328F4B6B20053C05D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
 		5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPlantViewController.swift; sourceTree = "<group>"; };
+		5183A1EF29140F00003E9666 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		51A3BF1F2911936D0024E812 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */,
 				5164153328F4B6B20053C05D /* SettingsViewController.swift */,
 				510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */,
+				5183A1EF29140F00003E9666 /* SignUpViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */,
 				510ECD0828F8825F0060FBDF /* PlantApp.xcdatamodeld in Sources */,
 				513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */,
+				5183A1F029140F00003E9666 /* SignUpViewController.swift in Sources */,
 				51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */,
 				5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */,
 				513CBC5228C7A6D200CBC760 /* WeatherModel.swift in Sources */,

@@ -145,7 +145,7 @@ class SettingsViewController: UIViewController {
         containerView.addSubview(loginButton)
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        loginButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
+        loginButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -40).isActive = true
         loginButton.setTitle("Login using an account", for: .normal)
         loginButton.setTitleColor(.blue, for: .normal)
         loginButton.setTitleColor(.placeholderText, for: .highlighted)

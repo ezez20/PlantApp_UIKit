@@ -72,6 +72,7 @@ class EditPlantViewController: UIViewController {
         
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Edit Plant"
+        self.enableDismissKeyboardOnTapOutside()
         
         loadPlant()
         
@@ -506,6 +507,17 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         self.view.endEditing(true)
         return false
     }
+    
+    func enableDismissKeyboardOnTapOutside() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action:    #selector(dismissKeyboardTouchOutside))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboardTouchOutside() {
+        view.endEditing(true)
+    }
+    
 }
 
 extension EditPlantViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

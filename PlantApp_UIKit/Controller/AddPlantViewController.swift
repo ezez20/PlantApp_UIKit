@@ -67,6 +67,8 @@ class AddPlantViewController: UIViewController {
         
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
+        
+        self.enableDismissKeyboardOnTapOutside()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -354,6 +356,16 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         removeSuggestionScrollView()
         self.view.endEditing(true)
         return false
+    }
+    
+    func enableDismissKeyboardOnTapOutside() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action:    #selector(dismissKeyboardTouchOutside))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboardTouchOutside() {
+        view.endEditing(true)
     }
     
 }
