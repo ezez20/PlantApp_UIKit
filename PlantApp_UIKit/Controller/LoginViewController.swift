@@ -44,7 +44,7 @@ class LoginViewController: UIViewController {
         titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
         titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
         
-        titleLogo.image = UIImage(named: K.unknownPlant)
+        titleLogo.image = UIImage(named: K.leaf)
         
         // App Name: UILabel
         view.addSubview(appName)
@@ -56,6 +56,7 @@ class LoginViewController: UIViewController {
         
         appName.text = "PlantApp"
         appName.font = UIFont.boldSystemFont(ofSize: 50)
+        appName.textColor = UIColor(named: K.customGreen2)
         appName.textAlignment = .center
         
         // Email textfieldView: UITextfieldView
@@ -119,13 +120,13 @@ class LoginViewController: UIViewController {
         // useWithoutAccountButton: UIButton
         view.addSubview(useWithoutAccountButton)
         useWithoutAccountButton.translatesAutoresizingMaskIntoConstraints = false
-        useWithoutAccountButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
+        useWithoutAccountButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         useWithoutAccountButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         useWithoutAccountButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        useWithoutAccountButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        useWithoutAccountButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         useWithoutAccountButton.setTitle("Use without login account", for: .normal)
-        useWithoutAccountButton.setTitleColor(.red, for: .normal)
+        useWithoutAccountButton.setTitleColor(.placeholderText, for: .normal)
         useWithoutAccountButton.setTitleColor(.white, for: .highlighted)
         useWithoutAccountButton.addTarget(self, action: #selector(useWithoutAccountButtonClicked(sender:)), for: .touchUpInside)
         
@@ -134,7 +135,7 @@ class LoginViewController: UIViewController {
         signUpButton.bottomAnchor.constraint(equalTo: useWithoutAccountButton.topAnchor, constant: -20).isActive = true
         signUpButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         signUpButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        signUpButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        signUpButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         signUpButton.setTitle("Sign Up for an account", for: .normal)
         signUpButton.setTitleColor(.systemCyan, for: .normal)
