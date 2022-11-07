@@ -31,10 +31,17 @@ class MainViewController: UIViewController {
     
     
 // MARK: - Views load state
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        self.plantsTableView.contentInsetAdjustmentBehavior = .never
         title = K.title
+//        self.navigationController?.navigationBar.sizeToFit()
+        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationController?.navigationBar.sizeToFit()
+        
         plantsTableView.delegate = self
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
@@ -55,7 +62,7 @@ class MainViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         locationManager.startUpdatingLocation()
-
+        
         
         loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
