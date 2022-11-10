@@ -36,11 +36,10 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        self.plantsTableView.contentInsetAdjustmentBehavior = .never
+        
         title = K.title
-//        self.navigationController?.navigationBar.sizeToFit()
+        self.plantsTableView.contentInsetAdjustmentBehavior = .never
         navigationController?.navigationBar.prefersLargeTitles = true
-//        navigationController?.navigationBar.sizeToFit()
         
         plantsTableView.delegate = self
         plantsTableView.dataSource = self

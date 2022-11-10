@@ -23,12 +23,12 @@
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
 		5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */; };
 		5183A1F029140F00003E9666 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5183A1EF29140F00003E9666 /* SignUpViewController.swift */; };
+		5188CA77291AB63200443D93 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5188CA76291AB63200443D93 /* GoogleService-Info.plist */; };
 		51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3BF1F2911936D0024E812 /* LoginViewController.swift */; };
 		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
 		51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E6D9D628CBB11A0053E4EE /* Constants.swift */; };
 		51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */; };
-		51EF04322910161B0095990D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51EF04312910161B0095990D /* GoogleService-Info.plist */; };
 		85D1CF5C6421407849C92E4D /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 648C2AB666C4AA7310251C41 /* Pods_PlantApp_UIKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -52,12 +52,12 @@
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
 		5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPlantViewController.swift; sourceTree = "<group>"; };
 		5183A1EF29140F00003E9666 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		5188CA76291AB63200443D93 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		51A3BF1F2911936D0024E812 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
 		51E6D9D628CBB11A0053E4EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantViewController.swift; sourceTree = "<group>"; };
-		51EF04312910161B0095990D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		648C2AB666C4AA7310251C41 /* Pods_PlantApp_UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlantApp_UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B1981F2CBCC106B27B8059E /* Pods-PlantApp_UIKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.release.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,7 +115,7 @@
 				5102E03028AFFDC7006AF2AA /* Assets.xcassets */,
 				5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */,
 				5102E03528AFFDC7006AF2AA /* Info.plist */,
-				51EF04312910161B0095990D /* GoogleService-Info.plist */,
+				5188CA76291AB63200443D93 /* GoogleService-Info.plist */,
 				5102E02428AFFDC6006AF2AA /* AppDelegate.swift */,
 				5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */,
 				51C78B9228B18B0F00CD728F /* Model */,
@@ -233,7 +233,7 @@
 			files = (
 				5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */,
 				51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */,
-				51EF04322910161B0095990D /* GoogleService-Info.plist in Resources */,
+				5188CA77291AB63200443D93 /* GoogleService-Info.plist in Resources */,
 				5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */,
 				5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */,
 			);

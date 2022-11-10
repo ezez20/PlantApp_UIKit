@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import FirebaseAuthUI
+import FirebaseAuth
+import FirebaseEmailAuthUI
+import FirebaseFirestore
 
 class SignUpViewController: UIViewController {
     
@@ -30,6 +34,7 @@ class SignUpViewController: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
         
+        userNameTextfield.delegate = self
         emailTextfield.delegate = self
         passwordTextfield.delegate = self
         self.enableDismissKeyboardOnTapOutside()
@@ -76,6 +81,7 @@ class SignUpViewController: UIViewController {
         userNameTextfield.bottomAnchor.constraint(equalTo: userNameTextfieldView.bottomAnchor, constant: -5).isActive = true
         userNameTextfield.backgroundColor = .white
         userNameTextfield.placeholder = "Full Name or Username"
+        userNameTextfield.autocapitalizationType = .none
         
         
         // Email textfieldView: UITextfieldView
@@ -97,6 +103,9 @@ class SignUpViewController: UIViewController {
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
         emailTextfield.backgroundColor = .white
         emailTextfield.placeholder = "Email"
+        emailTextfield.autocapitalizationType = .none
+        
+        
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
@@ -128,9 +137,9 @@ class SignUpViewController: UIViewController {
         
         createAnAccountButton.frame = CGRect(x: 100, y: 100, width: 200, height: 40)
         createAnAccountButton.setTitle("Create an account", for: .normal)
+        createAnAccountButton.backgroundColor = .opaqueSeparator
         createAnAccountButton.setTitleColor(.white, for: .normal)
         createAnAccountButton.setTitleColor(.placeholderText, for: .highlighted)
-        createAnAccountButton.backgroundColor = .systemGreen
         createAnAccountButton.layer.borderWidth = 1.0
         createAnAccountButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         createAnAccountButton.layer.cornerRadius = 5.0
@@ -143,28 +152,73 @@ class SignUpViewController: UIViewController {
         // Add segue to MainViewController with Firebase loaded.
         print("createAnAccountButton button clicked")
         
+        // 1: Create user on Firebase
+        Auth.auth().createUser(withEmail: emailTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) { (authResult, error) in
+            
+            // If there is an error
+            if error != nil {
+                
+                let alert = UIAlertController(title: "Error:", message: "\(error)", preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+                }))
+                
+                self.present(alert, animated: true, completion: nil)
+                
+            } else {
+                // 2: If no error, Reference Firestore Database
+                let db = Firestore.firestore()
+                print("User UUID: \(authResult!.user.uid)")
+                db.collection("users").addDocument(data: ["userName": self.userNameTextfield.text, "uid": authResult!.user.uid]) { error in
+                    
+                    if error != nil {
+                        print("Firestore database error: \(error)")
+                    }
+                }
+                
+                // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
+                let storyboard = UIStoryboard (name: "Main", bundle: nil)
+                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+                self.navigationController?.pushViewController(mainVC, animated: true)
+                
+            }
+            
+            print("Error creating user using Firebase. Error: \(String(describing: error))")
+            
+        }
+        
     }
     
-    @objc func useWithoutAccountButtonClicked(sender: UIButton) {
-        // Add segue to WaterHabitDaysViewController
-        print("Use without login account - button clicked")
+    func validateEntry() {
+        if userNameTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || emailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            createAnAccountButton.isEnabled = false
+            createAnAccountButton.backgroundColor = .opaqueSeparator
+        } else {
+            createAnAccountButton.isEnabled = true
+            createAnAccountButton.backgroundColor = .systemGreen
+        }
         
-        let storyboard = UIStoryboard (name: "Main", bundle: nil)
-        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
-        self.navigationController?.pushViewController(mainVC, animated: true)
-        
-    }
-    
-    @objc func signUpButtonClicked(sender: UIButton) {
-        // Add segue to SignUpViewController
-        print("Sign up an account - button clicked")
-        let signUpVC = SignUpViewController()
-        self.navigationController?.pushViewController(signUpVC, animated: true)
+//        if userNameTextfield.text!.isEmpty || emailTextfield.text!.isEmpty || passwordTextfield.text!.isEmpty {
+//            createAnAccountButton.isEnabled = false
+//            createAnAccountButton.backgroundColor = .white
+//        } else {
+//            createAnAccountButton.backgroundColor = .systemGreen
+//        }
     }
 
 }
 
 extension SignUpViewController: UITextFieldDelegate {
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        // Lowercase email textfield
+        emailTextfield.text = emailTextfield.text?.lowercased()
+        
+        // Validate textfields
+        validateEntry()
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
@@ -179,4 +233,19 @@ extension SignUpViewController: UITextFieldDelegate {
     @objc private func dismissKeyboardTouchOutside() {
         view.endEditing(true)
     }
+}
+
+extension SignUpViewController: FUIAuthDelegate {
+    
+    // User didSignIn
+    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
+        
+        // Handle signIn Error
+        if error == nil {
+            print("FUI login error: \(String(describing: error))")
+            return
+        }
+        
+    }
+    
 }

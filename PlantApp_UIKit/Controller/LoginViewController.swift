@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FirebaseAuthUI
+import FirebaseAuth
+import FirebaseEmailAuthUI
 
 class LoginViewController: UIViewController {
     
@@ -148,6 +151,31 @@ class LoginViewController: UIViewController {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
         
+        if Auth.auth().currentUser != nil {
+          // User is signed in.
+          // ...
+            print("\(Auth.auth().currentUser?.uid)")
+        } else {
+          // No user is signed in.
+          // ...
+        }
+        
+//        let authUI = FUIAuth.defaultAuthUI()
+//
+//        guard authUI != nil else {
+//            return
+//        }
+//
+//        authUI?.delegate = self
+//        authUI?.providers = [FUIEmailAuth()]
+//
+//        let authViewController = authUI!.authViewController()
+//
+//        present(authViewController, animated: true, completion: nil)
+        
+//        Auth.auth().createUser(withEmail: emailTextfield.text!, password: passwordTextfield.text!) { authResult, error in
+//            print("Error creating user using Firebase. Error: \(error)")
+//        }
     }
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
@@ -180,6 +208,7 @@ class LoginViewController: UIViewController {
 }
 
 extension LoginViewController: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
@@ -194,6 +223,20 @@ extension LoginViewController: UITextFieldDelegate {
     @objc private func dismissKeyboardTouchOutside() {
         view.endEditing(true)
     }
+    
 }
 
-
+extension LoginViewController: FUIAuthDelegate {
+    
+    // User didSignIn
+    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
+        
+        // Handle signIn Error
+        if error == nil {
+            print("FUI login error: \(String(describing: error))")
+            return
+        }
+        
+    }
+    
+}
