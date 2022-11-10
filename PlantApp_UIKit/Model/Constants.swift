@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+
 
 struct K {
     static let title = "Plants"
@@ -24,4 +26,15 @@ struct K {
     static let AddPlantToWaterHabitID = "AddPlantToWaterHabit"
     
     static let imageSetNames = ["monstera", "pothos", "fiddle leaf"]
+    
+    static func presentAlert(_ viewController: UIViewController ,_ error: Error) {
+
+        let alert = UIAlertController(title: "Error:", message: "\(error)", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+        NSLog("The \"OK\" alert occured.")
+        }))
+        
+        viewController.present(alert, animated: true, completion: nil)
+    }
 }

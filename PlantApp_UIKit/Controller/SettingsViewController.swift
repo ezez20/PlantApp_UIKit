@@ -28,7 +28,7 @@ class SettingsViewController: UIViewController {
     let alertLabel = UILabel()
     
     // Login/Logout Button
-    let loginButton = UIButton()
+    let logoutButton = UIButton()
     
     let center = UNUserNotificationCenter.current()
     var selectedAlertOption = 0
@@ -142,14 +142,14 @@ class SettingsViewController: UIViewController {
         alertLabel.leftAnchor.constraint(equalTo: alertLogo.rightAnchor, constant: 20).isActive = true
         alertLabel.text = "Alert"
         
-        containerView.addSubview(loginButton)
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        loginButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
-        loginButton.setTitle("Login using an account", for: .normal)
-        loginButton.setTitleColor(.systemCyan, for: .normal)
-        loginButton.setTitleColor(.placeholderText, for: .highlighted)
-        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+        containerView.addSubview(logoutButton)
+        logoutButton.translatesAutoresizingMaskIntoConstraints = false
+        logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        logoutButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
+        logoutButton.setTitle("Login using an account", for: .normal)
+        logoutButton.setTitleColor(.systemCyan, for: .normal)
+        logoutButton.setTitleColor(.placeholderText, for: .highlighted)
+        logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
         
         
         // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"
@@ -189,8 +189,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
     }
     
-    @objc func loginButtonPressed(_ sender:UISwitch!) {
-        print("LoginButtonPressed")
+    @objc func logoutButtonPressed(_ sender:UISwitch!) {
+        print("LogoutButtonPressed")
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         dismiss(animated: true)
         

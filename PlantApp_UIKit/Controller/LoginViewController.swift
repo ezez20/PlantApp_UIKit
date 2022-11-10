@@ -81,6 +81,7 @@ class LoginViewController: UIViewController {
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
         emailTextfield.backgroundColor = .white
         emailTextfield.placeholder = "Email"
+        emailTextfield.autocapitalizationType = .none
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
@@ -147,35 +148,41 @@ class LoginViewController: UIViewController {
         
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        // Reset/Clear textfields when leaving login screen
+        emailTextfield.text = ""
+        passwordTextfield.text = ""
+    }
+    
     @objc func loginButtonClicked(sender: UIButton) {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
         
-        if Auth.auth().currentUser != nil {
-          // User is signed in.
-          // ...
-            print("\(Auth.auth().currentUser?.uid)")
-        } else {
-          // No user is signed in.
-          // ...
+//        if Auth.auth().currentUser != nil {
+//          // User is signed in.
+//          // ...
+//            print("\(Auth.auth().currentUser?.uid)")
+//        } else {
+//          // No user is signed in.
+//          // ...
+//        }
+        
+        Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) { (authResult, error) in
+            
+            if error != nil {
+                print("Sign in error with Firebase: \(error!.localizedDescription)")
+                
+                K.presentAlert(self, error!)
+            } else {
+                // If no error signing in, navigate to MainViewController.
+                let storyboard = UIStoryboard (name: "Main", bundle: nil)
+                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+                self.navigationController?.pushViewController(mainVC, animated: true)
+            }
+            
         }
         
-//        let authUI = FUIAuth.defaultAuthUI()
-//
-//        guard authUI != nil else {
-//            return
-//        }
-//
-//        authUI?.delegate = self
-//        authUI?.providers = [FUIEmailAuth()]
-//
-//        let authViewController = authUI!.authViewController()
-//
-//        present(authViewController, animated: true, completion: nil)
         
-//        Auth.auth().createUser(withEmail: emailTextfield.text!, password: passwordTextfield.text!) { authResult, error in
-//            print("Error creating user using Firebase. Error: \(error)")
-//        }
     }
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {

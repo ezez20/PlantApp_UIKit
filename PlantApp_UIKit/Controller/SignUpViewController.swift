@@ -157,21 +157,13 @@ class SignUpViewController: UIViewController {
             
             // If there is an error
             if error != nil {
-                
-                let alert = UIAlertController(title: "Error:", message: "\(error)", preferredStyle: .alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
-                NSLog("The \"OK\" alert occured.")
-                }))
-                
-                self.present(alert, animated: true, completion: nil)
-                
+                K.presentAlert(self, error!)
             } else {
                 // 2: If no error, Reference Firestore Database
-                let db = Firestore.firestore()
                 print("User UUID: \(authResult!.user.uid)")
+                
+                let db = Firestore.firestore()
                 db.collection("users").addDocument(data: ["userName": self.userNameTextfield.text, "uid": authResult!.user.uid]) { error in
-                    
                     if error != nil {
                         print("Firestore database error: \(error)")
                     }
