@@ -7,6 +7,10 @@
 
 import UIKit
 import CoreData
+import FirebaseAuthUI
+import FirebaseAuth
+import FirebaseEmailAuthUI
+import FirebaseFirestore
 
 
 class AddPlantViewController: UIViewController {
@@ -194,6 +198,12 @@ class AddPlantViewController: UIViewController {
         // Debug area
         print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantName.text!)")
         print("Plant order: \(newPlant.order)")
+        
+        
+        // FIREBASE: Implement "add collection(plants array) to a specified document(specific user)
+        let db = Firestore.firestore()
+        
+        // Add Firebase Write/Update a document
         
     }
     

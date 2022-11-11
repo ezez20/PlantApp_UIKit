@@ -159,15 +159,11 @@ class SignUpViewController: UIViewController {
             if error != nil {
                 K.presentAlert(self, error!)
             } else {
-                // 2: If no error, Reference Firestore Database
-                print("User UUID: \(authResult!.user.uid)")
-                
+                // 2: FIREBASE: Create a new collection/new document - Create a new user
                 let db = Firestore.firestore()
-                db.collection("users").addDocument(data: ["userName": self.userNameTextfield.text, "uid": authResult!.user.uid]) { error in
-                    if error != nil {
-                        print("Firestore database error: \(error)")
-                    }
-                }
+                let newUserFireBase = db.collection("users").document()
+                newUserFireBase.setData(["userName": self.userNameTextfield.text!, "documentID": newUserFireBase.documentID])
+                
                 
                 // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
                 let storyboard = UIStoryboard (name: "Main", bundle: nil)

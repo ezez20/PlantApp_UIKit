@@ -149,7 +149,6 @@ extension AppDelegate {
                         // Updates core data
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "notificationResponseClickedID"), object: nil)
                         
-//                        UIApplication.shared.applicationIconBadgeNumber = 0
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                         //Save the new value to User Defaults
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")

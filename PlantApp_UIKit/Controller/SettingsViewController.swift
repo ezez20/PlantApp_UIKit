@@ -8,6 +8,8 @@
 import UIKit
 import UserNotifications
 import CoreData
+import FirebaseAuth
+import FirebaseFirestore
 
 class SettingsViewController: UIViewController {
     
@@ -146,7 +148,7 @@ class SettingsViewController: UIViewController {
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         logoutButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
-        logoutButton.setTitle("Login using an account", for: .normal)
+        logoutButton.setTitle("Logout current account", for: .normal)
         logoutButton.setTitleColor(.systemCyan, for: .normal)
         logoutButton.setTitleColor(.placeholderText, for: .highlighted)
         logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
@@ -191,6 +193,16 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func logoutButtonPressed(_ sender:UISwitch!) {
         print("LogoutButtonPressed")
+        
+        let firebaseAuth = Auth.auth()
+        
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
+        
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         dismiss(animated: true)
         

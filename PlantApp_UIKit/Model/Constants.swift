@@ -37,4 +37,7 @@ struct K {
         
         viewController.present(alert, animated: true, completion: nil)
     }
+    
+//    static let plantAttribute = ["dateAdded": Date.now, "uid": UUID]
+    
 }

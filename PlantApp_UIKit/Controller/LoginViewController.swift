@@ -158,15 +158,6 @@ class LoginViewController: UIViewController {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
         
-//        if Auth.auth().currentUser != nil {
-//          // User is signed in.
-//          // ...
-//            print("\(Auth.auth().currentUser?.uid)")
-//        } else {
-//          // No user is signed in.
-//          // ...
-//        }
-        
         Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) { (authResult, error) in
             
             if error != nil {
@@ -181,8 +172,6 @@ class LoginViewController: UIViewController {
             }
             
         }
-        
-        
     }
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
