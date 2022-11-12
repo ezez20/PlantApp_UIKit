@@ -164,6 +164,10 @@ class SignUpViewController: UIViewController {
                 let newUserFireBase = db.collection("users").document()
                 newUserFireBase.setData(["userName": self.userNameTextfield.text!, "documentID": newUserFireBase.documentID])
                 
+                if newUserFireBase.documentID == newUserFireBase.documentID {
+                    newUserFireBase.collection("plants").document().setData([:])
+                }
+                
                 
                 // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
                 let storyboard = UIStoryboard (name: "Main", bundle: nil)

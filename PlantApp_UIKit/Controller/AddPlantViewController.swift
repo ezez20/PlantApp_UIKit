@@ -201,9 +201,14 @@ class AddPlantViewController: UIViewController {
         
         
         // FIREBASE: Implement "add collection(plants array) to a specified document(specific user)
-        let db = Firestore.firestore()
-        
         // Add Firebase Write/Update a document
+        let db = Firestore.firestore()
+//        let userFireBase = db.collection("users").document()
+//        if userFireBase.documentID == userFireBase.documentID {
+//            userFireBase.collection("plants").addDocument(data: ["dateAdded": Date.now, "uid": self.plantName.text!])
+//        }
+//        
+       
         
     }
     
