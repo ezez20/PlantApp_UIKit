@@ -10,6 +10,7 @@ import FirebaseAuthUI
 import FirebaseAuth
 import FirebaseEmailAuthUI
 
+
 class LoginViewController: UIViewController {
     
     let titleLogo = UIImageView()
@@ -158,17 +159,17 @@ class LoginViewController: UIViewController {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
         
+        // Signing in Firebase
         Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) { (authResult, error) in
             
+            // Check for error signing in
             if error != nil {
                 print("Sign in error with Firebase: \(error!.localizedDescription)")
                 
                 K.presentAlert(self, error!)
             } else {
                 // If no error signing in, navigate to MainViewController.
-                let storyboard = UIStoryboard (name: "Main", bundle: nil)
-                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
-                self.navigationController?.pushViewController(mainVC, animated: true)
+                K.navigateToMainVC(self.navigationController!)
             }
             
         }
@@ -190,6 +191,8 @@ class LoginViewController: UIViewController {
         let signUpVC = SignUpViewController()
         self.navigationController?.pushViewController(signUpVC, animated: true)
     }
+    
+    
 
     /*
     // MARK: - Navigation

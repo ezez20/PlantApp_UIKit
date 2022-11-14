@@ -27,13 +27,13 @@ class MainViewController: UIViewController {
     var weatherCity = ""
     
     let imageSetNames = K.imageSetNames
-
     
     
 // MARK: - Views load state
     
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
@@ -53,7 +53,6 @@ class MainViewController: UIViewController {
         // Load plants from Core Data
         loadPlants()
         
-    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -358,4 +357,7 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
+extension MainViewController {
+    
+}
 

@@ -159,21 +159,47 @@ class SignUpViewController: UIViewController {
             if error != nil {
                 K.presentAlert(self, error!)
             } else {
-                // 2: FIREBASE: Create a new collection/new document - Create a new user
-                let db = Firestore.firestore()
-                let newUserFireBase = db.collection("users").document()
-                newUserFireBase.setData(["userName": self.userNameTextfield.text!, "documentID": newUserFireBase.documentID])
                 
-                if newUserFireBase.documentID == newUserFireBase.documentID {
-                    newUserFireBase.collection("plants").document().setData([:])
+                // Authenticate user signed in.
+                if Auth.auth().currentUser?.uid != nil {
+                    
+                    print("User signed in on Firebase: \(String(describing: Auth.auth().currentUser?.email!))")
+                    
+                    // 2: FIREBASE: Create a new collection/new document - Create a new user
+                    let db = Firestore.firestore()
+                    
+                    // Add collection("users")
+                    let userUID = Auth.auth().currentUser?.uid
+                    let newUserFireBase = db.collection("users").document(userUID!)
+                    
+                    // set/add document(userName, unique ID/documentID).
+                    newUserFireBase.setData(
+                        ["userName": self.userNameTextfield.text!,
+                         "userUID": userUID!
+                        ]) { error in
+                            if error != nil {
+                                K.presentAlert(self, error!)
+                            }
+                        }
+                    
+                    // Add subcollection: "plants" to collection("users") with empty document ".setData([:])"
+                    if newUserFireBase.documentID == newUserFireBase.documentID {
+                        newUserFireBase.collection("plants").document().setData([:]) { error in
+                            if error != nil {
+                                K.presentAlert(self, error!)
+                            }
+                        }
+                    }
+                    
+                    
+                    // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
+                    let storyboard = UIStoryboard (name: "Main", bundle: nil)
+                    let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+                    self.navigationController?.pushViewController(mainVC, animated: true)
+                    
+                } else {
+                    print("User is not signed in.")
                 }
-                
-                
-                // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
-                let storyboard = UIStoryboard (name: "Main", bundle: nil)
-                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
-                self.navigationController?.pushViewController(mainVC, animated: true)
-                
             }
             
             print("Error creating user using Firebase. Error: \(String(describing: error))")
@@ -190,13 +216,6 @@ class SignUpViewController: UIViewController {
             createAnAccountButton.isEnabled = true
             createAnAccountButton.backgroundColor = .systemGreen
         }
-        
-//        if userNameTextfield.text!.isEmpty || emailTextfield.text!.isEmpty || passwordTextfield.text!.isEmpty {
-//            createAnAccountButton.isEnabled = false
-//            createAnAccountButton.backgroundColor = .white
-//        } else {
-//            createAnAccountButton.backgroundColor = .systemGreen
-//        }
     }
 
 }

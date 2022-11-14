@@ -38,6 +38,23 @@ struct K {
         viewController.present(alert, animated: true, completion: nil)
     }
     
-//    static let plantAttribute = ["dateAdded": Date.now, "uid": UUID]
+    static func plantImageStringReturn(_ imageSetNames: [String], plantImageString: String, inputImage: UIImage?, newPlant: Plant) {
+    
+        if imageSetNames.contains(plantImageString) && inputImage == nil {
+            newPlant.plantImageString = plantImageString
+        } else if imageSetNames.contains(plantImageString) && inputImage != nil {
+            newPlant.plantImageString = ""
+        } else if inputImage != nil {
+            newPlant.plantImageString = ""
+        } else {
+            newPlant.plantImageString = "UnknownPlant"
+        }
+    }
+    
+    static func navigateToMainVC(_ navVC: UINavigationController) {
+        let storyboard = UIStoryboard (name: "Main", bundle: nil)
+        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+        navVC.pushViewController(mainVC, animated: true)
+    }
     
 }

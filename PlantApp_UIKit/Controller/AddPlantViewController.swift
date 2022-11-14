@@ -11,7 +11,7 @@ import FirebaseAuthUI
 import FirebaseAuth
 import FirebaseEmailAuthUI
 import FirebaseFirestore
-
+import FirebaseStorage
 
 class AddPlantViewController: UIViewController {
     
@@ -163,22 +163,15 @@ class AddPlantViewController: UIViewController {
     @IBAction func addPlantButtonPressed(_ sender: Any) {
         
         let newPlant = Plant(context: self.context)
-        newPlant.id = UUID()
+        let newPlantID = UUID()
+        newPlant.id = newPlantID
         newPlant.plant = self.plantName.text
         newPlant.waterHabit = Int16(selectedHabitDay)
         newPlant.dateAdded = Date.now
         newPlant.order = Int32(plants.count + 1)
         newPlant.lastWateredDate = datePicker.date
-        
-        if imageSetNames.contains(plantImageString) && inputImage == nil {
-            newPlant.plantImageString = plantImageString
-        } else if imageSetNames.contains(plantImageString) && inputImage != nil {
-            newPlant.plantImageString = ""
-        } else if inputImage != nil {
-            newPlant.plantImageString = ""
-        } else {
-            newPlant.plantImageString = "UnknownPlant"
-        }
+
+        K.plantImageStringReturn(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage, newPlant: newPlant)
 
         
         if customImageData() != nil {
@@ -200,15 +193,75 @@ class AddPlantViewController: UIViewController {
         print("Plant order: \(newPlant.order)")
         
         
-        // FIREBASE: Implement "add collection(plants array) to a specified document(specific user)
-        // Add Firebase Write/Update a document
-        let db = Firestore.firestore()
-//        let userFireBase = db.collection("users").document()
-//        if userFireBase.documentID == userFireBase.documentID {
-//            userFireBase.collection("plants").addDocument(data: ["dateAdded": Date.now, "uid": self.plantName.text!])
-//        }
-//        
-       
+// MARK: - Saving on Firebase
+        //1: FIREBASE: Add plant to subcollection(plants)
+        if Auth.auth().currentUser?.uid != nil {
+            let db = Firestore.firestore()
+            
+            //2: FIREBASE: Get currentUser UID to use as document's ID.
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            //3: FIREBASE: Configure plant entity: attributes
+            let plantDoc =  userFireBase.collection("plants")
+            
+            //4: FIREBASE: Plant entity input
+            let plantAdded: [String: Any] = [
+                "dateAdded": Date.now,
+                "plantUUID": newPlantID.uuidString,
+                "plantName": self.plantName.text!,
+                "waterHabit": Int16(selectedHabitDay),
+                "plantOrder": Int32(plants.count + 1),
+                "lastWatered": datePicker.date,
+            ]
+            
+            // 5: FIREBASE: Add Plant/Document to collection(plants)
+            let plantAddedDoc = plantDoc.addDocument(data: plantAdded) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // 6: FIREBASE: Set data in Plant/plantAddedDoc - documentID
+            plantAddedDoc.setData(["plantDocId": plantAddedDoc.documentID], merge: true) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
+            if customImageData() != nil {
+                if Auth.auth().currentUser?.uid != nil {
+                    
+                    // Handle Firebase Storage upload
+                    let randomID = UUID.init().uuidString
+                    let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
+                    
+                    guard let imageData = customImageData() else { return }
+                    let uploadMetaData = StorageMetadata.init()
+                    uploadMetaData.contentType = "image/jpeg"
+                    
+                    uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
+                        if error != nil {
+                            K.presentAlert(self, error!)
+                        }
+                        print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+                    }
+                    
+                    plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
+                        if error != nil {
+                            print("Firebase Error saving: customPlantImageUUID")
+                        }
+                    }
+                            
+                } else {
+                    print("Firebase: Error saving custom image.")
+                }
+            }
+            
+            print("Plant successfully added on Firebase")
+        }
         
     }
     
