@@ -9,6 +9,8 @@ import UIKit
 import FirebaseAuthUI
 import FirebaseAuth
 import FirebaseEmailAuthUI
+import FirebaseFirestore
+import FirebaseStorage
 
 
 class LoginViewController: UIViewController {
@@ -225,17 +227,14 @@ extension LoginViewController: UITextFieldDelegate {
     
 }
 
-extension LoginViewController: FUIAuthDelegate {
-    
-    // User didSignIn
-    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
-        
-        // Handle signIn Error
-        if error == nil {
-            print("FUI login error: \(String(describing: error))")
-            return
+extension LoginViewController {
+
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
         }
-        
     }
-    
+
 }

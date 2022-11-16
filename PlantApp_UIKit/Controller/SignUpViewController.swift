@@ -246,17 +246,3 @@ extension SignUpViewController: UITextFieldDelegate {
     }
 }
 
-extension SignUpViewController: FUIAuthDelegate {
-    
-    // User didSignIn
-    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
-        
-        // Handle signIn Error
-        if error == nil {
-            print("FUI login error: \(String(describing: error))")
-            return
-        }
-        
-    }
-    
-}

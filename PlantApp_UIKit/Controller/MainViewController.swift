@@ -8,6 +8,11 @@
 import UIKit
 import CoreLocation
 import CoreData
+import FirebaseAuthUI
+import FirebaseAuth
+import FirebaseEmailAuthUI
+import FirebaseFirestore
+import FirebaseStorage
 
 class MainViewController: UIViewController {
     
@@ -53,6 +58,7 @@ class MainViewController: UIViewController {
         // Load plants from Core Data
         loadPlants()
         
+        loadFirebaseUser()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -357,7 +363,31 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
+// MARK: - Firebase functions
 extension MainViewController {
+    
+    func loadFirebaseUser() {
+        if Auth.auth().currentUser?.uid != nil {
+            let currentUser = Auth.auth().currentUser?.email
+            print("Current user logged in: \(String(describing: currentUser))")
+        } else {
+            print("No Firebase user logged in")
+        }
+    }
+    
+    func retrieveFBCloudStorage() {
+//        let db = Firestore().firestore
+//
+//        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
+//
+//            if error == nil && snapshot != nil {
+//                for doc in snapshot!.documents {
+//                    var paths = [String]()
+//                    // extract file path
+//                }
+//            }
+//        }
+    }
     
 }
 

@@ -195,7 +195,7 @@ class AddPlantViewController: UIViewController {
         
 // MARK: - Saving on Firebase
         //1: FIREBASE: Add plant to subcollection(plants)
-        if Auth.auth().currentUser?.uid != nil {
+        if authenticateFBUser() {
             let db = Firestore.firestore()
             
             //2: FIREBASE: Get currentUser UID to use as document's ID.
@@ -232,29 +232,10 @@ class AddPlantViewController: UIViewController {
             
             // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
             if customImageData() != nil {
-                if Auth.auth().currentUser?.uid != nil {
-                    
+                // Authenticate Firebase User
+                if authenticateFBUser() {
                     // Handle Firebase Storage upload
-                    let randomID = UUID.init().uuidString
-                    let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
-                    
-                    guard let imageData = customImageData() else { return }
-                    let uploadMetaData = StorageMetadata.init()
-                    uploadMetaData.contentType = "image/jpeg"
-                    
-                    uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
-                        if error != nil {
-                            K.presentAlert(self, error!)
-                        }
-                        print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
-                    }
-                    
-                    plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
-                        if error != nil {
-                            print("Firebase Error saving: customPlantImageUUID")
-                        }
-                    }
-                            
+                    uploadPhotoToFirebase(plantAddedDoc)
                 } else {
                     print("Firebase: Error saving custom image.")
                 }
@@ -274,9 +255,9 @@ class AddPlantViewController: UIViewController {
         let request : NSFetchRequest<Plant> = Plant.fetchRequest()
         
         do {
-            //            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-            //            let sort = NSSortDescriptor(key: "order", ascending: false)
-            //            request.sortDescriptors = [sort]
+//            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+//            let sort = NSSortDescriptor(key: "order", ascending: false)
+//            request.sortDescriptors = [sort]
             plants = try context.fetch(request)
         } catch {
             print("Error loading categories \(error)")
@@ -455,5 +436,37 @@ extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationC
     
 }
 
-
-
+extension AddPlantViewController {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference) {
+        let randomID = UUID.init().uuidString
+        let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
+        
+        guard let imageData = customImageData() else { return }
+        let uploadMetaData = StorageMetadata.init()
+        uploadMetaData.contentType = "image/jpeg"
+        
+        uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
+            if error != nil {
+                K.presentAlert(self, error!)
+            }
+            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+        }
+        
+        // customPlantImageUUID: for identifying on cloud storage/Firestore
+        plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
+            if error != nil {
+                print("Firebase Error saving: customPlantImageUUID")
+            }
+        }
+    }
+    
+}
