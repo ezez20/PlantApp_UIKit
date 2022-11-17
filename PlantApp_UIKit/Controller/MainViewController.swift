@@ -342,7 +342,6 @@ extension MainViewController: UITableViewDataSource {
         
     }
     
-    
 }
 
 
@@ -360,10 +359,10 @@ extension MainViewController: WeatherManagerDelegate {
         print("Error updating weather. Error: \(error)")
     }
     
-    
 }
 
 extension MainViewController: CLLocationManagerDelegate {
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             locationManager.stopUpdatingLocation()
@@ -376,10 +375,20 @@ extension MainViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Error updating location. Error: \(error)")
     }
+    
 }
 
 // MARK: - Firebase functions
 extension MainViewController {
+    
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
     
     // Firestore: load user
     func loadFirebaseUser() {
@@ -440,20 +449,25 @@ extension MainViewController {
     }
     
     func deletePlant_FB(indexPath: IndexPath) {
-        let db = Firestore.firestore()
-        userID_FB = Auth.auth().currentUser!.uid
         
-        let currentUserCollection = db.collection("users").document(userID_FB)
-        let plantsCollection = currentUserCollection.collection("plants")
-        let plantOrder = self.plants[indexPath.row].order
-
-        plantsCollection.document("\(plantOrder)").delete() { err in
-            if let err = err {
-                print("Error removing document: \(err)")
-            } else {
-                print("Document successfully removed!")
-                print("Core data deleted indexPath: \(indexPath)")
-
+        if authenticateFBUser() {
+            
+            let db = Firestore.firestore()
+            userID_FB = Auth.auth().currentUser!.uid
+            
+            let currentUserCollection = db.collection("users").document(userID_FB)
+            let plantsCollection = currentUserCollection.collection("plants")
+            
+            let plantUUID = self.plants[indexPath.row].id!.uuidString
+            
+            plantsCollection.document("\(plantUUID)").delete() { err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                } else {
+                    print("Document successfully removed!")
+                    print("FB deleted plant: \(plantUUID)")
+                    
+                }
             }
         }
         

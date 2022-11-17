@@ -169,11 +169,11 @@ class AddPlantViewController: UIViewController {
         newPlant.plant = self.plantName.text
         newPlant.waterHabit = Int16(selectedHabitDay)
         newPlant.dateAdded = Date.now
-        newPlant.order = Int32(plants.count)
+        newPlant.order = Int32(plants.endIndex)
         newPlant.lastWateredDate = datePicker.date
 
         K.plantImageStringReturn(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage, newPlant: newPlant)
-
+        print("Core data plant uuid: \(newPlantID.uuidString)")
         
         if customImageData() != nil {
             newPlant.imageData = customImageData()
@@ -198,12 +198,13 @@ class AddPlantViewController: UIViewController {
                 "plantUUID": newPlantID.uuidString,
                 "plantName": self.plantName.text!,
                 "waterHabit": Int16(selectedHabitDay),
-                "plantOrder": Int32(plants.count),
+                "plantOrder": Int32(plants.endIndex),
                 "lastWatered": datePicker.date,
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
-            let plantDoc = plantCollection.document("\(Int32(plants.count))")
+            let plantDoc = plantCollection.document("\(newPlantID.uuidString)")
+            print("plantDoc added uuid: \(newPlantID.uuidString)")
             
             // 6: Set data for "Plant entity input"
             plantDoc.setData(plantAddedData) { error in
