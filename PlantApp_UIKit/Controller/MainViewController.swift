@@ -117,7 +117,7 @@ class MainViewController: UIViewController {
         let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
         settingsVC.modalPresentationStyle = .formSheet
         present(settingsPlantNavVC, animated: true, completion: nil)
-        
+
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
@@ -161,8 +161,7 @@ class MainViewController: UIViewController {
         self.plants.remove(at: indexPathConst.row)
         self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
         self.savePlants()
-        
-        
+
         print("Core data deleted indexPath: \(indexPath)")
     }
     
@@ -258,14 +257,14 @@ extension MainViewController: UITableViewDelegate {
     // SwipeToDelete
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let contextItem = UIContextualAction(style: .destructive, title: "Delete") { [self]  (contextualAction, view, boolValue) in
-//            deletePlant_FB(indexPath: indexPath)
             deletePlant(indexPath: indexPath)
-            
+            updateOrderNumber_FB()
         }
+      
         let swipeActions = UISwipeActionsConfiguration(actions: [contextItem])
-        
         return swipeActions
     }
+
     
   
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -466,11 +465,50 @@ extension MainViewController {
                 } else {
                     print("Document successfully removed!")
                     print("FB deleted plant: \(plantUUID)")
-                    
+                    self.loadPlantsFB()
                 }
             }
         }
+    
         
+    }
+    
+    func updateOrderNumber_FB() {
+        if authenticateFBUser() {
+            let db = Firestore.firestore()
+            userID_FB = Auth.auth().currentUser!.uid
+            let currentUserCollection = db.collection("users").document(userID_FB)
+            
+            let plantsCollection = currentUserCollection.collection("plants")
+            
+            // Ensures range doesn't reach negative when used in for loop.
+            var range = plants.endIndex - 1
+            if range < 0 {
+                range = 0
+            }
+            
+            // loop through plants
+            for i in 0...range {
+                if range >= plants.startIndex && range < plants.endIndex {
+                    let plantUUID = self.plants[i].id!.uuidString
+                    let plantCurrentOrder = self.plants[i].order
+                    
+                    let plantArray_FB = plantsCollection.document("\(plantUUID)")
+                    
+                    plantArray_FB.updateData(["plantOrder": i]) { err in
+                        if let err = err {
+                            print("Error updating document: \(err)")
+                        } else {
+                            print("Plants order number have been successfully updated")
+                            self.loadPlantsFB()
+                        }
+                    }
+                } else {
+                    print("Plants array index has reached 0")
+                }
+            }
+            
+        }
     }
     
 }

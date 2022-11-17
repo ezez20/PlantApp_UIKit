@@ -202,7 +202,7 @@ class SignUpViewController: UIViewController {
                 }
             }
             
-            print("Error creating user using Firebase. Error: \(String(describing: error))")
+            print("Successfully created firebase account user with email: \(String(describing: Auth.auth().currentUser?.email))")
             
         }
         

@@ -33,6 +33,8 @@ class LoginViewController: UIViewController {
         
         super.viewDidLoad()
         
+        signOutFBUser()
+        
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
         
@@ -236,6 +238,16 @@ extension LoginViewController {
             return true
         } else {
             return false
+        }
+    }
+    
+    func signOutFBUser() {
+        let firebaseAuth = Auth.auth()
+        
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
         }
     }
 
