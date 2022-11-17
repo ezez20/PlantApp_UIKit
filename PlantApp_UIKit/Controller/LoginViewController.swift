@@ -227,8 +227,10 @@ extension LoginViewController: UITextFieldDelegate {
     
 }
 
+// MARK: - Firebase - Firestore
 extension LoginViewController {
 
+    // Firestore: Authenticate
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {
             return true

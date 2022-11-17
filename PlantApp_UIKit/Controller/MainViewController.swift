@@ -20,6 +20,12 @@ class MainViewController: UIViewController {
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    // MARK: - Google Firebase
+    var userID_FB = ""
+    var plants_FB = [QueryDocumentSnapshot]()
+    var plantImages_FB = [QueryDocumentSnapshot]()
+    
+    // MARK: - UserDefaults for saving small data/settings
     let defaults = UserDefaults.standard
     
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -59,6 +65,8 @@ class MainViewController: UIViewController {
         loadPlants()
         
         loadFirebaseUser()
+        loadPlantsFB()
+        retrieveFBCloudStorage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,8 +75,6 @@ class MainViewController: UIViewController {
         locationManager.requestLocation()
         locationManager.startUpdatingLocation()
         
-        
-        loadPlants()
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("notificationResponseClickedID"), object: nil)
         
@@ -79,6 +85,7 @@ class MainViewController: UIViewController {
     
     @objc func notificationReceived() {
         loadPlants()
+        loadPlantsFB()
     }
     
     @objc func logoutNotificationReceived() {
@@ -147,10 +154,16 @@ class MainViewController: UIViewController {
     }
     
     func deletePlant(indexPath: IndexPath) {
-        context.delete(plants[indexPath.row])
-        self.plants.remove(at: indexPath.row)
-        self.plantsTableView.deleteRows(at: [indexPath], with: .automatic)
+        let indexPathConst = indexPath
+        deletePlant_FB(indexPath: indexPathConst)
+        
+        context.delete(plants[indexPathConst.row])
+        self.plants.remove(at: indexPathConst.row)
+        self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
         self.savePlants()
+        
+        
+        print("Core data deleted indexPath: \(indexPath)")
     }
     
     
@@ -245,7 +258,9 @@ extension MainViewController: UITableViewDelegate {
     // SwipeToDelete
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let contextItem = UIContextualAction(style: .destructive, title: "Delete") { [self]  (contextualAction, view, boolValue) in
+//            deletePlant_FB(indexPath: indexPath)
             deletePlant(indexPath: indexPath)
+            
         }
         let swipeActions = UISwipeActionsConfiguration(actions: [contextItem])
         
@@ -366,27 +381,82 @@ extension MainViewController: CLLocationManagerDelegate {
 // MARK: - Firebase functions
 extension MainViewController {
     
+    // Firestore: load user
     func loadFirebaseUser() {
         if Auth.auth().currentUser?.uid != nil {
             let currentUser = Auth.auth().currentUser?.email
+            // Add some kind of function to grab user's ID/Name to display in MainVC
+            
             print("Current user logged in: \(String(describing: currentUser))")
         } else {
             print("No Firebase user logged in")
         }
     }
     
+    func loadPlantsFB() {
+        
+        if Auth.auth().currentUser?.uid != nil {
+            let currentUser = Auth.auth().currentUser?.email
+            // Add some kind of function to grab user's ID/Name to display in MainVC
+            
+            //Get currentUser UID to use as document's ID.
+            let db = Firestore.firestore()
+            userID_FB = Auth.auth().currentUser!.uid
+            
+            let currentUserCollection = db.collection("users").document(userID_FB)
+            let plantsCollection = currentUserCollection.collection("plants")
+       
+            // Get all documents/plants and put it in "plants_FB"
+            plantsCollection.getDocuments { (snapshot, error) in
+                if error == nil && snapshot != nil {
+                    let data = snapshot!.documents
+                    self.plants_FB = data
+                    print("FB: Plant Collection count: \(data.count)")
+                } else {
+                    print("Error getting documents from plant collection from firebase")
+                }
+            }
+            print("Current user logged in: \(String(describing: currentUser))")
+        } else {
+            print("No Firebase user logged in")
+        }
+        
+        
+        
+    }
+    
     func retrieveFBCloudStorage() {
-//        let db = Firestore().firestore
-//
-//        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
-//
-//            if error == nil && snapshot != nil {
-//                for doc in snapshot!.documents {
-//                    var paths = [String]()
-//                    // extract file path
-//                }
-//            }
-//        }
+        let db = Firestore.firestore()
+
+        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
+
+            if error == nil && snapshot != nil {
+                self.plants_FB = snapshot!.documents
+            } else {
+                print("Error retrieving data from FBCloudStorage")
+            }
+            
+        }
+    }
+    
+    func deletePlant_FB(indexPath: IndexPath) {
+        let db = Firestore.firestore()
+        userID_FB = Auth.auth().currentUser!.uid
+        
+        let currentUserCollection = db.collection("users").document(userID_FB)
+        let plantsCollection = currentUserCollection.collection("plants")
+        let plantOrder = self.plants[indexPath.row].order
+
+        plantsCollection.document("\(plantOrder)").delete() { err in
+            if let err = err {
+                print("Error removing document: \(err)")
+            } else {
+                print("Document successfully removed!")
+                print("Core data deleted indexPath: \(indexPath)")
+
+            }
+        }
+        
     }
     
 }
