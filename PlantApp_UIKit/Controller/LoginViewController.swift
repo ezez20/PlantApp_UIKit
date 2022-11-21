@@ -6,9 +6,7 @@
 //
 
 import UIKit
-import FirebaseAuthUI
 import FirebaseAuth
-import FirebaseEmailAuthUI
 import FirebaseFirestore
 import FirebaseStorage
 

@@ -8,9 +8,7 @@
 import UIKit
 import CoreLocation
 import CoreData
-import FirebaseAuthUI
 import FirebaseAuth
-import FirebaseEmailAuthUI
 import FirebaseFirestore
 import FirebaseStorage
 
@@ -380,7 +378,6 @@ extension MainViewController: CLLocationManagerDelegate {
 // MARK: - Firebase functions
 extension MainViewController {
     
-    
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {
             return true
@@ -474,7 +471,9 @@ extension MainViewController {
     }
     
     func updateOrderNumber_FB() {
+        
         if authenticateFBUser() {
+            
             let db = Firestore.firestore()
             userID_FB = Auth.auth().currentUser!.uid
             let currentUserCollection = db.collection("users").document(userID_FB)
@@ -489,9 +488,9 @@ extension MainViewController {
             
             // loop through plants
             for i in 0...range {
+                //ensures index number doesn't go out of range.
                 if range >= plants.startIndex && range < plants.endIndex {
                     let plantUUID = self.plants[i].id!.uuidString
-                    let plantCurrentOrder = self.plants[i].order
                     
                     let plantArray_FB = plantsCollection.document("\(plantUUID)")
                     
@@ -509,6 +508,7 @@ extension MainViewController {
             }
             
         }
+        
     }
     
 }
