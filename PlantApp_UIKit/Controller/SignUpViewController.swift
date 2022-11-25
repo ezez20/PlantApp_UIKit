@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
+
 class SignUpViewController: UIViewController {
     
     let titleLogo = UIImageView()

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 import CoreLocation
 import CoreData
 import FirebaseAuth
@@ -20,8 +21,9 @@ class MainViewController: UIViewController {
     
     // MARK: - Google Firebase
     var userID_FB = ""
-    var plants_FB = [QueryDocumentSnapshot]()
     var plantImages_FB = [QueryDocumentSnapshot]()
+    var plants_FB = [QueryDocumentSnapshot]()
+  
     
     // MARK: - UserDefaults for saving small data/settings
     let defaults = UserDefaults.standard
@@ -59,11 +61,13 @@ class MainViewController: UIViewController {
         
         weatherManager.delegate = self
         
-        // Load plants from Core Data
-        loadPlants()
-        
         loadFirebaseUser()
         loadPlantsFB()
+        
+        // Load plants from Core Data
+        loadPlants()
+       
+       
         retrieveFBCloudStorage()
     }
     
@@ -82,8 +86,9 @@ class MainViewController: UIViewController {
     
     
     @objc func notificationReceived() {
+//        loadPlantsFB()
         loadPlants()
-        loadPlantsFB()
+        
     }
     
     @objc func logoutNotificationReceived() {
@@ -99,6 +104,7 @@ class MainViewController: UIViewController {
     @IBAction func editButtonPressed(_ sender: Any) {
         // Future feature: Edit button to allow re-order tableView.
         self.plantsTableView.isEditing.toggle()
+        updateOrderNumber_FB()
         
         if self.plantsTableView.isEditing == true {
             editButton.title = "Done"
@@ -119,6 +125,7 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
+       
         self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
     }
     
@@ -131,7 +138,6 @@ class MainViewController: UIViewController {
             print("Error saving category \(error)")
         }
         
-        loadPlants()
     }
     
     func loadPlants() {
@@ -148,6 +154,7 @@ class MainViewController: UIViewController {
         plantsTableView.reloadData()
         print("Plants loaded")
         refreshUserNotification()
+        print("Core Data count: \(plants.count)")
         
     }
     
@@ -262,7 +269,7 @@ extension MainViewController: UITableViewDelegate {
         let swipeActions = UISwipeActionsConfiguration(actions: [contextItem])
         return swipeActions
     }
-
+    
     
   
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -286,6 +293,9 @@ extension MainViewController: UITableViewDelegate {
                 
             }
         }
+       
+
+        
     }
     
 }
@@ -317,7 +327,8 @@ extension MainViewController: UITableViewDataSource {
     }
     
     
-    // MARK: - methods needed for editing/re-ordering tableViews
+// MARK: - methods needed for editing/deleting/re-ordering tableViews
+
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
@@ -326,6 +337,7 @@ extension MainViewController: UITableViewDataSource {
         return true
     }
     
+    // Re-Order tableview
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let movedObject = self.plants[sourceIndexPath.row]
         plants.remove(at: sourceIndexPath.row)
@@ -338,6 +350,7 @@ extension MainViewController: UITableViewDataSource {
         savePlants()
         
     }
+    
     
 }
 
@@ -397,26 +410,35 @@ extension MainViewController {
             print("No Firebase user logged in")
         }
     }
-    
+
     func loadPlantsFB() {
-        
+
         if Auth.auth().currentUser?.uid != nil {
             let currentUser = Auth.auth().currentUser?.email
             // Add some kind of function to grab user's ID/Name to display in MainVC
-            
+
             //Get currentUser UID to use as document's ID.
             let db = Firestore.firestore()
             userID_FB = Auth.auth().currentUser!.uid
-            
+
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
-       
+//            var plants_FB = [QueryDocumentSnapshot]()
+           
             // Get all documents/plants and put it in "plants_FB"
             plantsCollection.getDocuments { (snapshot, error) in
                 if error == nil && snapshot != nil {
-                    let data = snapshot!.documents
-                    self.plants_FB = data
-                    print("FB: Plant Collection count: \(data.count)")
+                    
+                    self.plants_FB = snapshot!.documents
+                    
+                    var plantDocIDsArray = [String]()
+
+                    for d in snapshot!.documents {
+                        plantDocIDsArray.append(d.documentID)
+                    }
+                    
+//                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+
                 } else {
                     print("Error getting documents from plant collection from firebase")
                 }
@@ -425,23 +447,89 @@ extension MainViewController {
         } else {
             print("No Firebase user logged in")
         }
+
+    }
+    
+    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
+        // MARK: - Parse plants from Firebase to Core Data
         
+        for doc in plants_FB {
+            
+            print("Documents are valid")
+            
+            let data = doc.data()
+            print("Doc ID: \(doc.documentID)")
+            
+            //dateAdded
+            let dateAdded_FB = data["dateAdded"] as? Date ?? Date.now
+            print("dateAdded: \(dateAdded_FB)")
+            
+            //lastWatered
+            let lastWatered_FB = data["lastWatered"] as? Date ?? Date.now
+            print("lastWatered: \(lastWatered_FB)")
+            
+            //plantDocId
+            let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
+            print("plantDocId: \(plantDocId_FB)")
+            
+            //plantImageString
+            let plantImageString_FB = data["plantImageString"] as? String ?? ""
+            print("plantImageString: \(plantImageString_FB)")
+            
+            //plantName
+            let plantName_FB = data["plantName"] as? String ?? ""
+            print("plantName: \(plantName_FB)")
+            
+            //plantOrder
+            let plantOrder_FB = data["plantOrder"] as? Int ?? 0
+            print("plantOrder: \(plantOrder_FB)")
+            
+            //plantUUID
+            let plantUUID_FB = data["plantUUID"]
+            let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
+            print("plantUUID: \(String(describing: plantUUID_FBCasted))")
+            
+            //waterHabit
+            let waterHabit_FB = data[""] as? Int ?? 0
+            print("waterHabit: \(waterHabit_FB)")
+            
+            let loadedPlant_FB = Plant(context: self.context)
+            loadedPlant_FB.id = plantUUID_FBCasted
+            loadedPlant_FB.plant = plantName_FB
+            loadedPlant_FB.waterHabit = Int16(waterHabit_FB)
+            loadedPlant_FB.dateAdded = dateAdded_FB
+            loadedPlant_FB.order = Int32(plantOrder_FB)
+            loadedPlant_FB.lastWateredDate = lastWatered_FB
+            loadedPlant_FB.plantImageString = plantImageString_FB
+            
+            // Saving to Core Data
+            self.plants.append(loadedPlant_FB)
+//            self.savePlants()
+        }
+    
+            
         
+//            if customImageData() != nil {
+//                loadedPlant_FB.imageData = customImageData()
+//
+//            }
+
+           
         
     }
     
     func retrieveFBCloudStorage() {
-        let db = Firestore.firestore()
-
-        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
-
-            if error == nil && snapshot != nil {
-                self.plants_FB = snapshot!.documents
-            } else {
-                print("Error retrieving data from FBCloudStorage")
-            }
-            
-        }
+//        let db = Firestore.firestore()
+//
+//        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
+//
+//            if error == nil && snapshot != nil {
+////                self.plants_FB = snapshot!
+//            } else {
+//                print("Error retrieving data from FBCloudStorage")
+//            }
+//
+//        }
     }
     
     func deletePlant_FB(indexPath: IndexPath) {
@@ -502,6 +590,7 @@ extension MainViewController {
                             self.loadPlantsFB()
                         }
                     }
+                    
                 } else {
                     print("Plants array index has reached 0")
                 }

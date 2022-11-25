@@ -51,6 +51,19 @@ struct K {
         }
     }
     
+    static func plantImageStringReturn_FB(_ imageSetNames: [String], plantImageString: String, inputImage: UIImage?) -> String {
+    
+        if imageSetNames.contains(plantImageString) && inputImage == nil {
+            return plantImageString
+        } else if imageSetNames.contains(plantImageString) && inputImage != nil {
+            return ""
+        } else if inputImage != nil {
+            return ""
+        } else {
+            return "UnknownPlant"
+        }
+    }
+    
     static func navigateToMainVC(_ navVC: UINavigationController) {
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController

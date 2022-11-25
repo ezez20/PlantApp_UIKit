@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
+
 
 class EditPlantViewController: UIViewController {
     
@@ -75,6 +79,7 @@ class EditPlantViewController: UIViewController {
         self.enableDismissKeyboardOnTapOutside()
         
         loadPlant()
+        updateInputImage()
         
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "camera.viewfinder"), style: .plain, target: self, action: #selector(cameraButtonPressed))
         view.backgroundColor = .secondarySystemBackground
@@ -271,29 +276,18 @@ class EditPlantViewController: UIViewController {
         
         print("Update Plant button clicked")
         
-//        let plantToUpdate = currentPlant
-        currentPlant.id = UUID()
         currentPlant.plant = plantTextField.text
         currentPlant.waterHabit = Int16(selectedHabitDay)
         currentPlant.dateAdded = Date.now
         currentPlant.lastWateredDate = datePicker.date
         
-        if imageSetNames.contains(plantImageString) && inputImage == nil {
-            currentPlant.plantImageString = plantImageString
-        } else if imageSetNames.contains(plantImageString) && inputImage != nil {
-            currentPlant.plantImageString = ""
-        } else if imageSetNames.contains(currentPlant.plantImageString!) {
-            currentPlant.plantImageString = currentPlant.plantImageString
-        } else if inputImage != nil {
-            currentPlant.plantImageString = ""
-        } else {
-            currentPlant.plantImageString = "UnknownPlant"
-        }
+        K.plantImageStringReturn(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage, newPlant: currentPlant)
         
         if customImageData() != nil {
             currentPlant.imageData = customImageData()
         }
-
+        
+        editPlant_FB(currentPlant.id!)
 
         self.savePlant()
         dismiss(animated: true)
@@ -328,8 +322,6 @@ class EditPlantViewController: UIViewController {
         plantTextField.text = currentPlant.plant
         selectedHabitDay = Int(currentPlant.waterHabit)
         datePicker.date = currentPlant.lastWateredDate!
-//        plantImageButton.setImage(inputImage, for: .normal)
-        updateInputImage()
         plantImageString = currentPlant.plantImageString!
     }
     
@@ -533,6 +525,96 @@ extension EditPlantViewController: UIImagePickerControllerDelegate, UINavigation
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+extension EditPlantViewController {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func editPlant_FB(_ currentPlantID: UUID) {
+        if authenticateFBUser() {
+            let db = Firestore.firestore()
+            
+            //2: FIREBASE: Get currentUser UID to use as document's ID.
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            //3: FIREBASE: Declare collection("plants)
+            let plantCollection =  userFireBase.collection("plants")
+            
+            //4: FIREBASE: Plant entity input
+            let plantEditedData: [String: Any] = [
+                "dateAdded": Date.now,
+                "plantUUID": currentPlantID.uuidString,
+                "plantName": plantTextField.text!,
+                "waterHabit": Int16(selectedHabitDay),
+                "lastWatered": datePicker.date,
+                "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage)
+            ]
+            
+            // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+            let plantDoc = plantCollection.document("\(currentPlant.id!.uuidString)")
+            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+            
+            // 6: Edited data for "Plant entity input"
+            plantDoc.updateData(plantEditedData) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // 7: Add edited doc date on FB
+            plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
+//            if customImageData() != nil {
+//                // Authenticate Firebase User
+//                if authenticateFBUser() {
+//                    // Handle Firebase Storage upload
+//                    uploadPhotoToFirebase(plantDoc)
+//                } else {
+//                    print("Firebase: Error saving custom image.")
+//                }
+//            }
+            
+            print("Plant successfully edited on Firebase")
+        }
+    }
+    
+    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference) {
+        let randomID = UUID.init().uuidString
+        let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
+        
+        guard let imageData = customImageData() else { return }
+        let uploadMetaData = StorageMetadata.init()
+        uploadMetaData.contentType = "image/jpeg"
+        
+        uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
+            if error != nil {
+                K.presentAlert(self, error!)
+            }
+            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+        }
+        
+        // customPlantImageUUID: for identifying on cloud storage/Firestore
+        plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
+            if error != nil {
+                print("Firebase Error saving: customPlantImageUUID")
+            }
+        }
     }
     
 }

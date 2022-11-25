@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
+
 
 class PlantViewController: UIViewController {
     
@@ -52,6 +56,7 @@ class PlantViewController: UIViewController {
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant: Plant!
+    
     
     
     
@@ -133,6 +138,9 @@ class PlantViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         updatePlant()
+        
+        // Will reload plants in MainVC
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
 
     // MARK: - IBActions functions
