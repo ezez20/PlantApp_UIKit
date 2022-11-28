@@ -22,7 +22,7 @@ class MainViewController: UIViewController {
     // MARK: - Google Firebase
     var userID_FB = ""
     var plantImages_FB = [QueryDocumentSnapshot]()
-    var plants_FB = [QueryDocumentSnapshot]()
+//    var plants_FB = [QueryDocumentSnapshot]()
   
     
     // MARK: - UserDefaults for saving small data/settings
@@ -62,13 +62,17 @@ class MainViewController: UIViewController {
         weatherManager.delegate = self
         
         loadFirebaseUser()
-        loadPlantsFB()
+        retrieveFBCloudStorage()
+        
+        if defaults.bool(forKey: "userFirstLoggedIn") {
+            loadPlantsFB()
+            defaults.set(false, forKey: "userFirstLoggedIn")
+        }
         
         // Load plants from Core Data
         loadPlants()
-       
-       
-        retrieveFBCloudStorage()
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -86,9 +90,7 @@ class MainViewController: UIViewController {
     
     
     @objc func notificationReceived() {
-//        loadPlantsFB()
         loadPlants()
-        
     }
     
     @objc func logoutNotificationReceived() {
@@ -125,7 +127,6 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
-       
         self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
     }
     
@@ -152,8 +153,8 @@ class MainViewController: UIViewController {
         }
         
         plantsTableView.reloadData()
-        print("Plants loaded")
         refreshUserNotification()
+        print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
     }
@@ -212,6 +213,7 @@ class MainViewController: UIViewController {
     }
     
     func refreshUserNotification() {
+        
         print("refreshUserNotification triggered")
         var notificationCount = 0
         
@@ -254,7 +256,6 @@ extension MainViewController: UITableViewDelegate {
     
     // TableView cell selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("You tapped on \(indexPath.description)")
         performSegue(withIdentifier: K.mainToPlantID, sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -273,6 +274,7 @@ extension MainViewController: UITableViewDelegate {
     
   
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         if segue.destination is PlantViewController {
             if let indexPath = plantsTableView.indexPathForSelectedRow {
                 let vc = segue.destination as? PlantViewController
@@ -293,8 +295,6 @@ extension MainViewController: UITableViewDelegate {
                 
             }
         }
-       
-
         
     }
     
@@ -354,7 +354,7 @@ extension MainViewController: UITableViewDataSource {
     
 }
 
-
+// MARK: - extension for weather call
 extension MainViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
@@ -412,7 +412,7 @@ extension MainViewController {
     }
 
     func loadPlantsFB() {
-
+        
         if Auth.auth().currentUser?.uid != nil {
             let currentUser = Auth.auth().currentUser?.email
             // Add some kind of function to grab user's ID/Name to display in MainVC
@@ -423,13 +423,14 @@ extension MainViewController {
 
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
-//            var plants_FB = [QueryDocumentSnapshot]()
            
             // Get all documents/plants and put it in "plants_FB"
             plantsCollection.getDocuments { (snapshot, error) in
                 if error == nil && snapshot != nil {
                     
-                    self.plants_FB = snapshot!.documents
+                    var plants_FB = [QueryDocumentSnapshot]()
+                    
+                    plants_FB = snapshot!.documents
                     
                     var plantDocIDsArray = [String]()
 
@@ -437,7 +438,9 @@ extension MainViewController {
                         plantDocIDsArray.append(d.documentID)
                     }
                     
-//                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+                    self.loadPlants()
+                    print("Core Data count after FB loaded: \(self.plants.count)")
 
                 } else {
                     print("Error getting documents from plant collection from firebase")
@@ -452,47 +455,47 @@ extension MainViewController {
     
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
         // MARK: - Parse plants from Firebase to Core Data
-        
+
         for doc in plants_FB {
-            
+
             print("Documents are valid")
-            
+
             let data = doc.data()
             print("Doc ID: \(doc.documentID)")
-            
+
             //dateAdded
             let dateAdded_FB = data["dateAdded"] as? Date ?? Date.now
             print("dateAdded: \(dateAdded_FB)")
-            
+
             //lastWatered
             let lastWatered_FB = data["lastWatered"] as? Date ?? Date.now
             print("lastWatered: \(lastWatered_FB)")
-            
+
             //plantDocId
             let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
             print("plantDocId: \(plantDocId_FB)")
-            
+
             //plantImageString
             let plantImageString_FB = data["plantImageString"] as? String ?? ""
             print("plantImageString: \(plantImageString_FB)")
-            
+
             //plantName
             let plantName_FB = data["plantName"] as? String ?? ""
             print("plantName: \(plantName_FB)")
-            
+
             //plantOrder
             let plantOrder_FB = data["plantOrder"] as? Int ?? 0
             print("plantOrder: \(plantOrder_FB)")
-            
+
             //plantUUID
             let plantUUID_FB = data["plantUUID"]
             let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
             print("plantUUID: \(String(describing: plantUUID_FBCasted))")
-            
+
             //waterHabit
             let waterHabit_FB = data[""] as? Int ?? 0
             print("waterHabit: \(waterHabit_FB)")
-            
+
             let loadedPlant_FB = Plant(context: self.context)
             loadedPlant_FB.id = plantUUID_FBCasted
             loadedPlant_FB.plant = plantName_FB
@@ -501,21 +504,17 @@ extension MainViewController {
             loadedPlant_FB.order = Int32(plantOrder_FB)
             loadedPlant_FB.lastWateredDate = lastWatered_FB
             loadedPlant_FB.plantImageString = plantImageString_FB
-            
+
             // Saving to Core Data
             self.plants.append(loadedPlant_FB)
-//            self.savePlants()
+            self.savePlants()
         }
-    
-            
-        
+
 //            if customImageData() != nil {
 //                loadedPlant_FB.imageData = customImageData()
 //
 //            }
 
-           
-        
     }
     
     func retrieveFBCloudStorage() {
@@ -550,7 +549,6 @@ extension MainViewController {
                 } else {
                     print("Document successfully removed!")
                     print("FB deleted plant: \(plantUUID)")
-                    self.loadPlantsFB()
                 }
             }
         }
@@ -587,7 +585,6 @@ extension MainViewController {
                             print("Error updating document: \(err)")
                         } else {
                             print("Plants order number have been successfully updated")
-                            self.loadPlantsFB()
                         }
                     }
                     

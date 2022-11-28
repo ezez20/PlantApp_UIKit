@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
@@ -26,12 +27,17 @@ class LoginViewController: UIViewController {
     
     let loginButton = UIButton()
     
+    // MARK: - Core Data - Persisting data
+    var plants = [Plant]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    // MARK: - UserDefaults for saving small data/settings
+    let defaults = UserDefaults.standard
+    
 
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        signOutFBUser()
         
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
@@ -151,6 +157,14 @@ class LoginViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if authenticateFBUser() {
+            K.navigateToMainVC(self.navigationController!)
+        }
+        
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         // Reset/Clear textfields when leaving login screen
         emailTextfield.text = ""
@@ -171,6 +185,7 @@ class LoginViewController: UIViewController {
                 K.presentAlert(self, error!)
             } else {
                 // If no error signing in, navigate to MainViewController.
+                self.defaults.set(true, forKey: "userFirstLoggedIn")
                 K.navigateToMainVC(self.navigationController!)
             }
             
@@ -180,6 +195,10 @@ class LoginViewController: UIViewController {
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
         // Add segue to WaterHabitDaysViewController
         print("Use without login account - button clicked")
+        
+//        loadPlants()
+//        plants.removeAll()
+//        print("plants array: \(plants)")
         
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
@@ -194,7 +213,31 @@ class LoginViewController: UIViewController {
         self.navigationController?.pushViewController(signUpVC, animated: true)
     }
     
+    //MARK: - Data Manipulation Methods
+    func savePlants() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving category \(error)")
+        }
+        
+    }
     
+    func loadPlants() {
+        
+        do {
+            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+            let sort = NSSortDescriptor(key: "order", ascending: true)
+            request.sortDescriptors = [sort]
+            plants = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+        
+        print("Plants loaded")
+        print("Core Data count: \(plants.count)")
+        
+    }
 
     /*
     // MARK: - Navigation
@@ -205,7 +248,7 @@ class LoginViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
+    
 }
 
 extension LoginViewController: UITextFieldDelegate {

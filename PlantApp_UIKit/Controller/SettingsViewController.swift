@@ -197,7 +197,19 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         let firebaseAuth = Auth.auth()
         
         do {
+            
             try firebaseAuth.signOut()
+            
+            // Ensures to delete in Core Data before signing out.
+            if plants.count != 0 {
+                for i in 0...plants.endIndex - 1 {
+                    context.delete(plants[i])
+                    updatePlant()
+                }
+            }
+            
+            defaults.set(false, forKey: "userFirstLoggedIn")
+            
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
@@ -209,7 +221,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     }
     
     func loadPlants() {
-        
+
         do {
             let request = Plant.fetchRequest() as NSFetchRequest<Plant>
             let sort = NSSortDescriptor(key: "order", ascending: true)
@@ -218,11 +230,10 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         } catch {
             print("Error loading categories \(error)")
         }
-        
+
         print("Plants loaded")
-        
     }
-    
+
     func updatePlant() {
         do {
             try context.save()

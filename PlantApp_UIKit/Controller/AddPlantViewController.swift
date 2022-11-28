@@ -79,7 +79,6 @@ class AddPlantViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         updateUI()
-        print(selectedHabitDay)
     }
     
     
