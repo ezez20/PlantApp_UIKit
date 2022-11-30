@@ -457,19 +457,24 @@ extension MainViewController {
         // MARK: - Parse plants from Firebase to Core Data
 
         for doc in plants_FB {
-
-            print("Documents are valid")
-
+            
             let data = doc.data()
+            
             print("Doc ID: \(doc.documentID)")
-
+            print(doc.data())
             //dateAdded
-            let dateAdded_FB = data["dateAdded"] as? Date ?? Date.now
-            print("dateAdded: \(dateAdded_FB)")
+            var dateAdded_FB = Date.now
+            if let timestamp = data["dateAdded"] as? Timestamp {
+                dateAdded_FB = timestamp.dateValue()
+                print("lastWatered: \(dateAdded_FB)")
+            }
 
             //lastWatered
-            let lastWatered_FB = data["lastWatered"] as? Date ?? Date.now
-            print("lastWatered: \(lastWatered_FB)")
+            var lastWatered_FB = Date.now
+            if let timestamp = data["lastWatered"] as? Timestamp {
+                lastWatered_FB = timestamp.dateValue()
+                print("lastWatered: \(lastWatered_FB)")
+            }
 
             //plantDocId
             let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
@@ -493,9 +498,9 @@ extension MainViewController {
             print("plantUUID: \(String(describing: plantUUID_FBCasted))")
 
             //waterHabit
-            let waterHabit_FB = data[""] as? Int ?? 0
+            let waterHabit_FB = data["waterHabit"] as? Int ?? 0
             print("waterHabit: \(waterHabit_FB)")
-
+            
             let loadedPlant_FB = Plant(context: self.context)
             loadedPlant_FB.id = plantUUID_FBCasted
             loadedPlant_FB.plant = plantName_FB
@@ -504,7 +509,7 @@ extension MainViewController {
             loadedPlant_FB.order = Int32(plantOrder_FB)
             loadedPlant_FB.lastWateredDate = lastWatered_FB
             loadedPlant_FB.plantImageString = plantImageString_FB
-
+            
             // Saving to Core Data
             self.plants.append(loadedPlant_FB)
             self.savePlants()

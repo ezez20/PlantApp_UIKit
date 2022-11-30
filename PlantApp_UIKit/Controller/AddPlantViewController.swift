@@ -415,6 +415,7 @@ extension AddPlantViewController {
     }
     
     func addPlant_FB(_ newPlantID: UUID) {
+        
         if authenticateFBUser() {
             let db = Firestore.firestore()
             
@@ -425,7 +426,7 @@ extension AddPlantViewController {
             
             //3: FIREBASE: Declare collection("plants)
             let plantCollection =  userFireBase.collection("plants")
-            
+        
             //4: FIREBASE: Plant entity input
             let plantAddedData: [String: Any] = [
                 "dateAdded": Date.now,
@@ -482,12 +483,12 @@ extension AddPlantViewController {
 
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
-           
+            var plants_FB = [QueryDocumentSnapshot]()
            
             // Get all documents/plants and put it in "plants_FB"
             plantsCollection.getDocuments { (snapshot, error) in
                 if error == nil && snapshot != nil {
-                    var plants_FB = [QueryDocumentSnapshot]()
+                    
                     plants_FB = snapshot!.documents
                     
                     var plantDocIDsArray = [String]()
@@ -506,6 +507,7 @@ extension AddPlantViewController {
                     print("Error getting documents from plant collection from firebase")
                 }
             }
+         
             print("Current user logged in: \(String(describing: currentUser))")
         } else {
             print("No Firebase user logged in")
@@ -525,36 +527,42 @@ extension AddPlantViewController {
                 if plantUUIDCasted == newPlantUUID {
                 
                     print("Doc ID: \(doc.documentID)")
-                    
+                    print(doc.data())
                     //dateAdded
-                    let dateAdded_FB = data["dateAdded"] as? Date ?? Date.now
-                    print("dateAdded: \(dateAdded_FB)")
-                    
+                    var dateAdded_FB = Date.now
+                    if let timestamp = data["dateAdded"] as? Timestamp {
+                        dateAdded_FB = timestamp.dateValue()
+                        print("lastWatered: \(dateAdded_FB)")
+                    }
+
                     //lastWatered
-                    let lastWatered_FB = data["lastWatered"] as? Date ?? Date.now
-                    print("lastWatered: \(lastWatered_FB)")
-                    
+                    var lastWatered_FB = Date.now
+                    if let timestamp = data["lastWatered"] as? Timestamp {
+                        lastWatered_FB = timestamp.dateValue()
+                        print("lastWatered: \(lastWatered_FB)")
+                    }
+
                     //plantDocId
                     let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
                     print("plantDocId: \(plantDocId_FB)")
-                    
+
                     //plantImageString
                     let plantImageString_FB = data["plantImageString"] as? String ?? ""
                     print("plantImageString: \(plantImageString_FB)")
-                    
+
                     //plantName
                     let plantName_FB = data["plantName"] as? String ?? ""
                     print("plantName: \(plantName_FB)")
-                    
+
                     //plantOrder
                     let plantOrder_FB = data["plantOrder"] as? Int ?? 0
                     print("plantOrder: \(plantOrder_FB)")
-                    
+
                     //plantUUID
                     let plantUUID_FB = data["plantUUID"]
                     let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
                     print("plantUUID: \(String(describing: plantUUID_FBCasted))")
-                    
+
                     //waterHabit
                     let waterHabit_FB = data["waterHabit"] as? Int ?? 0
                     print("waterHabit: \(waterHabit_FB)")

@@ -125,6 +125,7 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = sender.date
         print("Last Watered Date changed to: \(sender.date)")
         updateUI()
+        editPlant_FB(currentPlant.id!)
     }
     
     override func viewDidLayoutSubviews() {
@@ -164,6 +165,7 @@ class PlantViewController: UIViewController {
         currentPlant.wateredBool = true
         updatePlant()
         updateUI()
+        editPlant_FB(currentPlant.id!)
         print("Water button pressed.")
     }
     
@@ -272,4 +274,89 @@ extension PlantViewController: ModalViewControllerDelegate {
             loadData()
             updateUI()
         }
+}
+
+extension PlantViewController {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func editPlant_FB(_ currentPlantID: UUID) {
+        if authenticateFBUser() {
+            let db = Firestore.firestore()
+            
+            //2: FIREBASE: Get currentUser UID to use as document's ID.
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            //3: FIREBASE: Declare collection("plants)
+            let plantCollection =  userFireBase.collection("plants")
+            
+            //4: FIREBASE: Plant entity input
+            let plantEditedData: [String: Any] = [
+                "lastWatered": datePicker.date,
+            ]
+            
+            // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+            let plantDoc = plantCollection.document("\(currentPlant.id!.uuidString)")
+            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+            
+            // 6: Edited data for "Plant entity input"
+            plantDoc.updateData(plantEditedData) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // 7: Add edited doc date on FB
+            plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
+//            if customImageData() != nil {
+//                // Authenticate Firebase User
+//                if authenticateFBUser() {
+//                    // Handle Firebase Storage upload
+//                    uploadPhotoToFirebase(plantDoc)
+//                } else {
+//                    print("Firebase: Error saving custom image.")
+//                }
+//            }
+            
+            print("Plant successfully edited on Firebase")
+        }
+    }
+    
+//    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference) {
+//        let randomID = UUID.init().uuidString
+//        let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
+//
+//        guard let imageData = customImageData() else { return }
+//        let uploadMetaData = StorageMetadata.init()
+//        uploadMetaData.contentType = "image/jpeg"
+//
+//        uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
+//            if error != nil {
+//                K.presentAlert(self, error!)
+//            }
+//            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+//        }
+//
+//        // customPlantImageUUID: for identifying on cloud storage/Firestore
+//        plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
+//            if error != nil {
+//                print("Firebase Error saving: customPlantImageUUID")
+//            }
+//        }
+//    }
+    
 }
