@@ -18,5 +18,5 @@ struct PlantDataModel: Codable {
     let plantImageString: String
     let wateredBool: Bool
     let waterHabit: Int
-
+    
 }
