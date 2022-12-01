@@ -65,7 +65,7 @@ class MainViewController: UIViewController {
         retrieveFBCloudStorage()
         
         if defaults.bool(forKey: "userFirstLoggedIn") {
-            loadPlantsFB()
+//            loadPlantsFB()
             defaults.set(false, forKey: "userFirstLoggedIn")
         }
         
@@ -410,117 +410,143 @@ extension MainViewController {
             print("No Firebase user logged in")
         }
     }
-
-    func loadPlantsFB() {
-        
+    
+    func fetchDataFB() {
         if Auth.auth().currentUser?.uid != nil {
-            let currentUser = Auth.auth().currentUser?.email
-            // Add some kind of function to grab user's ID/Name to display in MainVC
-
-            //Get currentUser UID to use as document's ID.
             let db = Firestore.firestore()
             userID_FB = Auth.auth().currentUser!.uid
-
+            
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
-           
-            // Get all documents/plants and put it in "plants_FB"
-            plantsCollection.getDocuments { (snapshot, error) in
-                if error == nil && snapshot != nil {
-                    
-                    var plants_FB = [QueryDocumentSnapshot]()
-                    
-                    plants_FB = snapshot!.documents
-                    
-                    var plantDocIDsArray = [String]()
-
-                    for d in snapshot!.documents {
-                        plantDocIDsArray.append(d.documentID)
-                    }
-                    
-                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
-                    self.loadPlants()
-                    print("Core Data count after FB loaded: \(self.plants.count)")
-
-                } else {
-                    print("Error getting documents from plant collection from firebase")
+            
+            plantsCollection.addSnapshotListener { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
+                    print("No documents")
+                    return
+                }
+                
+                self.plants = documents.compactMap { (queryDocumentSnapshot) -> PlantDataModel? in
+                    return try? queryDocumentSnapshot.data(as: PlantDataModel.self)
                 }
             }
-            print("Current user logged in: \(String(describing: currentUser))")
+            
+            
+            
         } else {
             print("No Firebase user logged in")
         }
-
     }
-    
-    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
-        // MARK: - Parse plants from Firebase to Core Data
 
-        for doc in plants_FB {
-            
-            let data = doc.data()
-            
-            print("Doc ID: \(doc.documentID)")
-            print(doc.data())
-            //dateAdded
-            var dateAdded_FB = Date.now
-            if let timestamp = data["dateAdded"] as? Timestamp {
-                dateAdded_FB = timestamp.dateValue()
-                print("lastWatered: \(dateAdded_FB)")
-            }
-
-            //lastWatered
-            var lastWatered_FB = Date.now
-            if let timestamp = data["lastWatered"] as? Timestamp {
-                lastWatered_FB = timestamp.dateValue()
-                print("lastWatered: \(lastWatered_FB)")
-            }
-
-            //plantDocId
-            let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
-            print("plantDocId: \(plantDocId_FB)")
-
-            //plantImageString
-            let plantImageString_FB = data["plantImageString"] as? String ?? ""
-            print("plantImageString: \(plantImageString_FB)")
-
-            //plantName
-            let plantName_FB = data["plantName"] as? String ?? ""
-            print("plantName: \(plantName_FB)")
-
-            //plantOrder
-            let plantOrder_FB = data["plantOrder"] as? Int ?? 0
-            print("plantOrder: \(plantOrder_FB)")
-
-            //plantUUID
-            let plantUUID_FB = data["plantUUID"]
-            let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
-            print("plantUUID: \(String(describing: plantUUID_FBCasted))")
-
-            //waterHabit
-            let waterHabit_FB = data["waterHabit"] as? Int ?? 0
-            print("waterHabit: \(waterHabit_FB)")
-            
-            let loadedPlant_FB = Plant(context: self.context)
-            loadedPlant_FB.id = plantUUID_FBCasted
-            loadedPlant_FB.plant = plantName_FB
-            loadedPlant_FB.waterHabit = Int16(waterHabit_FB)
-            loadedPlant_FB.dateAdded = dateAdded_FB
-            loadedPlant_FB.order = Int32(plantOrder_FB)
-            loadedPlant_FB.lastWateredDate = lastWatered_FB
-            loadedPlant_FB.plantImageString = plantImageString_FB
-            
-            // Saving to Core Data
-            self.plants.append(loadedPlant_FB)
-            self.savePlants()
-        }
-
-//            if customImageData() != nil {
-//                loadedPlant_FB.imageData = customImageData()
+//    func loadPlantsFB() {
 //
+//        if Auth.auth().currentUser?.uid != nil {
+//            let currentUser = Auth.auth().currentUser?.email
+//            // Add some kind of function to grab user's ID/Name to display in MainVC
+//
+//            //Get currentUser UID to use as document's ID.
+//            let db = Firestore.firestore()
+//            userID_FB = Auth.auth().currentUser!.uid
+//
+//            let currentUserCollection = db.collection("users").document(userID_FB)
+//            let plantsCollection = currentUserCollection.collection("plants")
+//
+//            // Get all documents/plants and put it in "plants_FB"
+//            plantsCollection.getDocuments { (snapshot, error) in
+//                if error == nil && snapshot != nil {
+//
+//                    var plants_FB = [QueryDocumentSnapshot]()
+//
+//                    plants_FB = snapshot!.documents
+//
+//                    var plantDocIDsArray = [String]()
+//
+//                    for d in snapshot!.documents {
+//                        plantDocIDsArray.append(d.documentID)
+//                    }
+//
+//                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+//                    self.loadPlants()
+//                    print("Core Data count after FB loaded: \(self.plants.count)")
+//
+//                } else {
+//                    print("Error getting documents from plant collection from firebase")
+//                }
 //            }
-
-    }
+//            print("Current user logged in: \(String(describing: currentUser))")
+//        } else {
+//            print("No Firebase user logged in")
+//        }
+//
+//    }
+    
+//    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
+//        // MARK: - Parse plants from Firebase to Core Data
+//
+//        for doc in plants_FB {
+//
+//            let data = doc.data()
+//
+//            print("Doc ID: \(doc.documentID)")
+//            print(doc.data())
+//            //dateAdded
+//            var dateAdded_FB = Date.now
+//            if let timestamp = data["dateAdded"] as? Timestamp {
+//                dateAdded_FB = timestamp.dateValue()
+//                print("lastWatered: \(dateAdded_FB)")
+//            }
+//
+//            //lastWatered
+//            var lastWatered_FB = Date.now
+//            if let timestamp = data["lastWatered"] as? Timestamp {
+//                lastWatered_FB = timestamp.dateValue()
+//                print("lastWatered: \(lastWatered_FB)")
+//            }
+//
+//            //plantDocId
+//            let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
+//            print("plantDocId: \(plantDocId_FB)")
+//
+//            //plantImageString
+//            let plantImageString_FB = data["plantImageString"] as? String ?? ""
+//            print("plantImageString: \(plantImageString_FB)")
+//
+//            //plantName
+//            let plantName_FB = data["plantName"] as? String ?? ""
+//            print("plantName: \(plantName_FB)")
+//
+//            //plantOrder
+//            let plantOrder_FB = data["plantOrder"] as? Int ?? 0
+//            print("plantOrder: \(plantOrder_FB)")
+//
+//            //plantUUID
+//            let plantUUID_FB = data["plantUUID"]
+//            let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
+//            print("plantUUID: \(String(describing: plantUUID_FBCasted))")
+//
+//            //waterHabit
+//            let waterHabit_FB = data["waterHabit"] as? Int ?? 0
+//            print("waterHabit: \(waterHabit_FB)")
+//
+//            let loadedPlant_FB = Plant(context: self.context)
+//            loadedPlant_FB.id = plantUUID_FBCasted
+//            loadedPlant_FB.plant = plantName_FB
+//            loadedPlant_FB.waterHabit = Int16(waterHabit_FB)
+//            loadedPlant_FB.dateAdded = dateAdded_FB
+//            loadedPlant_FB.order = Int32(plantOrder_FB)
+//            loadedPlant_FB.lastWateredDate = lastWatered_FB
+//            loadedPlant_FB.plantImageString = plantImageString_FB
+//
+//            // Saving to Core Data
+//            self.plants.append(loadedPlant_FB)
+//            self.savePlants()
+//        }
+//
+////            if customImageData() != nil {
+////                loadedPlant_FB.imageData = customImageData()
+////
+////            }
+//
+//    }
     
     func retrieveFBCloudStorage() {
 //        let db = Firestore.firestore()

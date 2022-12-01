@@ -13,4 +13,6 @@ pod 'FirebaseFirestore'
 
 pod 'FirebaseUI'
 
+pod 'FirebaseFirestoreSwift'
+
 end

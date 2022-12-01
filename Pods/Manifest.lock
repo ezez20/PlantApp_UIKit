@@ -685,6 +685,11 @@ PODS:
     - "gRPC-C++ (~> 1.44.0)"
     - leveldb-library (~> 1.22)
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseFirestoreSwift (10.2.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseFirestore (~> 10.0)
+    - FirebaseSharedSwift (~> 10.0)
   - FirebaseFirestoreUI (12.3.0):
     - FirebaseFirestore (< 11.0, >= 8.0)
   - FirebaseGoogleAuthUI (12.3.0):
@@ -703,6 +708,7 @@ PODS:
   - FirebasePhoneAuthUI (12.3.0):
     - FirebaseAuth
     - FirebaseAuthUI
+  - FirebaseSharedSwift (10.2.0)
   - FirebaseStorage (10.1.0):
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseAuthInterop (~> 10.0)
@@ -862,6 +868,7 @@ DEPENDENCIES:
   - FirebaseAnalytics
   - FirebaseAuth
   - FirebaseFirestore
+  - FirebaseFirestoreSwift
   - FirebaseUI
 
 SPEC REPOS:
@@ -887,11 +894,13 @@ SPEC REPOS:
     - FirebaseEmailAuthUI
     - FirebaseFacebookAuthUI
     - FirebaseFirestore
+    - FirebaseFirestoreSwift
     - FirebaseFirestoreUI
     - FirebaseGoogleAuthUI
     - FirebaseInstallations
     - FirebaseOAuthUI
     - FirebasePhoneAuthUI
+    - FirebaseSharedSwift
     - FirebaseStorage
     - FirebaseStorageUI
     - FirebaseUI
@@ -930,11 +939,13 @@ SPEC CHECKSUMS:
   FirebaseEmailAuthUI: 93c49123133a5ff934e05d15c51462ed0f12ee0a
   FirebaseFacebookAuthUI: 2ed58e670fbf1a8203c81ffc3a73a8739f7ce25c
   FirebaseFirestore: d482e5e0f95dba8ef5d499a7efa87ba2f56ef0c0
+  FirebaseFirestoreSwift: 3efd6253025b189eb11861d6027d6b33988005ce
   FirebaseFirestoreUI: 626383a5a291b4c24851957b893f0e384177bb65
   FirebaseGoogleAuthUI: 07addbda8ded46089a08681bf101c424eca79337
   FirebaseInstallations: 99d24bac0243cf8b0e96cf5426340d211f0bcc80
   FirebaseOAuthUI: 7df89aca072aaba79a63f8cabb0183a2e818c3d3
   FirebasePhoneAuthUI: 75e26e892ab6136003311d89e9bda31f54f5363f
+  FirebaseSharedSwift: a160b39d4ce77be922b3d6ff009099c7294e36e5
   FirebaseStorage: 132c10c4d2f8ed8afbfa918eb35d19a87f383d59
   FirebaseStorageUI: e395358d689cd64b967b2402939ee0f503de63b5
   FirebaseUI: e9a2dd42f5b593cd8b6e64c11d30ded38f30e48c
@@ -951,6 +962,6 @@ SPEC CHECKSUMS:
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   SDWebImage: 23d714cd599354ee7906dbae26dff89b421c4370
 
-PODFILE CHECKSUM: 4da7e61d6e879f66f5083b6eaf03b4293de474ba
+PODFILE CHECKSUM: 23d13157a75ff344b4c2d5d96bd8789f9ce2f4e6
 
 COCOAPODS: 1.11.3
