@@ -21,7 +21,7 @@ class MainViewController: UIViewController {
     
     // MARK: - Google Firebase
     var userID_FB = ""
-    var plantImages_FB = [QueryDocumentSnapshot]()
+    var plantImages_FB = [UIImage]()
 //    var plants_FB = [QueryDocumentSnapshot]()
   
     
@@ -62,7 +62,6 @@ class MainViewController: UIViewController {
         weatherManager.delegate = self
         
         loadFirebaseUser()
-        retrieveFBCloudStorage()
         
         if defaults.bool(forKey: "userFirstLoggedIn") {
             loadPlantsFB()
@@ -74,6 +73,7 @@ class MainViewController: UIViewController {
         
         
     }
+
     
     override func viewWillAppear(_ animated: Bool) {
         locationManager.delegate = self
@@ -152,7 +152,10 @@ class MainViewController: UIViewController {
             print("Error loading categories \(error)")
         }
         
-        plantsTableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+               self.plantsTableView.reloadData()
+           }
+        
         refreshUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
@@ -358,7 +361,7 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             self.weatherLogo = weather.conditionName
             self.weatherTemp = weather.teperatureString
             self.weatherCity = weather.cityName
@@ -439,7 +442,11 @@ extension MainViewController {
                     }
                     
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
-                    self.loadPlants()
+                    
+                    DispatchQueue.main.async {
+                        self.loadPlants()
+                    }
+             
                     print("Core Data count after FB loaded: \(self.plants.count)")
 
                 } else {
@@ -510,31 +517,46 @@ extension MainViewController {
             loadedPlant_FB.lastWateredDate = lastWatered_FB
             loadedPlant_FB.plantImageString = plantImageString_FB
             
+            let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
+            
+            if customPlantImageUUID_FB != nil {
+                let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
+                
+                fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                    if error == nil {
+                        loadedPlant_FB.imageData = data!
+                    } else {
+                        print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
+                    }
+                }
+
+            } else {
+                print("customPlantImage_FB: \(customPlantImageUUID_FB.debugDescription)")
+            }
+            
             // Saving to Core Data
             self.plants.append(loadedPlant_FB)
             self.savePlants()
         }
 
-//            if customImageData() != nil {
-//                loadedPlant_FB.imageData = customImageData()
-//
-//            }
+           
 
     }
     
-    func retrieveFBCloudStorage() {
-//        let db = Firestore.firestore()
-//
-//        db.collection("customSavedPlantImages").getDocuments { snapshot, error in
-//
-//            if error == nil && snapshot != nil {
-////                self.plants_FB = snapshot!
+//    func retrievedImageData_CloudStorage(fbImageUUID: String) -> Data?  {
+//        let fileRef = Storage.storage().reference(withPath: fbImageUUID)
+//        var imageData = Data()
+//        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+//            if error == nil {
+//                DispatchQueue.main.async {
+//                    imageData = data!
+//                }
 //            } else {
-//                print("Error retrieving data from FBCloudStorage")
+//                print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
 //            }
-//
 //        }
-    }
+//        return imageData
+//    }
     
     func deletePlant_FB(indexPath: IndexPath) {
         
