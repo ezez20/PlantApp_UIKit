@@ -42,9 +42,6 @@ class AddPlantViewController: UIViewController {
     var plants = [Plant]()
     var filteredSuggestion = [String]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var delegate: ReloadDataDelegate?
-    
-    
     
     private var selectedHabitDay = 7
     
@@ -54,6 +51,7 @@ class AddPlantViewController: UIViewController {
     private var inputImage: UIImage?
     private var sourceType: UIImagePickerController.SourceType = .camera
     let imagePicker = UIImagePickerController()
+    
     
     
     // MARK: - Views load state
@@ -165,14 +163,17 @@ class AddPlantViewController: UIViewController {
     @IBAction func addPlantButtonPressed(_ sender: Any) {
         
         if authenticateFBUser() {
+            
+            // MARK: - Adding new plant with Firebase/Core Data
             let newPlantID = UUID()
             addPlant_FB(newPlantID)
+//            loadPlantsFB(newPlantUUID: newPlantID)
+//            getImage()
             
             //ADD: dismiss AddPlantView.
-            dismiss(animated: true) {
-                self.loadPlantsFB(newPlantUUID: newPlantID)
-                print("completion handled")
-            }
+//            dismiss(animated: true) {
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+//            }
             
         } else {
         
@@ -236,18 +237,14 @@ class AddPlantViewController: UIViewController {
 
 }
 
-// MARK: - Protocols
-protocol ReloadDataDelegate {
-    func reloadData()
-}
+
 
 
 // MARK: - Extensions
 extension AddPlantViewController: PassDataDelegate {
     func passData(Data: Int) {
         selectedHabitDay = Data
-        print(Data)
-        print("pass data triggered")
+        print("User selected day: \(selectedHabitDay)")
     }
     
 }
@@ -260,6 +257,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         if !filteredSuggestion.isEmpty {
             return filteredSuggestion.count
         } else {
+            removeSuggestionScrollView()
             return 0
         }
     }
@@ -305,7 +303,6 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
             }
         }
         
-        
         plantImageString = trimmedAndLoweredText!
         print(plantImageString)
 
@@ -314,13 +311,18 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         func filterText(_ query: String) {
+            
             filteredSuggestion.removeAll()
+            
             for plant in imageSetNames {
+                
                 if plant.lowercased().starts(with: query.lowercased()) {
                     filteredSuggestion.append(plant)
                     showSuggestionScrollView()
                 }
+                
             }
+            
             suggestionTableView.reloadData()
             print(filteredSuggestion)
         }
@@ -406,17 +408,14 @@ extension AddPlantViewController {
     
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {
-            print("Firebase User logged in")
             return true
         } else {
-            print("No Firebase user")
             return false
         }
     }
     
     func addPlant_FB(_ newPlantID: UUID) {
         
-        if authenticateFBUser() {
             let db = Firestore.firestore()
             
             //2: FIREBASE: Get currentUser UID to use as document's ID.
@@ -458,72 +457,66 @@ extension AddPlantViewController {
             
             // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
             if customImageData() != nil {
-                // Authenticate Firebase User
-                print("customImage not nil")
-                if authenticateFBUser() {
-                    // Handle Firebase Storage upload
-                    uploadPhotoToFirebase(plantDoc)
-                } else {
-                    print("Firebase: Error saving custom image.")
+                print("customImageData not nil")
+                // Handle Firebase Storage upload
+                uploadPhotoToFirebase(plantDoc) {
+                    print("Upload image to FB complete")
+                    self.loadPlantsFB(newPlantUUID: newPlantID)
                 }
+            } else {
+                print("customImageData is nil")
             }
-            
-            print("Plant successfully added on Firebase")
-        }
+        
+        print("Plant successfully added on Firebase")
     }
     
     func loadPlantsFB(newPlantUUID: UUID) {
-
-        if Auth.auth().currentUser?.uid != nil {
-            let currentUser = Auth.auth().currentUser?.email
-            // Add some kind of function to grab user's ID/Name to display in MainVC
-
-            //Get currentUser UID to use as document's ID.
-            let db = Firestore.firestore()
-            let userID_FB = Auth.auth().currentUser!.uid
-
-            let currentUserCollection = db.collection("users").document(userID_FB)
-            let plantsCollection = currentUserCollection.collection("plants")
+        
+        //Get currentUser UID to use as document's ID.
+        let db = Firestore.firestore()
+        let userID_FB = Auth.auth().currentUser!.uid
+        
+        let currentUserCollection = db.collection("users").document(userID_FB)
+        let plantsCollection = currentUserCollection.collection("plants")
+        
+        // Get all documents/plants and put it in "plants_FB"
+        plantsCollection.getDocuments { (snapshot, error) in
             
-           
-            // Get all documents/plants and put it in "plants_FB"
-            plantsCollection.getDocuments { (snapshot, error) in
-                if error == nil && snapshot != nil {
-                    
-                    var plants_FB = [QueryDocumentSnapshot]()
-                    plants_FB = snapshot!.documents
-                    
-                    var plantDocIDsArray = [String]()
+            if error == nil && snapshot != nil {
 
-                    for d in snapshot!.documents {
-                        plantDocIDsArray.append(d.documentID)
-                    }
-                    
-                    // Tells MainViewController to "loadPlants"
-                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID)
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-
-                } else {
-                    print("Error getting documents from plant collection from firebase")
+                var plants_FB = [QueryDocumentSnapshot]()
+                plants_FB = snapshot!.documents
+                
+                var plantDocIDsArray = [String]()
+                
+                for d in snapshot!.documents {
+                    plantDocIDsArray.append(d.documentID)
                 }
+                
+                self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
+                    print("Data has been parsed to Core Data")
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                    self.dismiss(animated: true)
+                }
+    
+            } else {
+                print("Error getting documents from plant collection from firebase")
             }
-         
-            print("Current user logged in: \(String(describing: currentUser))")
-        } else {
-            print("No Firebase user logged in")
+            
         }
-
+        
     }
     
-    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], newPlantUUID: UUID) {
-        // MARK: - Parse plants from Firebase to Core Data
-            
-            print("Documents are valid")
-            
+    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], newPlantUUID: UUID, completion: @escaping () -> Void) {
+        // MARK: - Parse "plant being added" from Firebase to Core Data
         for doc in plants_FB {
+    
             let data = doc.data()
+            
             if let plantID = doc["plantUUID"] {
+                
                 let plantUUIDCasted = UUID(uuidString: plantID as? String ?? "")
+                
                 if plantUUIDCasted == newPlantUUID {
                 
                     print("Doc ID: \(doc.documentID)")
@@ -576,40 +569,45 @@ extension AddPlantViewController {
                     loadedPlant_FB.lastWateredDate = lastWatered_FB
                     loadedPlant_FB.plantImageString = plantImageString_FB
                     
+                    // Retrieve "customPlantImage" data from FB Storage.
                     let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
-                    if customPlantImageUUID_FB != nil {
-                        let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
-                        
-                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                            if error == nil {
-                                loadedPlant_FB.imageData = data!
-                                print("data: \(data!)")
-                            } else {
-                                print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
-                            }
-                        }
-
-                    } else {
-                        print("customPlantImage_FB: \(customPlantImageUUID_FB.debugDescription)")
-                    }
                     
-                    // Saving to Core Data
-                    self.plants.append(loadedPlant_FB)
-                    self.savePlant()
+                    if customPlantImageUUID_FB != nil {
+                       
+                            print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
+                            
+                            let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
+                            fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                                if error == nil && data != nil {
+                                    loadedPlant_FB.imageData = data!
+                                    print("FB Storage imageData has been retrieved successfully: \(data!)")
+                                    completion()
+                                } else {
+                                    print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
+                                }
+                            }
+                        
+                            self.plants.append(loadedPlant_FB)
+                            self.savePlant()
+                        
+                    } else {
+                        print("customPlantImage_FB is nil.")
+                        self.plants.append(loadedPlant_FB)
+                        self.savePlant()
+                        completion()
+                    }
                 }
             }
         }
-     
+        print("Data from FB has been successfully parse'd into Core Data. Core Data count: \(plants.count)")
     }
     
     
-    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference) {
+    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference, completion: @escaping () -> Void) {
         let randomID = UUID.init().uuidString
         let path = "customSavedPlantImages/\(randomID).jpg"
-        let url = URL(string: path)!
         let uploadRef = Storage.storage().reference(withPath: path)
         
-             
         guard let imageData = customImageData() else { return }
         let uploadMetaData = StorageMetadata.init()
         uploadMetaData.contentType = "image/jpeg"
@@ -619,16 +617,17 @@ extension AddPlantViewController {
             if error != nil {
                 K.presentAlert(self, error!)
             }
-
-            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
-        }
-
-        
-        // customPlantImageUUID: for identifying on cloud storage/Firestore
-        plantAddedDoc.setData(["customPlantImageUUID": path], merge: true) { error in
-            if error != nil {
-                print("Firebase Error saving: customPlantImageUUID")
+            
+            // customPlantImageUUID: for identifying on cloud storage/Firestore
+            plantAddedDoc.setData(["customPlantImageUUID": path], merge: true) { error in
+                if error != nil {
+                    print("Firebase Error setting data for - customPlantImageUUID. Error: \(String(describing: error))")
+                }
             }
+            
+            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+            completion()
+            
         }
     }
     

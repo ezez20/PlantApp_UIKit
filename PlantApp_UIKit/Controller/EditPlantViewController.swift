@@ -381,6 +381,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         if !filteredSuggestion.isEmpty {
             return filteredSuggestion.count
         } else {
+            removeSuggestionScrollView()
             return 0
         }
     }

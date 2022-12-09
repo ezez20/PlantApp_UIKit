@@ -19,7 +19,7 @@ class WaterHabitDaysViewController: UIViewController {
     let habitDays = Array(2...14)
     var selectedHabitDays = 7
     
-    var delegate: PassDataDelegate!
+    var delegate: PassDataDelegate?
  
 
 // MARK: - Views load state

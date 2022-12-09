@@ -30,11 +30,12 @@
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
 		51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E6D9D628CBB11A0053E4EE /* Constants.swift */; };
 		51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */; };
-		85D1CF5C6421407849C92E4D /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 648C2AB666C4AA7310251C41 /* Pods_PlantApp_UIKit.framework */; };
+		95A24EAD7D38C32067B3547B /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0989383D8D623747AD8F6C7A /* Pods-PlantApp_UIKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.debug.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.debug.xcconfig"; sourceTree = "<group>"; };
+		3161195C411E20AD01A2E9FE /* Pods-PlantApp_UIKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.release.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.release.xcconfig"; sourceTree = "<group>"; };
+		431522D414A8E9B4D4279475 /* Pods-PlantApp_UIKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.debug.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.debug.xcconfig"; sourceTree = "<group>"; };
 		5102E02128AFFDC6006AF2AA /* PlantApp_UIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlantApp_UIKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5102E02428AFFDC6006AF2AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5102E02628AFFDC6006AF2AA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,8 +61,7 @@
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
 		51E6D9D628CBB11A0053E4EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantViewController.swift; sourceTree = "<group>"; };
-		648C2AB666C4AA7310251C41 /* Pods_PlantApp_UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlantApp_UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B1981F2CBCC106B27B8059E /* Pods-PlantApp_UIKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.release.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.release.xcconfig"; sourceTree = "<group>"; };
+		762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlantApp_UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,26 +69,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85D1CF5C6421407849C92E4D /* Pods_PlantApp_UIKit.framework in Frameworks */,
+				95A24EAD7D38C32067B3547B /* Pods_PlantApp_UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		047697D0DB1B3A4B0437CDD0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				648C2AB666C4AA7310251C41 /* Pods_PlantApp_UIKit.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		0C524263EEB24A1EC24B1BF8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0989383D8D623747AD8F6C7A /* Pods-PlantApp_UIKit.debug.xcconfig */,
-				8B1981F2CBCC106B27B8059E /* Pods-PlantApp_UIKit.release.xcconfig */,
+				431522D414A8E9B4D4279475 /* Pods-PlantApp_UIKit.debug.xcconfig */,
+				3161195C411E20AD01A2E9FE /* Pods-PlantApp_UIKit.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -99,7 +91,7 @@
 				5102E02328AFFDC6006AF2AA /* PlantApp_UIKit */,
 				5102E02228AFFDC6006AF2AA /* Products */,
 				0C524263EEB24A1EC24B1BF8 /* Pods */,
-				047697D0DB1B3A4B0437CDD0 /* Frameworks */,
+				D223E4371495AFB5A40E862B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -174,6 +166,14 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D223E4371495AFB5A40E862B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -181,11 +181,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5102E03828AFFDC7006AF2AA /* Build configuration list for PBXNativeTarget "PlantApp_UIKit" */;
 			buildPhases = (
-				A874C1DDCE824F8248841BE5 /* [CP] Check Pods Manifest.lock */,
+				907AEDCB6CB709032D4B8755 /* [CP] Check Pods Manifest.lock */,
 				5102E01D28AFFDC6006AF2AA /* Sources */,
 				5102E01E28AFFDC6006AF2AA /* Frameworks */,
 				5102E01F28AFFDC6006AF2AA /* Resources */,
-				6DD9206F0259069AD1C21D04 /* [CP] Embed Pods Frameworks */,
+				A6F49215712B0357F81EEE21 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -245,24 +245,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6DD9206F0259069AD1C21D04 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A874C1DDCE824F8248841BE5 /* [CP] Check Pods Manifest.lock */ = {
+		907AEDCB6CB709032D4B8755 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -282,6 +265,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A6F49215712B0357F81EEE21 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -384,7 +384,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -438,7 +438,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -450,7 +450,7 @@
 		};
 		5102E03928AFFDC7006AF2AA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0989383D8D623747AD8F6C7A /* Pods-PlantApp_UIKit.debug.xcconfig */;
+			baseConfigurationReference = 431522D414A8E9B4D4279475 /* Pods-PlantApp_UIKit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -468,7 +468,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -484,7 +484,7 @@
 		};
 		5102E03A28AFFDC7006AF2AA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B1981F2CBCC106B27B8059E /* Pods-PlantApp_UIKit.release.xcconfig */;
+			baseConfigurationReference = 3161195C411E20AD01A2E9FE /* Pods-PlantApp_UIKit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -502,12 +502,126 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				"OTHER_LDFLAGS[arch=*]" = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AppAuth\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"FBAEMKit\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"FBSDKCoreKit\"",
+					"-framework",
+					"\"FBSDKCoreKit_Basics\"",
+					"-framework",
+					"\"FBSDKLoginKit\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseAnonymousAuthUI\"",
+					"-framework",
+					"\"FirebaseAppCheckInterop\"",
+					"-framework",
+					"\"FirebaseAuth\"",
+					"-framework",
+					"\"FirebaseAuthInterop\"",
+					"-framework",
+					"\"FirebaseAuthUI\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreExtension\"",
+					"-framework",
+					"\"FirebaseCoreInternal\"",
+					"-framework",
+					"\"FirebaseDatabase\"",
+					"-framework",
+					"\"FirebaseDatabaseUI\"",
+					"-framework",
+					"\"FirebaseEmailAuthUI\"",
+					"-framework",
+					"\"FirebaseFacebookAuthUI\"",
+					"-framework",
+					"\"FirebaseFirestore\"",
+					"-framework",
+					"\"FirebaseFirestoreUI\"",
+					"-framework",
+					"\"FirebaseGoogleAuthUI\"",
+					"-framework",
+					"\"FirebaseInstallations\"",
+					"-framework",
+					"\"FirebaseOAuthUI\"",
+					"-framework",
+					"\"FirebasePhoneAuthUI\"",
+					"-framework",
+					"\"FirebaseStorage\"",
+					"-framework",
+					"\"FirebaseStorageUI\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GTMAppAuth\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleAppMeasurementIdentitySupport\"",
+					"-framework",
+					"\"GoogleSignIn\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"LocalAuthentication\"",
+					"-framework",
+					"\"SDWebImage\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"absl\"",
+					"-framework",
+					"\"grpc\"",
+					"-framework",
+					"\"grpcpp\"",
+					"-framework",
+					"\"leveldb\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"openssl_grpc\"",
+					"-framework",
+					"\"uv\"",
+					"-weak_framework",
+					"\"AuthenticationServices\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.PlantApp-UIKit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -158,12 +158,12 @@ class LoginViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        // This will authenticate user and navigate user back to homescreen if app was killed.
         if authenticateFBUser() {
             K.navigateToMainVC(self.navigationController!)
         }
-        
     }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         // Reset/Clear textfields when leaving login screen
@@ -176,17 +176,19 @@ class LoginViewController: UIViewController {
         print("Login button clicked")
         
         // Signing in Firebase
-        Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) { (authResult, error) in
+        Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            (authResult, error) in
             
             // Check for error signing in
             if error != nil {
                 print("Sign in error with Firebase: \(error!.localizedDescription)")
-                
                 K.presentAlert(self, error!)
             } else {
                 // If no error signing in, navigate to MainViewController.
-                self.defaults.set(true, forKey: "userFirstLoggedIn")
-                K.navigateToMainVC(self.navigationController!)
+                if self.authenticateFBUser() {
+                    self.defaults.set(true, forKey: "userFirstLoggedIn")
+                    K.navigateToMainVC(self.navigationController!)
+                }
             }
             
         }

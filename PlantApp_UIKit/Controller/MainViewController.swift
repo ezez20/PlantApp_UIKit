@@ -22,7 +22,6 @@ class MainViewController: UIViewController {
     // MARK: - Google Firebase
     var userID_FB = ""
     var plantImages_FB = [UIImage]()
-//    var plants_FB = [QueryDocumentSnapshot]()
   
     
     // MARK: - UserDefaults for saving small data/settings
@@ -91,12 +90,11 @@ class MainViewController: UIViewController {
     
     @objc func notificationReceived() {
         loadPlants()
+        
     }
     
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
-//        let viewController = LoginViewController()
-//        let navigation = UINavigationController(rootViewController: viewController)
         self.navigationController?.popToRootViewController(animated: true)
     }
 
@@ -152,9 +150,12 @@ class MainViewController: UIViewController {
             print("Error loading categories \(error)")
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-               self.plantsTableView.reloadData()
-           }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//               self.plantsTableView.reloadData()
+//           }
+        DispatchQueue.main.async {
+            self.plantsTableView.reloadData()
+        }
         
         refreshUserNotification()
         print("Plants loaded")
@@ -442,10 +443,6 @@ extension MainViewController {
                     }
                     
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
-                    
-                    DispatchQueue.main.async {
-                        self.loadPlants()
-                    }
              
                     print("Core Data count after FB loaded: \(self.plants.count)")
 
@@ -462,7 +459,6 @@ extension MainViewController {
     
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
         // MARK: - Parse plants from Firebase to Core Data
-
         for doc in plants_FB {
             
             let data = doc.data()
@@ -525,6 +521,7 @@ extension MainViewController {
                 fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
                     if error == nil {
                         loadedPlant_FB.imageData = data!
+                        print("Main plant FB Image: \(customPlantImageUUID_FB!)")
                     } else {
                         print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
                     }
@@ -537,26 +534,13 @@ extension MainViewController {
             // Saving to Core Data
             self.plants.append(loadedPlant_FB)
             self.savePlants()
+            
+            loadPlants()
+            
         }
-
-           
 
     }
     
-//    func retrievedImageData_CloudStorage(fbImageUUID: String) -> Data?  {
-//        let fileRef = Storage.storage().reference(withPath: fbImageUUID)
-//        var imageData = Data()
-//        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-//            if error == nil {
-//                DispatchQueue.main.async {
-//                    imageData = data!
-//                }
-//            } else {
-//                print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
-//            }
-//        }
-//        return imageData
-//    }
     
     func deletePlant_FB(indexPath: IndexPath) {
         
