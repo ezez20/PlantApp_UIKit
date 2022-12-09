@@ -465,6 +465,7 @@ extension AddPlantViewController {
                 }
             } else {
                 print("customImageData is nil")
+                self.loadPlantsFB(newPlantUUID: newPlantID)
             }
         
         print("Plant successfully added on Firebase")

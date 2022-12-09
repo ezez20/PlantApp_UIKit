@@ -38,7 +38,7 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+       
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
         
@@ -160,6 +160,11 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         // This will authenticate user and navigate user back to homescreen if app was killed.
         if authenticateFBUser() {
+            self.defaults.set(true, forKey: "userFirstLoggedIn")
+            K.navigateToMainVC(self.navigationController!)
+        }
+        
+        if defaults.bool(forKey: "useWithoutFBAccount") {
             K.navigateToMainVC(self.navigationController!)
         }
     }
@@ -198,9 +203,10 @@ class LoginViewController: UIViewController {
         // Add segue to WaterHabitDaysViewController
         print("Use without login account - button clicked")
         
-//        loadPlants()
-//        plants.removeAll()
-//        print("plants array: \(plants)")
+        //        loadPlants()
+        //        plants.removeAll()
+        //        print("plants array: \(plants)")
+        self.defaults.set(true, forKey: "useWithoutFBAccount")
         
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController

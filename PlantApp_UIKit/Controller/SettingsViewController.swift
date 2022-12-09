@@ -194,6 +194,17 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     @objc func logoutButtonPressed(_ sender:UISwitch!) {
         print("LogoutButtonPressed")
         
+        if defaults.bool(forKey: "useWithoutFBAccount") {
+            if plants.count != 0 {
+                for i in 0...plants.endIndex - 1 {
+                    context.delete(plants[i])
+                    updatePlant()
+                }
+            }
+            self.defaults.set(false, forKey: "useWithoutFBAccount")
+        }
+       
+        
         let firebaseAuth = Auth.auth()
         
         do {
@@ -213,6 +224,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
+        
         
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)

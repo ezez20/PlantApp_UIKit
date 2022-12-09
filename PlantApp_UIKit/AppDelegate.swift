@@ -35,13 +35,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
+        
         self.registerNotificationAction()
         
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(appDiscardNotification), name: NSNotification.Name("appDiscardedTrigger"), object: nil)
 
         return true
     }
+    
     
     
     func registerNotificationAction() {
@@ -66,6 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
+    
+    
+    
     
     // MARK: - Core Data stack
     
@@ -188,6 +195,19 @@ extension AppDelegate {
         }
         
         print("Plants loaded")
+    }
+    
+    @objc func appDiscardNotification() {
+        let context = persistentContainer.viewContext
+        loadPlants()
+
+        if plants.count != 0 {
+            for i in 0...plants.endIndex - 1 {
+                context.delete(plants[i])
+                
+            }
+        }
+        saveContext()
     }
     
 }

@@ -68,13 +68,16 @@ class MainViewController: UIViewController {
         }
         
         // Load plants from Core Data
-        loadPlants()
+        if authenticateFBUser() == false {
+            loadPlants()
+        }
         
-        
+        print("View reload. Core Data: \(plants.count)")
     }
 
     
     override func viewWillAppear(_ animated: Bool) {
+   
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
@@ -442,7 +445,10 @@ extension MainViewController {
                         plantDocIDsArray.append(d.documentID)
                     }
                     
-                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+//                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
+                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
+                        self.loadPlants()
+                    }
              
                     print("Core Data count after FB loaded: \(self.plants.count)")
 
@@ -457,7 +463,7 @@ extension MainViewController {
 
     }
     
-    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot]) {
+    func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], completion: @escaping () -> Void) {
         // MARK: - Parse plants from Firebase to Core Data
         for doc in plants_FB {
             
@@ -514,28 +520,31 @@ extension MainViewController {
             loadedPlant_FB.plantImageString = plantImageString_FB
             
             let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
-            
-            if customPlantImageUUID_FB != nil {
-                let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
-                
-                fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                    if error == nil {
-                        loadedPlant_FB.imageData = data!
-                        print("Main plant FB Image: \(customPlantImageUUID_FB!)")
-                    } else {
-                        print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
-                    }
-                }
 
+            if customPlantImageUUID_FB != nil {
+               
+                    print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
+                    
+                    let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
+                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        if error == nil && data != nil {
+                            loadedPlant_FB.imageData = data!
+                            print("FB Storage imageData has been retrieved successfully: \(data!)")
+                            completion()
+                        } else {
+                            print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
+                        }
+                    }
+                
+                    self.plants.append(loadedPlant_FB)
+                    self.savePlants()
+                
             } else {
-                print("customPlantImage_FB: \(customPlantImageUUID_FB.debugDescription)")
+                print("customPlantImage_FB is nil.")
+                self.plants.append(loadedPlant_FB)
+                self.savePlants()
+                completion()
             }
-            
-            // Saving to Core Data
-            self.plants.append(loadedPlant_FB)
-            self.savePlants()
-            
-            loadPlants()
             
         }
 
