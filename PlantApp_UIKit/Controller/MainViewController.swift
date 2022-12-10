@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
     // MARK: - Google Firebase
     var userID_FB = ""
     var plantImages_FB = [UIImage]()
+    var plants_FBLoaded = [QueryDocumentSnapshot]()
   
     
     // MARK: - UserDefaults for saving small data/settings
@@ -427,6 +428,7 @@ extension MainViewController {
             //Get currentUser UID to use as document's ID.
             let db = Firestore.firestore()
             userID_FB = Auth.auth().currentUser!.uid
+            print("userID_FB: \(userID_FB)")
 
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
@@ -438,6 +440,7 @@ extension MainViewController {
                     var plants_FB = [QueryDocumentSnapshot]()
                     
                     plants_FB = snapshot!.documents
+                    self.plants_FBLoaded = plants_FB
                     
                     var plantDocIDsArray = [String]()
 
@@ -445,7 +448,6 @@ extension MainViewController {
                         plantDocIDsArray.append(d.documentID)
                     }
                     
-//                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB)
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
                         self.loadPlants()
                     }
@@ -528,6 +530,7 @@ extension MainViewController {
                     let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
                     fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
                         if error == nil && data != nil {
+                            loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
                             loadedPlant_FB.imageData = data!
                             print("FB Storage imageData has been retrieved successfully: \(data!)")
                             completion()
@@ -571,6 +574,45 @@ extension MainViewController {
                     print("FB deleted plant: \(plantUUID)")
                 }
             }
+            
+            if let plantToDeleteImageID = self.plants[indexPath.row].customPlantImageID {
+                let path = plantToDeleteImageID
+                let plantRef = Storage.storage().reference(withPath: path)
+                
+                // Delete the file
+                plantRef.delete { error in
+                    if let error = error {
+                        print("Error deleting image from FB Storage")
+                    } else {
+                        print("Successfully delete image from FB Storage")
+                    }
+                }
+            }
+            
+            
+//            for doc in plants_FBLoaded {
+//                let data = doc.data()
+//                if let plantID = data["plantUUID"] {
+//                    let plantIDString = plantID as? String ?? ""
+//                    if plantIDString == plantUUID {
+//                        let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
+//                        print("customPlantImageUUID delete: \(customPlantImageUUID_FB!)")
+//                        // Create a reference to the file to delete
+//                        let path = "customSavedPlantImages/\(customPlantImageUUID_FB!).jpg"
+//                        let plantRef = Storage.storage().reference(withPath: path)
+//
+//                        // Delete the file
+//                        plantRef.delete { error in
+//                          if let error = error {
+//                            print("Error deleting image from FB Storage")
+//                          } else {
+//                              print("Successfully delete image from FB Storage")
+//                          }
+//                        }
+//                    }
+//                }
+//            }
+            
         }
     
         

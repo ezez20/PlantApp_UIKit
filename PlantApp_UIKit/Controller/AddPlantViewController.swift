@@ -580,6 +580,7 @@ extension AddPlantViewController {
                             let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
                             fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
                                 if error == nil && data != nil {
+                                    loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
                                     loadedPlant_FB.imageData = data!
                                     print("FB Storage imageData has been retrieved successfully: \(data!)")
                                     completion()
@@ -612,6 +613,7 @@ extension AddPlantViewController {
         guard let imageData = customImageData() else { return }
         let uploadMetaData = StorageMetadata.init()
         uploadMetaData.contentType = "image/jpeg"
+        
         
         uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
             

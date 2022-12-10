@@ -170,25 +170,18 @@ class SignUpViewController: UIViewController {
                     // Add collection("users")
                     let userUID = Auth.auth().currentUser?.uid
                     let newUserFireBase = db.collection("users").document(userUID!)
+                    let userEmail = Auth.auth().currentUser?.email
                     
                     // set/add document(userName, unique ID/documentID).
                     newUserFireBase.setData(
                         ["userName": self.userNameTextfield.text!,
-                         "userUID": userUID!
+                         "userUID": userUID!,
+                         "email:": userEmail!
                         ]) { error in
                             if error != nil {
                                 K.presentAlert(self, error!)
                             }
                         }
-                    
-                    // Add subcollection: "plants" to collection("users") with empty document ".setData([:])"
-                    if newUserFireBase.documentID == newUserFireBase.documentID {
-                        newUserFireBase.collection("plants").document().setData([:]) { error in
-                            if error != nil {
-                                K.presentAlert(self, error!)
-                            }
-                        }
-                    }
                     
                     
                     // 3: Once user user creates account with no error, transition to MainViewController with database loaded.

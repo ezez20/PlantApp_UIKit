@@ -182,7 +182,6 @@ extension AppDelegate {
     
     
     func loadPlants() {
-        
         let context = persistentContainer.viewContext
         
         do {
