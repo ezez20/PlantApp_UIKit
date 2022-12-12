@@ -18,7 +18,7 @@ class EditPlantViewController: UIViewController {
     
     let navController = UINavigationController()
     let navigationBar = UINavigationBar()
-  
+    
     private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
     let plantTextFieldView = UIView()
@@ -31,7 +31,7 @@ class EditPlantViewController: UIViewController {
     let waterHabitButton = UIButton()
     
     let dividerView = UIView()
- 
+    
     let lastWateredLabel = UILabel()
     let datePicker = UIDatePicker()
     
@@ -46,9 +46,13 @@ class EditPlantViewController: UIViewController {
     var inputImage: UIImage?
     let imagePicker = UIImagePickerController()
     
+    // MARK: - UIViews added
+    let opaqueView = UIView()
+    let loadingSpinnerView = UIActivityIndicatorView(style: .large)
+    
     private var selectedHabitDay = 7
     var delegate: ModalViewControllerDelegate?
-
+    
     
     // MARK: - Core Data
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -58,9 +62,9 @@ class EditPlantViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         updateUI()
         print("View will appear")
-    
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraButtonPressed))
-  
+        
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
     }
@@ -68,7 +72,7 @@ class EditPlantViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         delegate?.modalControllerWillDisapear(self)
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -107,7 +111,7 @@ class EditPlantViewController: UIViewController {
         
         plantTextField.backgroundColor = .white
         plantTextField.placeholder = "Type of plant"
-      
+        
         
         // wateringLabel
         containerView.addSubview(wateringLabel)
@@ -119,7 +123,7 @@ class EditPlantViewController: UIViewController {
         wateringLabel.text = "WATERING"
         wateringLabel.textColor = .darkGray
         wateringLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
-      
+        
         
         // wateringSectionView
         containerView.addSubview(wateringSectionView)
@@ -131,7 +135,7 @@ class EditPlantViewController: UIViewController {
         
         wateringSectionView.backgroundColor = .white
         wateringSectionView.clipsToBounds = true
-    
+        
         
         // updatePlantButton
         containerView.addSubview(updatePlantButton)
@@ -177,7 +181,7 @@ class EditPlantViewController: UIViewController {
         wateringSectionView.layer.cornerRadius = 10
         updatePlantButton.layer.cornerRadius = 10
         plantImageButton.layer.cornerRadius = 10
-       
+        
         
         // waterHabitButton
         wateringSectionView.addSubview(waterHabitButton)
@@ -188,7 +192,7 @@ class EditPlantViewController: UIViewController {
         waterHabitButton.rightAnchor.constraint(equalTo: wateringSectionView.rightAnchor, constant: 0).isActive = true
         
         // Temporary Soluton: to add padding for button.
-            //NOTE: 'contentEdgeInsets' was deprecated in iOS 15.0: This property is ignored when using UIButtonConfiguration
+        //NOTE: 'contentEdgeInsets' was deprecated in iOS 15.0: This property is ignored when using UIButtonConfiguration
         waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         waterHabitButton.setTitleColor(.placeholderText, for: .normal)
         waterHabitButton.contentHorizontalAlignment = .trailing
@@ -242,12 +246,12 @@ class EditPlantViewController: UIViewController {
         print("View did layout subviews")
     }
     
-
-// MARK: - Custom addView func template
+    
+    // MARK: - Custom addView func template
     func addView(viewIn: UIView, addSubTo: UIView, top: NSLayoutAnchor<NSLayoutYAxisAnchor>, topConst: Double, bottom: NSLayoutAnchor<NSLayoutYAxisAnchor>, bottomConst: Double, left: NSLayoutAnchor<NSLayoutXAxisAnchor>, leftConst: Double, right: NSLayoutAnchor<NSLayoutXAxisAnchor>, rightConst: Double) {
         
         addSubTo.addSubview(viewIn)
-
+        
         viewIn.translatesAutoresizingMaskIntoConstraints = false
         
         viewIn.topAnchor.constraint(equalTo: top, constant: topConst).isActive = true
@@ -255,8 +259,8 @@ class EditPlantViewController: UIViewController {
         viewIn.leftAnchor.constraint(equalTo: left, constant: leftConst).isActive = true
         viewIn.rightAnchor.constraint(equalTo: right, constant: rightConst).isActive = true
     }
-
-// MARK: - functions/objc funcs
+    
+    // MARK: - functions/objc funcs
     
     @objc func waterHabitButtonClicked(sender: UIButton) {
         // Add segue to WaterHabitDaysViewController
@@ -293,7 +297,7 @@ class EditPlantViewController: UIViewController {
         }
         
         print("Update Plant button clicked")
-
+        
     }
     
     @objc func cameraButtonPressed(sender: UIBarButtonItem) {
@@ -396,7 +400,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         plantTextField.text = filteredSuggestion[indexPath.row]
-            removeSuggestionScrollView()
+        removeSuggestionScrollView()
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -434,7 +438,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
         plantImageString = trimmedAndLoweredText!
         print(plantImageString)
-
+        
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -495,6 +499,28 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
     }
     
+    func addLoadingView() {
+        view.addSubview(opaqueView)
+        opaqueView.backgroundColor = UIColor(white: 0, alpha: 0.4)
+        opaqueView.translatesAutoresizingMaskIntoConstraints = false
+        opaqueView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        opaqueView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        opaqueView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        opaqueView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        
+        opaqueView.addSubview(loadingSpinnerView)
+        loadingSpinnerView.color = .white
+        loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        loadingSpinnerView.centerXAnchor.constraint(equalTo: opaqueView.centerXAnchor).isActive = true
+        loadingSpinnerView.centerYAnchor.constraint(equalTo: opaqueView.centerYAnchor).isActive = true
+        
+        loadingSpinnerView.startAnimating()
+        
+    }
+    
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         removeSuggestionScrollView()
         self.view.endEditing(true)
@@ -541,6 +567,8 @@ extension EditPlantViewController {
     }
     
     func editPlant_FB(_ currentPlantID: UUID) {
+        addLoadingView()
+        
         if authenticateFBUser() {
             let db = Firestore.firestore()
             
@@ -608,7 +636,7 @@ extension EditPlantViewController {
         plantsCollection.getDocuments { (snapshot, error) in
             
             if error == nil && snapshot != nil {
-
+                
                 var plants_FB = [QueryDocumentSnapshot]()
                 plants_FB = snapshot!.documents
                 
@@ -624,7 +652,7 @@ extension EditPlantViewController {
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                     self.dismiss(animated: true)
                 }
-    
+                
             } else {
                 print("Error getting documents from plant collection from firebase")
             }
@@ -636,7 +664,7 @@ extension EditPlantViewController {
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], currentPlantUUID: UUID, completion: @escaping () -> Void) {
         // MARK: - Parse "plant being added" from Firebase to Core Data
         for doc in plants_FB {
-    
+            
             let data = doc.data()
             
             if let plantID = doc["plantUUID"] {
@@ -644,7 +672,7 @@ extension EditPlantViewController {
                 let plantUUIDCasted = UUID(uuidString: plantID as? String ?? "")
                 
                 if plantUUIDCasted == currentPlantUUID {
-                
+                    
                     print("Doc ID: \(doc.documentID)")
                     print(doc.data())
                     //dateAdded
@@ -653,40 +681,40 @@ extension EditPlantViewController {
                         dateAdded_FB = timestamp.dateValue()
                         print("dateAdded_FB: \(dateAdded_FB)")
                     }
-
+                    
                     //lastWatered
                     var lastWatered_FB = Date.now
                     if let timestamp = data["lastWatered"] as? Timestamp {
                         lastWatered_FB = timestamp.dateValue()
                         print("lastWatered_FB: \(lastWatered_FB)")
                     }
-
+                    
                     //plantDocId
                     let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
                     print("plantDocId_FB: \(plantDocId_FB)")
-
+                    
                     //plantImageString
                     let plantImageString_FB = data["plantImageString"] as? String ?? ""
                     print("plantImageString_FB: \(plantImageString_FB)")
-
+                    
                     //plantName
                     let plantName_FB = data["plantName"] as? String ?? ""
                     print("plantName_FB: \(plantName_FB)")
-
+                    
                     //plantOrder
                     let plantOrder_FB = data["plantOrder"] as? Int ?? 0
                     print("plantOrder_FB: \(plantOrder_FB)")
-
+                    
                     //plantUUID
                     let plantUUID_FB = data["plantUUID"]
                     let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
                     print("plantUUID_FB: \(String(describing: plantUUID_FBCasted))")
-
+                    
                     //waterHabit
                     let waterHabit_FB = data["waterHabit"] as? Int ?? 0
                     print("waterHabit_FB: \(waterHabit_FB)")
                     
-//                    let loadedPlant_FB = Plant(context: self.context)
+                    //                    let loadedPlant_FB = Plant(context: self.context)
                     
                     currentPlant.id = plantUUID_FBCasted
                     currentPlant.plant = plantName_FB
@@ -700,20 +728,20 @@ extension EditPlantViewController {
                     let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
                     
                     if customPlantImageUUID_FB != nil {
-                       
-                            print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
-                            
-                            let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
-                            fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                                if error == nil && data != nil {
-                                    self.currentPlant.customPlantImageID = customPlantImageUUID_FB!
-                                    self.currentPlant.imageData = data!
-                                    print("FB Storage imageData has been retrieved successfully: \(data!)")
-                                    completion()
-                                } else {
-                                    print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
-                                }
+                        
+                        print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
+                        
+                        let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
+                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                            if error == nil && data != nil {
+                                self.currentPlant.customPlantImageID = customPlantImageUUID_FB!
+                                self.currentPlant.imageData = data!
+                                print("FB Storage imageData has been retrieved successfully: \(data!)")
+                                completion()
+                            } else {
+                                print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
                             }
+                        }
                         
                     } else {
                         print("customPlantImage_FB is nil.")

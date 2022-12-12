@@ -39,6 +39,10 @@ class MainViewController: UIViewController {
     
     let imageSetNames = K.imageSetNames
     
+    // MARK: - UIViews added
+    let opaqueView = UIView()
+    let loadingSpinnerView = UIActivityIndicatorView(style: .large)
+    
     
 // MARK: - Views load state
     
@@ -91,7 +95,6 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
         
         
-    
     }
     
     
@@ -147,6 +150,8 @@ class MainViewController: UIViewController {
     
     func loadPlants() {
         
+        addLoadingView()
+        
         do {
             let request = Plant.fetchRequest() as NSFetchRequest<Plant>
             let sort = NSSortDescriptor(key: "order", ascending: true)
@@ -156,20 +161,14 @@ class MainViewController: UIViewController {
             print("Error loading categories \(error)")
         }
         
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//               self.plantsTableView.reloadData()
-//           }
         DispatchQueue.main.async {
             self.plantsTableView.reloadData()
         }
         
+        
         refreshUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
-        
-        for doc in plants {
-            print("\(doc.plant), \(doc.lastWateredDate)")
-        }
         
     }
     
@@ -231,31 +230,7 @@ class MainViewController: UIViewController {
         
         print("refreshUserNotification triggered")
         var notificationCount = 0
-        
-//        for plant in plants {
-//
-//            var nextWaterDate: Date {
-//                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to: plant.lastWateredDate!.advanced(by: 86400))
-//                return calculatedDate!
-//            }
-//
-//            var waterStatus: String {
-//
-//                let dateIntervalFormat = DateComponentsFormatter()
-//                dateIntervalFormat.allowedUnits = .day
-//                dateIntervalFormat.unitsStyle = .short
-//                let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
-//                if formatted == "0 days" || nextWaterDate < Date.now {
-//                    plant.wateredBool = false
-//                    notificationCount += 1
-//                    return "due"
-//                } else {
-//                    plant.wateredBool = true
-//                    return "\(formatted)"
-//                }
-//            }
-//            print(waterStatus)
-//        }
+
         print("Notification count: \(notificationCount)")
         //Save the new value to User Defaults
         defaults.set(notificationCount, forKey: "NotificationBadgeCount")
@@ -319,7 +294,9 @@ extension MainViewController: UITableViewDataSource {
     
     // Tells how many rows to list out in tableView.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        return 3
+        
+        removeLoadingView()
+        
         return plants.count
     }
     
@@ -595,31 +572,7 @@ extension MainViewController {
                     }
                 }
             }
-            
-            
-//            for doc in plants_FBLoaded {
-//                let data = doc.data()
-//                if let plantID = data["plantUUID"] {
-//                    let plantIDString = plantID as? String ?? ""
-//                    if plantIDString == plantUUID {
-//                        let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
-//                        print("customPlantImageUUID delete: \(customPlantImageUUID_FB!)")
-//                        // Create a reference to the file to delete
-//                        let path = "customSavedPlantImages/\(customPlantImageUUID_FB!).jpg"
-//                        let plantRef = Storage.storage().reference(withPath: path)
-//
-//                        // Delete the file
-//                        plantRef.delete { error in
-//                          if let error = error {
-//                            print("Error deleting image from FB Storage")
-//                          } else {
-//                              print("Successfully delete image from FB Storage")
-//                          }
-//                        }
-//                    }
-//                }
-//            }
-            
+        
         }
     
         
@@ -664,6 +617,28 @@ extension MainViewController {
             
         }
         
+    }
+    
+    func addLoadingView() {
+        print("addLoadingView")
+        loadingSpinnerView.color = .gray
+        loadingSpinnerView.startAnimating()
+        loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
+
+        plantsTableView.tableFooterView = loadingSpinnerView
+        
+    }
+    
+    func removeLoadingView() {
+//        loadingSpinnerView.stopAnimating()
+//        loadingSpinnerView.removeFromSuperview()
+//        opaqueView.removeFromSuperview()
+        if plants.count != 0 {
+            self.plantsTableView.tableFooterView?.removeFromSuperview()
+            print("removeLoadingView")
+        } else {
+            self.plantsTableView.tableFooterView?.removeFromSuperview()
+        }
     }
     
 }
