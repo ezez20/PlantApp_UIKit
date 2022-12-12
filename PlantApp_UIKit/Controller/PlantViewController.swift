@@ -139,10 +139,10 @@ class PlantViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         updatePlant()
-        
         // Will reload plants in MainVC
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
+    
 
     // MARK: - IBActions functions
     
@@ -202,7 +202,6 @@ class PlantViewController: UIViewController {
     }
     
     func updateInputImage() {
-        
         if imageSetNames.contains(currentPlant.plantImageString!) {
             plantImage.image = UIImage(named: currentPlant.plantImageString!)
         } else {
@@ -253,18 +252,6 @@ class PlantViewController: UIViewController {
     }
     
     
-   
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension PlantViewController: ModalViewControllerDelegate {
@@ -321,42 +308,10 @@ extension PlantViewController {
                 }
             }
             
-            // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
-//            if customImageData() != nil {
-//                // Authenticate Firebase User
-//                if authenticateFBUser() {
-//                    // Handle Firebase Storage upload
-//                    uploadPhotoToFirebase(plantDoc)
-//                } else {
-//                    print("Firebase: Error saving custom image.")
-//                }
-//            }
             
             print("Plant successfully edited on Firebase")
         }
     }
     
-//    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference) {
-//        let randomID = UUID.init().uuidString
-//        let uploadRef = Storage.storage().reference(withPath: "customSavedPlantImages/\(randomID).jpg")
-//
-//        guard let imageData = customImageData() else { return }
-//        let uploadMetaData = StorageMetadata.init()
-//        uploadMetaData.contentType = "image/jpeg"
-//
-//        uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
-//            if error != nil {
-//                K.presentAlert(self, error!)
-//            }
-//            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
-//        }
-//
-//        // customPlantImageUUID: for identifying on cloud storage/Firestore
-//        plantAddedDoc.setData(["customPlantImageUUID": randomID], merge: true) { error in
-//            if error != nil {
-//                print("Firebase Error saving: customPlantImageUUID")
-//            }
-//        }
-//    }
     
 }

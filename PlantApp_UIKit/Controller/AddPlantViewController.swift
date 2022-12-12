@@ -167,13 +167,6 @@ class AddPlantViewController: UIViewController {
             // MARK: - Adding new plant with Firebase/Core Data
             let newPlantID = UUID()
             addPlant_FB(newPlantID)
-//            loadPlantsFB(newPlantUUID: newPlantID)
-//            getImage()
-            
-            //ADD: dismiss AddPlantView.
-//            dismiss(animated: true) {
-//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-//            }
             
         } else {
         
@@ -196,7 +189,6 @@ class AddPlantViewController: UIViewController {
                 newPlant.imageData = customImageData()
             }
 
-            
             // Saving to Core Data
             self.plants.append(newPlant)
             self.savePlant()
@@ -533,33 +525,33 @@ extension AddPlantViewController {
                     var lastWatered_FB = Date.now
                     if let timestamp = data["lastWatered"] as? Timestamp {
                         lastWatered_FB = timestamp.dateValue()
-                        print("lastWatered: \(lastWatered_FB)")
+                        print("lastWatered_FB: \(lastWatered_FB)")
                     }
 
                     //plantDocId
                     let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
-                    print("plantDocId: \(plantDocId_FB)")
+                    print("plantDocId_FB: \(plantDocId_FB)")
 
                     //plantImageString
                     let plantImageString_FB = data["plantImageString"] as? String ?? ""
-                    print("plantImageString: \(plantImageString_FB)")
+                    print("plantImageString_FB: \(plantImageString_FB)")
 
                     //plantName
                     let plantName_FB = data["plantName"] as? String ?? ""
-                    print("plantName: \(plantName_FB)")
+                    print("plantName_FB: \(plantName_FB)")
 
                     //plantOrder
                     let plantOrder_FB = data["plantOrder"] as? Int ?? 0
-                    print("plantOrder: \(plantOrder_FB)")
+                    print("plantOrder_FB: \(plantOrder_FB)")
 
                     //plantUUID
                     let plantUUID_FB = data["plantUUID"]
                     let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
-                    print("plantUUID: \(String(describing: plantUUID_FBCasted))")
+                    print("plantUUID_FB: \(String(describing: plantUUID_FBCasted))")
 
                     //waterHabit
                     let waterHabit_FB = data["waterHabit"] as? Int ?? 0
-                    print("waterHabit: \(waterHabit_FB)")
+                    print("waterHabit_FB: \(waterHabit_FB)")
                     
                     let loadedPlant_FB = Plant(context: self.context)
                     loadedPlant_FB.id = plantUUID_FBCasted
@@ -591,6 +583,7 @@ extension AddPlantViewController {
                         
                             self.plants.append(loadedPlant_FB)
                             self.savePlant()
+                      
                         
                     } else {
                         print("customPlantImage_FB is nil.")

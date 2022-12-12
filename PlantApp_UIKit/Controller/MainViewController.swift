@@ -48,6 +48,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        
         title = K.title
         self.plantsTableView.contentInsetAdjustmentBehavior = .never
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -78,7 +79,7 @@ class MainViewController: UIViewController {
 
     
     override func viewWillAppear(_ animated: Bool) {
-   
+        
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
@@ -88,13 +89,14 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("notificationResponseClickedID"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
-      
+        
+        
+    
     }
     
     
     @objc func notificationReceived() {
         loadPlants()
-        
     }
     
     @objc func logoutNotificationReceived() {
@@ -165,6 +167,10 @@ class MainViewController: UIViewController {
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
+        for doc in plants {
+            print("\(doc.plant), \(doc.lastWateredDate)")
+        }
+        
     }
     
     func deletePlant(indexPath: IndexPath) {
@@ -217,6 +223,7 @@ class MainViewController: UIViewController {
             formatter.dateStyle = .short
             return formatter
         }
+    
         return waterStatus
     }
     
@@ -225,30 +232,30 @@ class MainViewController: UIViewController {
         print("refreshUserNotification triggered")
         var notificationCount = 0
         
-        for plant in plants {
-
-            var nextWaterDate: Date {
-                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to: plant.lastWateredDate!.advanced(by: 86400))
-                return calculatedDate!
-            }
-
-            var waterStatus: String {
-
-                let dateIntervalFormat = DateComponentsFormatter()
-                dateIntervalFormat.allowedUnits = .day
-                dateIntervalFormat.unitsStyle = .short
-                let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
-                if formatted == "0 days" || nextWaterDate < Date.now {
-                    plant.wateredBool = false
-                    notificationCount += 1
-                    return "due"
-                } else {
-                    plant.wateredBool = true
-                    return "\(formatted)"
-                }
-            }
-            print(waterStatus)
-        }
+//        for plant in plants {
+//
+//            var nextWaterDate: Date {
+//                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to: plant.lastWateredDate!.advanced(by: 86400))
+//                return calculatedDate!
+//            }
+//
+//            var waterStatus: String {
+//
+//                let dateIntervalFormat = DateComponentsFormatter()
+//                dateIntervalFormat.allowedUnits = .day
+//                dateIntervalFormat.unitsStyle = .short
+//                let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
+//                if formatted == "0 days" || nextWaterDate < Date.now {
+//                    plant.wateredBool = false
+//                    notificationCount += 1
+//                    return "due"
+//                } else {
+//                    plant.wateredBool = true
+//                    return "\(formatted)"
+//                }
+//            }
+//            print(waterStatus)
+//        }
         print("Notification count: \(notificationCount)")
         //Save the new value to User Defaults
         defaults.set(notificationCount, forKey: "NotificationBadgeCount")
@@ -420,7 +427,7 @@ extension MainViewController {
     }
 
     func loadPlantsFB() {
-        
+        print("ddd")
         if Auth.auth().currentUser?.uid != nil {
             let currentUser = Auth.auth().currentUser?.email
             // Add some kind of function to grab user's ID/Name to display in MainVC
@@ -477,40 +484,40 @@ extension MainViewController {
             var dateAdded_FB = Date.now
             if let timestamp = data["dateAdded"] as? Timestamp {
                 dateAdded_FB = timestamp.dateValue()
-                print("lastWatered: \(dateAdded_FB)")
+                print("dateAdded_FB: \(dateAdded_FB)")
             }
 
             //lastWatered
             var lastWatered_FB = Date.now
             if let timestamp = data["lastWatered"] as? Timestamp {
                 lastWatered_FB = timestamp.dateValue()
-                print("lastWatered: \(lastWatered_FB)")
+                print("lastWatered_FB: \(lastWatered_FB)")
             }
 
             //plantDocId
             let plantDocId_FB = data["plantDocId"] as? String ?? "Missing plantDocID"
-            print("plantDocId: \(plantDocId_FB)")
+            print("plantDocId_FB: \(plantDocId_FB)")
 
             //plantImageString
             let plantImageString_FB = data["plantImageString"] as? String ?? ""
-            print("plantImageString: \(plantImageString_FB)")
+            print("plantImageString_FB: \(plantImageString_FB)")
 
             //plantName
             let plantName_FB = data["plantName"] as? String ?? ""
-            print("plantName: \(plantName_FB)")
+            print("plantName_FB: \(plantName_FB)")
 
             //plantOrder
             let plantOrder_FB = data["plantOrder"] as? Int ?? 0
-            print("plantOrder: \(plantOrder_FB)")
+            print("plantOrder_FB: \(plantOrder_FB)")
 
             //plantUUID
             let plantUUID_FB = data["plantUUID"]
             let plantUUID_FBCasted = UUID(uuidString: plantUUID_FB as? String ?? "")
-            print("plantUUID: \(String(describing: plantUUID_FBCasted))")
+            print("plantUUID_FB: \(String(describing: plantUUID_FBCasted))")
 
             //waterHabit
             let waterHabit_FB = data["waterHabit"] as? Int ?? 0
-            print("waterHabit: \(waterHabit_FB)")
+            print("waterHabit_FB: \(waterHabit_FB)")
             
             let loadedPlant_FB = Plant(context: self.context)
             loadedPlant_FB.id = plantUUID_FBCasted
