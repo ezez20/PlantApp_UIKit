@@ -19,8 +19,6 @@ class EditPlantViewController: UIViewController {
     let navController = UINavigationController()
     let navigationBar = UINavigationBar()
     
-    private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    
     let plantTextFieldView = UIView()
     let plantTextField = UITextField()
     
@@ -40,17 +38,22 @@ class EditPlantViewController: UIViewController {
     let plantImageButton = UIButton()
     let imageSetNames = K.imageSetNames
     var filteredSuggestion = [String]()
-    let suggestionScrollView = UIScrollView()
-    let suggestionTableView = UITableView()
-    private var plantImageString = ""
+  
+    // MARK: - Variables
     var inputImage: UIImage?
     let imagePicker = UIImagePickerController()
+    private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
-    // MARK: - UIViews added
+    // MARK: - Addidional UIViews added
+    let suggestionScrollView = UIScrollView()
+    let suggestionTableView = UITableView()
     let opaqueView = UIView()
     let loadingSpinnerView = UIActivityIndicatorView(style: .large)
     
+    private var plantImageString = ""
     private var selectedHabitDay = 7
+    
+    // MARK: - Delegates
     var delegate: ModalViewControllerDelegate?
     
     

@@ -197,6 +197,7 @@ extension AppDelegate {
     }
     
     @objc func appDiscardNotification() {
+        print("appDiscardNotification triggered")
         let context = persistentContainer.viewContext
         loadPlants()
 

@@ -175,7 +175,7 @@ class SettingsViewController: UIViewController {
 // MARK: - Local User Notification
 extension SettingsViewController: UNUserNotificationCenterDelegate {
     
-    @objc func switchStateDidChange(_ sender:UISwitch!) {
+    @objc func switchStateDidChange(_ sender: UISwitch!) {
         if (sender.isOn == true) {
             center.removeAllPendingNotificationRequests()
             setupLocalUserNotification(selectedAlert: selectedAlertOption)

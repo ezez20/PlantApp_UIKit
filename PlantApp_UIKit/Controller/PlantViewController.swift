@@ -118,6 +118,7 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
+//        NotificationCenter.default.addObserver(self, selector: #selector(saveContextOnPlantVCNotification), name: NSNotification.Name("discardOnPlantVCNotification"), object: nil)
     }
    
     
@@ -125,6 +126,7 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = sender.date
         print("Last Watered Date changed to: \(sender.date)")
         updateUI()
+        updatePlant()
         editPlant_FB(currentPlant.id!)
     }
     
@@ -201,16 +203,6 @@ class PlantViewController: UIViewController {
         }
     }
     
-    func updateInputImage() {
-        if imageSetNames.contains(currentPlant.plantImageString!) {
-            plantImage.image = UIImage(named: currentPlant.plantImageString!)
-        } else {
-            plantImage.image = loadedImage(with: currentPlant.imageData)
-            plantImage.layer.cornerRadius = 10
-        }
-        print("plantImageString: \(currentPlant.plantImageString!)")
-        print("updateInputImage: triggered")
-    }
     
     func loadedImage(with imageData: Data?) -> UIImage {
         guard let imageData = imageData else {
@@ -225,7 +217,6 @@ class PlantViewController: UIViewController {
     func updateUI() {
         plantHappinessLevel.text = "\(String(happinessLevelFormatted))%"
         waterStatusView.text = waterStatus
-        updateInputImage()
         updatePlant()
     }
     
@@ -242,16 +233,20 @@ class PlantViewController: UIViewController {
     func updatePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
-        print("Plant: \(currentPlant.plant!) updated." )
+        print("Plant: \(currentPlant.plant) updated." )
  
         do {
             try context.save()
         } catch {
             print("Error updating plant. Error: \(error)")
         }
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
     
-    
+//    @objc func saveContextOnPlantVCNotification() {
+//        updatePlant()
+//    }
 }
 
 extension PlantViewController: ModalViewControllerDelegate {

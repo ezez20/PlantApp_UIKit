@@ -102,6 +102,7 @@ class MainViewController: UIViewController {
         loadPlants()
     }
     
+    
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
         self.navigationController?.popToRootViewController(animated: true)
@@ -404,7 +405,7 @@ extension MainViewController {
     }
 
     func loadPlantsFB() {
-        print("ddd")
+     
         if Auth.auth().currentUser?.uid != nil {
             let currentUser = Auth.auth().currentUser?.email
             // Add some kind of function to grab user's ID/Name to display in MainVC
@@ -566,7 +567,7 @@ extension MainViewController {
                 // Delete the file
                 plantRef.delete { error in
                     if let error = error {
-                        print("Error deleting image from FB Storage")
+                        print("Error deleting image from FB Storage. Error: \(error)")
                     } else {
                         print("Successfully delete image from FB Storage")
                     }
@@ -626,13 +627,9 @@ extension MainViewController {
         loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
 
         plantsTableView.tableFooterView = loadingSpinnerView
-        
     }
     
     func removeLoadingView() {
-//        loadingSpinnerView.stopAnimating()
-//        loadingSpinnerView.removeFromSuperview()
-//        opaqueView.removeFromSuperview()
         if plants.count != 0 {
             self.plantsTableView.tableFooterView?.removeFromSuperview()
             print("removeLoadingView")

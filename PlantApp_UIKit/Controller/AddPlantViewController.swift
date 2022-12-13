@@ -129,14 +129,7 @@ class AddPlantViewController: UIViewController {
     }
     
     
-    //MARK: - Data Manipulation Methods
-    func savePlant() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving category \(error)")
-        }
-    }
+
     
     
     
@@ -212,6 +205,15 @@ class AddPlantViewController: UIViewController {
     @IBAction func plantImageButtonTapped(_ sender: Any) {
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true)
+    }
+    
+    //MARK: - Data Manipulation Methods
+    func savePlant() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving category \(error)")
+        }
     }
     
     func loadPlants() {
