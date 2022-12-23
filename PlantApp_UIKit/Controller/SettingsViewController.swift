@@ -50,6 +50,7 @@ class SettingsViewController: UIViewController {
         
         loadPlants()
         notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
+        selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
         
         // Do any additional setup after loading the view.
         view.addSubview(containerView)
@@ -176,9 +177,8 @@ class SettingsViewController: UIViewController {
 extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func switchStateDidChange(_ sender: UISwitch!) {
-        if (sender.isOn == true) {
-            center.removeAllPendingNotificationRequests()
-            setupLocalUserNotification(selectedAlert: selectedAlertOption)
+        if sender.isOn == true {
+            refreshUserNotification()
             defaults.set(true, forKey: "notificationOn")
             print("UISwitch state is now ON")
         } else {
@@ -255,95 +255,164 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     }
     
     func setupLocalUserNotification(selectedAlert: Int) {
-    
-        loadPlants()
         
-        let center = UNUserNotificationCenter.current()
-        
-        // For each/every plant, this will create a notification
-        for plant in plants {
-        
-            // 2: Create the notification content
-            let content = UNMutableNotificationContent()
-            content.title = "Notification alert!"
-            content.body = "Make sure to water your plant: \(plant.plant!)"
-            
-            //Retreive the value from User Defaults and increase it by 1
-            let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int + 1
-            //Save the new value to User Defaults
-            defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-            //Set the value as the current badge count
-            content.badge = badgeCount as NSNumber
-            content.sound = .default
-            content.categoryIdentifier = "categoryIdentifier"
-            
-            // 3: Create the notification trigger
-                // "5 seconds" added
-            var nextWaterDate: Date {
-                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
-                return calculatedDate!
-            }
-            
-            var selectedNotificationTime = Date()
-            
-            switch selectedAlertOption {
-            case 0: // day of event
-                // For debug purpose: Notification time - 10 seconds
-                selectedNotificationTime = Date.now.advanced(by: 10)
+        center.getNotificationSettings { [self] settings in
+            if settings.authorizationStatus == .authorized {
                 
-//                selectedNotificationTime = nextWaterDate.advanced(by: 20)
-                print("selectedNotificationTime: \(selectedNotificationTime)")
-                print("current time: \(Date.now)")
-            case 1: // 1 day before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400)
-                print("Notification Time: \(selectedNotificationTime)")
-            case 2: // 2 days before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-                print("Notification Time: \(selectedNotificationTime)")
-            default: // 3 days before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-                print("Notification Time: \(selectedNotificationTime)")
-            }
-            
-            
-            let notificationDate = selectedNotificationTime
-            let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
-            
-            let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
-            
-            // 4: Create the request
-            let uuidString = UUID()
-            plant.notificationRequestID = uuidString
-            print("notificationActionID: \(uuidString)")
-            let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
-            
-            // 5: Register the request
-            center.add(notificationRequest) { (error) in
-                // check the error parameter or handle any errors
-                guard error == nil else {
-                    print("NotificationRequest error: \(error.debugDescription)")
-                    return
+                loadPlants()
+                
+                let center = UNUserNotificationCenter.current()
+                
+                // For each/every plant, this will create a notification
+                for plant in plants {
+                    
+                    // 2: Create the notification content
+                    let content = UNMutableNotificationContent()
+                    content.title = "Notification alert!"
+                    content.body = "Make sure to water your plant: \(plant.plant!)"
+                    
+                    //Retreive the value from User Defaults and increase it by 1
+                    let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int + 1
+                    //Save the new value to User Defaults
+                    defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                    //Set the value as the current badge count
+                    content.badge = badgeCount as NSNumber
+                    content.sound = .default
+                    content.categoryIdentifier = "categoryIdentifier"
+                    
+                    // 3: Create the notification trigger
+                    // "5 seconds" added
+                    var nextWaterDate: Date {
+                        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
+                        return calculatedDate!
+                    }
+                    
+                    var selectedNotificationTime = Date()
+                    
+                    switch selectedAlertOption {
+                    case 0: // day of event
+                        // For debug purpose: Notification time - 10 seconds
+                        selectedNotificationTime = Date.now.advanced(by: 10)
+                        
+                        //                selectedNotificationTime = nextWaterDate.advanced(by: 20)
+                        print("selectedNotificationTime: \(selectedNotificationTime)")
+                        print("current time: \(Date.now)")
+                    case 1: // 1 day before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    case 2: // 2 days before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    default: // 3 days before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    }
+                    
+                    
+                    let notificationDate = selectedNotificationTime
+                    let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+                    let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
+                    
+                    // 4: Create the request
+                    let uuidString = UUID()
+                    plant.notificationRequestID = uuidString
+                    print("notificationActionID: \(uuidString)")
+                    let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
+                    
+                    // 5: Register the request
+                    center.add(notificationRequest) { (error) in
+                        // check the error parameter or handle any errors
+                        guard error == nil else {
+                            print("NotificationRequest error: \(error.debugDescription)")
+                            return
+                        }
+                    }
+                    
+               
                 }
+                
+                registerNotificationAction()
+
+                func registerNotificationAction() {
+                    let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
+                    let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
+                    let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+                    center.setNotificationCategories([notificationActionsCategory])
+                }
+                
+            } else if settings.authorizationStatus == .notDetermined {
+
+                center.delegate = self
+                center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                    if granted {
+                        // Access granted
+                        print("UserNotifcation Granted")
+                    } else {
+                        // Access denied
+                        print("UserNotifcation Denied")
+                    }
+                }
+                
+            } else {
+                
+                let alert = UIAlertController(title: "Error:", message: "Please enable push notification in settings to continue", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "Go to Settings", style: .default) { (action) -> Void in
+                    print("Go to Settings")
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                }
+                let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+                    print("Cancel")
+                }
+                alert.addAction(ok)
+                alert.addAction(cancel)
+                
+                DispatchQueue.main.async {
+                    activeVC()?.present(alert, animated: true)
+                }
+              
             }
-            
-            updatePlant()
             
         }
-      
+        
+        // Source Code: https://stackoverflow.com/questions/40991450/present-uialertcontroller-on-top-of-everything-regardless-of-the-view-hierarchy
+        func activeVC() -> UIViewController? {
+            // Use connectedScenes to find the .foregroundActive rootViewController
+            var rootVC: UIViewController?
+            for scene in UIApplication.shared.connectedScenes {
+                if scene.activationState == .foregroundActive {
+                    rootVC = (scene.delegate as? UIWindowSceneDelegate)?.window!!.rootViewController
+                    break
+                }
+            }
+            // Then, find the topmost presentedVC from it.
+            var presentedVC = rootVC
+            while presentedVC?.presentedViewController != nil {
+                presentedVC = presentedVC?.presentedViewController
+            }
+            return presentedVC
+        }
+        
     }
     
+    func refreshUserNotification() {
+        center.removeAllPendingNotificationRequests()
+        center.removeAllDeliveredNotifications()
+        setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
+    }
 }
 
 extension SettingsViewController: PassAlertDelegate {
     
     func passAlert(Alert: Int) {
+        
         selectedAlertOption = Alert
+        defaults.set(selectedAlertOption, forKey: "selectedAlertOption")
+        
         if notificationToggleSwitch.isOn {
-            center.removeAllPendingNotificationRequests()
-            center.removeAllDeliveredNotifications()
-            setupLocalUserNotification(selectedAlert: selectedAlertOption)
+            refreshUserNotification()
             print("Notification Time switched")
         }
+        
     }
     
 }

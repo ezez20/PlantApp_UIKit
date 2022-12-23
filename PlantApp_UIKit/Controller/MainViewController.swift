@@ -21,7 +21,6 @@ class MainViewController: UIViewController {
     
     // MARK: - Google Firebase
     var userID_FB = ""
-    var plantImages_FB = [UIImage]()
     var plants_FBLoaded = [QueryDocumentSnapshot]()
   
     
@@ -71,6 +70,13 @@ class MainViewController: UIViewController {
         if defaults.bool(forKey: "userFirstLoggedIn") {
             loadPlantsFB()
             defaults.set(false, forKey: "userFirstLoggedIn")
+        }
+        
+        if defaults.bool(forKey: "userDiscardedApp") {
+            resetContext {
+                self.loadPlantsFB()
+            }
+            defaults.set(false, forKey: "userDiscardedApp")
         }
         
         // Load plants from Core Data
@@ -167,7 +173,7 @@ class MainViewController: UIViewController {
         }
         
         
-        refreshUserNotification()
+        resetUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
@@ -227,9 +233,9 @@ class MainViewController: UIViewController {
         return waterStatus
     }
     
-    func refreshUserNotification() {
+    func resetUserNotification() {
         
-        print("refreshUserNotification triggered")
+        print("reset triggered")
         var notificationCount = 0
 
         print("Notification count: \(notificationCount)")
@@ -618,6 +624,26 @@ extension MainViewController {
             
         }
         
+    }
+    
+    func resetContext(completion: @escaping () -> Void) {
+        if Auth.auth().currentUser?.uid != nil {
+            
+            loadPlants()
+            
+            print("plants before count: \(plants.count)")
+            if plants.count != 0 {
+                for i in 0...plants.endIndex - 1 {
+                    context.delete(plants[i])
+                    savePlants()
+                    
+                    if plants.count == 0 {
+                        completion()
+                    }
+                }
+            }
+            
+        }
     }
     
     func addLoadingView() {

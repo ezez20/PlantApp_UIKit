@@ -59,7 +59,6 @@ class PlantViewController: UIViewController {
     
     
     
-    
 // MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
     var happinessLevelFormatted: Int {
         var happiness = 80.0
@@ -118,7 +117,6 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(saveContextOnPlantVCNotification), name: NSNotification.Name("discardOnPlantVCNotification"), object: nil)
     }
    
     
@@ -152,7 +150,6 @@ class PlantViewController: UIViewController {
 
         let editPlantVC = EditPlantViewController()
         editPlantVC.currentPlant = currentPlant
-//        editPlantVC.inputImage = plantImageLoadedIn
         let editPlantNavVC = UINavigationController(rootViewController: editPlantVC)
         editPlantNavVC.modalPresentationStyle = .formSheet
         present(editPlantNavVC, animated: true, completion: nil)
@@ -244,9 +241,7 @@ class PlantViewController: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
     
-//    @objc func saveContextOnPlantVCNotification() {
-//        updatePlant()
-//    }
+
 }
 
 extension PlantViewController: ModalViewControllerDelegate {

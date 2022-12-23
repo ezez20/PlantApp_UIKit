@@ -50,8 +50,6 @@ class LoginViewController: UIViewController {
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
         titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
-//        titleLogo.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-//        titleLogo.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
         titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
@@ -124,7 +122,7 @@ class LoginViewController: UIViewController {
         loginButton.setTitle("Log In", for: .normal)
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.setTitleColor(.placeholderText, for: .highlighted)
-        loginButton.backgroundColor = .systemYellow
+        loginButton.backgroundColor = UIColor(named: "customYellow1")
         loginButton.layer.borderWidth = 1.0
         loginButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         loginButton.layer.cornerRadius = 5.0
@@ -158,15 +156,18 @@ class LoginViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        // This will authenticate user and navigate user back to homescreen if app was killed.
+        
+        // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
             self.defaults.set(true, forKey: "userFirstLoggedIn")
             K.navigateToMainVC(self.navigationController!)
         }
         
+        // If user is logging in without a FB account, this will navigate to MainVC
         if defaults.bool(forKey: "useWithoutFBAccount") {
             K.navigateToMainVC(self.navigationController!)
         }
+        
     }
     
     
@@ -186,8 +187,24 @@ class LoginViewController: UIViewController {
             
             // Check for error signing in
             if error != nil {
-                print("Sign in error with Firebase: \(error!.localizedDescription)")
-                K.presentAlert(self, error!)
+                if error?.localizedDescription == K.tempLockMessageFB {
+                    print("Sign in error with Firebase: \(error!.localizedDescription)")
+                    let alert = UIAlertController(title: "Oops!", message: error?.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                        NSLog("The \"OK\" alert occured.")
+                    }))
+                    
+                    self.present(alert, animated: true, completion: nil)
+                } else {
+                    print("Sign in error with Firebase: \(error!.localizedDescription)")
+                    let alert = UIAlertController(title: "Oops!", message: "You've entered either the wrong email or password. Please try again.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                        NSLog("The \"OK\" alert occured.")
+                    }))
+                    
+                    self.present(alert, animated: true, completion: nil)
+                }
+
             } else {
                 // If no error signing in, navigate to MainViewController.
                 if self.authenticateFBUser() {
@@ -200,18 +217,13 @@ class LoginViewController: UIViewController {
     }
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
-        // Add segue to WaterHabitDaysViewController
-        print("Use without login account - button clicked")
-        
-        //        loadPlants()
-        //        plants.removeAll()
-        //        print("plants array: \(plants)")
         self.defaults.set(true, forKey: "useWithoutFBAccount")
         
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
-        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
         self.navigationController?.pushViewController(mainVC, animated: true)
         
+        print("Use without login account - button clicked")
     }
     
     @objc func signUpButtonClicked(sender: UIButton) {
@@ -261,6 +273,10 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController: UITextFieldDelegate {
     
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        validateEntry()
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
@@ -274,6 +290,16 @@ extension LoginViewController: UITextFieldDelegate {
     
     @objc private func dismissKeyboardTouchOutside() {
         view.endEditing(true)
+    }
+    
+    func validateEntry() {
+        if emailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            loginButton.isEnabled = false
+            loginButton.backgroundColor = UIColor(named: "customYellow1")
+        } else {
+            loginButton.isEnabled = true
+            loginButton.backgroundColor = .systemYellow
+        }
     }
     
 }

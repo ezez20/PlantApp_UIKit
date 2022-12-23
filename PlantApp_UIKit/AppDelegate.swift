@@ -22,21 +22,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        // 1: Ask for permission
+        
         let center = UNUserNotificationCenter.current()
         center.delegate = self
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-            if granted {
-                // Access granted
-                print("UserNotifcation Granted")
-            } else {
-                // Access denied
-                print("UserNotifcation Denied")
-            }
-        }
-        
-        
-        self.registerNotificationAction()
+        // 1: Ask for permission
+//        center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+//            if granted {
+//                // Access granted
+//                print("UserNotifcation Granted")
+//            } else {
+//                // Access denied
+//                print("UserNotifcation Denied")
+//            }
+//        }
+//
+//
+//        self.registerNotificationAction()
+//        center.delegate = self
         
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
@@ -48,14 +50,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     
     
-    func registerNotificationAction() {
-        let center = UNUserNotificationCenter.current()
-    
-        let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
-        let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
-        let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
-        center.setNotificationCategories([notificationActionsCategory])
-    }
+//    func registerNotificationAction() {
+//        let center = UNUserNotificationCenter.current()
+//
+//        let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
+//        let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
+//        let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+//        center.setNotificationCategories([notificationActionsCategory])
+//    }
     
     // MARK: UISceneSession Lifecycle
     
@@ -117,6 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+        print("Context saved")
     }
     
     
@@ -136,6 +139,7 @@ extension AppDelegate {
                 if response.notification.request.content.categoryIdentifier == "categoryIdentifier" {
                     
                     switch response.actionIdentifier {
+                        
                     case UNNotificationDefaultActionIdentifier:
                         print(response.actionIdentifier)
                         print("Default clicked.")
@@ -149,6 +153,7 @@ extension AppDelegate {
                         plant.lastWateredDate = Date.now
                         plant.wateredBool = true
                         print("Updated to: \(plant.lastWateredDate!)")
+                        editPlant_FB(plant.id!)
                         
                         center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
                         saveContext()
@@ -163,6 +168,7 @@ extension AppDelegate {
                         
                     default:
                         break;
+                        
                     }
                     
                 }
@@ -175,10 +181,8 @@ extension AppDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    
         completionHandler([.badge, .sound])
     }
-    
     
     
     func loadPlants() {
@@ -196,18 +200,74 @@ extension AppDelegate {
         print("Plants loaded")
     }
     
-    @objc func appDiscardNotification() {
-        print("appDiscardNotification triggered")
-        let context = persistentContainer.viewContext
-        loadPlants()
-
-        if plants.count != 0 {
-            for i in 0...plants.endIndex - 1 {
-                context.delete(plants[i])
-                
-            }
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
         }
-        saveContext()
+    }
+    
+    func editPlant_FB(_ currentPlantID: UUID) {
+        if authenticateFBUser() {
+            let db = Firestore.firestore()
+            
+            //2: FIREBASE: Get currentUser UID to use as document's ID.
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            //3: FIREBASE: Declare collection("plants)
+            let plantCollection =  userFireBase.collection("plants")
+            
+            //4: FIREBASE: Plant entity input
+            let plantEditedData: [String: Any] = [
+                "lastWatered": Date.now,
+            ]
+            
+            // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+            let plantDoc = plantCollection.document("\(currentPlantID)")
+            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+            
+            // 6: Edited data for "Plant entity input"
+            plantDoc.updateData(plantEditedData) { error in
+                if error != nil {
+                    print("Error updating data on FB. Error: \(String(describing: error))")
+                }
+            }
+            
+            // 7: Add edited doc date on FB
+            plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                if error != nil {
+                    print("Error updating data on FB. Error: \(String(describing: error))")
+                }
+            }
+            
+            print("Plant successfully edited on Firebase")
+        }
+    }
+    
+    @objc func appDiscardNotification() {
+        
+        print("appDiscardNotification triggered")
+        defaults.set(true, forKey: "userDiscardedApp")
+//        if Auth.auth().currentUser?.uid != nil {
+//            
+//            let context = persistentContainer.viewContext
+//            
+//            loadPlants()
+//            
+//            print("plants before count: \(plants.count)")
+//            if plants.count != 0 {
+//                for i in 0...plants.endIndex - 1 {
+//                    context.delete(plants[i])
+//                    saveContext()
+//                }
+//            }
+//            
+//        }
+        
     }
     
 }

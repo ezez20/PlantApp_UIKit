@@ -23,6 +23,7 @@ struct K {
     static let plantTableViewCellID = "PlantTableViewCell"
     static let cellReuseID = "cellReuseID"
     static let suggestionCell = "suggestionCell"
+    static let tempLockMessageFB = "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
     
     static let AddPlantToWaterHabitID = "AddPlantToWaterHabit"
     
@@ -67,7 +68,7 @@ struct K {
     
     static func navigateToMainVC(_ navVC: UINavigationController) {
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
-        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
         navVC.pushViewController(mainVC, animated: true)
     }
     

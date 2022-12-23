@@ -42,8 +42,6 @@ class SignUpViewController: UIViewController {
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
         titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
-//        titleLogo.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-//        titleLogo.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
         titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
