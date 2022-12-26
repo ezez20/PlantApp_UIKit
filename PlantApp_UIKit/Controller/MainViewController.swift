@@ -51,7 +51,6 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        
         title = K.title
         self.plantsTableView.contentInsetAdjustmentBehavior = .never
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -74,9 +73,10 @@ class MainViewController: UIViewController {
         
         if defaults.bool(forKey: "userDiscardedApp") {
             resetContext {
-                self.loadPlantsFB()
+                self.loadPlants()
+                self.defaults.set(false, forKey: "userDiscardedApp")
             }
-            defaults.set(false, forKey: "userDiscardedApp")
+          
         }
         
         // Load plants from Core Data
@@ -457,6 +457,7 @@ extension MainViewController {
     }
     
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], completion: @escaping () -> Void) {
+        
         // MARK: - Parse plants from Firebase to Core Data
         for doc in plants_FB {
             
@@ -524,14 +525,14 @@ extension MainViewController {
                             loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
                             loadedPlant_FB.imageData = data!
                             print("FB Storage imageData has been retrieved successfully: \(data!)")
+                            self.plants.append(loadedPlant_FB)
+                            self.savePlants()
                             completion()
                         } else {
                             print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
                         }
                     }
                 
-                    self.plants.append(loadedPlant_FB)
-                    self.savePlants()
                 
             } else {
                 print("customPlantImage_FB is nil.")
@@ -629,18 +630,17 @@ extension MainViewController {
     func resetContext(completion: @escaping () -> Void) {
         if Auth.auth().currentUser?.uid != nil {
             
-            loadPlants()
-            
             print("plants before count: \(plants.count)")
+   
             if plants.count != 0 {
                 for i in 0...plants.endIndex - 1 {
                     context.delete(plants[i])
                     savePlants()
-                    
-                    if plants.count == 0 {
-                        completion()
-                    }
                 }
+            }
+            
+            if plants.count == 0 {
+                completion()
             }
             
         }

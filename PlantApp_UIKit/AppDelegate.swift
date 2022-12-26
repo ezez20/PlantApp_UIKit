@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         // 1: Ask for permission
@@ -251,7 +250,8 @@ extension AppDelegate {
     @objc func appDiscardNotification() {
         
         print("appDiscardNotification triggered")
-        defaults.set(true, forKey: "userDiscardedApp")
+//        defaults.set(true, forKey: "userDiscardedApp")
+        
 //        if Auth.auth().currentUser?.uid != nil {
 //            
 //            let context = persistentContainer.viewContext

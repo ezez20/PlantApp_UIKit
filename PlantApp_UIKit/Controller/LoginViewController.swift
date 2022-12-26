@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
         
         // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
-            self.defaults.set(true, forKey: "userFirstLoggedIn")
+//            self.defaults.set(true, forKey: "userFirstLoggedIn")
             K.navigateToMainVC(self.navigationController!)
         }
         
@@ -234,30 +234,30 @@ class LoginViewController: UIViewController {
     }
     
     //MARK: - Data Manipulation Methods
-    func savePlants() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving category \(error)")
-        }
-        
-    }
-    
-    func loadPlants() {
-        
-        do {
-            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-            let sort = NSSortDescriptor(key: "order", ascending: true)
-            request.sortDescriptors = [sort]
-            plants = try context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
-        }
-        
-        print("Plants loaded")
-        print("Core Data count: \(plants.count)")
-        
-    }
+//    func savePlants() {
+//        do {
+//            try context.save()
+//        } catch {
+//            print("Error saving category \(error)")
+//        }
+//
+//    }
+//
+//    func loadPlants() {
+//
+//        do {
+//            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+//            let sort = NSSortDescriptor(key: "order", ascending: true)
+//            request.sortDescriptors = [sort]
+//            plants = try context.fetch(request)
+//        } catch {
+//            print("Error loading categories \(error)")
+//        }
+//
+//        print("Plants loaded")
+//        print("Core Data count: \(plants.count)")
+//
+//    }
 
     /*
     // MARK: - Navigation
