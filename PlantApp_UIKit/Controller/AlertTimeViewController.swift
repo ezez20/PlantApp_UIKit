@@ -29,6 +29,7 @@ class AlertTimeViewController: UIViewController {
         alertTimeTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         alertTimeTable.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         alertTimeTable.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+
         
         alertTimeTable.delegate = self
         alertTimeTable.dataSource = self
@@ -39,6 +40,13 @@ class AlertTimeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         // ADJUST: tableview dynamically adjusts height based on contentSize.
         alertTimeTable.heightAnchor.constraint(equalToConstant: alertTimeTable.contentSize.height).isActive = true
+        
+//        let rowsHeight = alertTimeTable.estimatedSectionFooterHeight
+//        print(rowsHeight)
+//        let distance = view.bounds.height - rowsHeight - CGFloat(50)
+//        print(distance)
+//        alertTimeTable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -distance).isActive = true
+        
         alertTimeTable.layer.cornerRadius = 10
         alertTimeTable.alwaysBounceVertical = false
         alertTimeTable.alwaysBounceHorizontal = false
