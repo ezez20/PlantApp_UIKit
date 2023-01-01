@@ -166,7 +166,7 @@ class SettingsViewController: UIViewController {
         alertTimeVC.alertOption = selectedAlertOption
         alertTimeVC.delegate = self
         self.navigationController?.pushViewController(alertTimeVC, animated: true)
-        //        present(alertTimeVC, animated: true)
+   
     }
 
     
@@ -229,6 +229,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         dismiss(animated: true)
+        
         
     }
     

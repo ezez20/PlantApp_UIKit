@@ -22,41 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        // Set UNUserNotificationCenter delegate
         let center = UNUserNotificationCenter.current()
         center.delegate = self
-        // 1: Ask for permission
-//        center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-//            if granted {
-//                // Access granted
-//                print("UserNotifcation Granted")
-//            } else {
-//                // Access denied
-//                print("UserNotifcation Denied")
-//            }
-//        }
-//
-//
-//        self.registerNotificationAction()
-//        center.delegate = self
-        
+
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(appDiscardNotification), name: NSNotification.Name("appDiscardedTrigger"), object: nil)
 
         return true
     }
     
-    
-    
-//    func registerNotificationAction() {
-//        let center = UNUserNotificationCenter.current()
-//
-//        let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
-//        let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
-//        let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
-//        center.setNotificationCategories([notificationActionsCategory])
-//    }
     
     // MARK: UISceneSession Lifecycle
     
@@ -247,27 +223,5 @@ extension AppDelegate {
         }
     }
     
-    @objc func appDiscardNotification() {
-        
-        print("appDiscardNotification triggered")
-//        defaults.set(true, forKey: "userDiscardedApp")
-        
-//        if Auth.auth().currentUser?.uid != nil {
-//            
-//            let context = persistentContainer.viewContext
-//            
-//            loadPlants()
-//            
-//            print("plants before count: \(plants.count)")
-//            if plants.count != 0 {
-//                for i in 0...plants.endIndex - 1 {
-//                    context.delete(plants[i])
-//                    saveContext()
-//                }
-//            }
-//            
-//        }
-        
-    }
     
 }

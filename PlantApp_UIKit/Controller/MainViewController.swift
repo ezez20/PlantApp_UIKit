@@ -111,6 +111,7 @@ class MainViewController: UIViewController {
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
         self.navigationController?.popToRootViewController(animated: true)
+
     }
 
     
@@ -464,6 +465,7 @@ extension MainViewController {
             
             print("Doc ID: \(doc.documentID)")
             print(doc.data())
+            
             //dateAdded
             var dateAdded_FB = Date.now
             if let timestamp = data["dateAdded"] as? Timestamp {
@@ -503,6 +505,7 @@ extension MainViewController {
             let waterHabit_FB = data["waterHabit"] as? Int ?? 0
             print("waterHabit_FB: \(waterHabit_FB)")
             
+            // MARK: - Below will save parse'd data from Firebase into Core Data.
             let loadedPlant_FB = Plant(context: self.context)
             loadedPlant_FB.id = plantUUID_FBCasted
             loadedPlant_FB.plant = plantName_FB
@@ -628,9 +631,7 @@ extension MainViewController {
     
     func resetContext(completion: @escaping () -> Void) {
         if Auth.auth().currentUser?.uid != nil {
-            
-            print("plants before count: \(plants.count)")
-   
+
             if plants.count != 0 {
                 for i in 0...plants.endIndex - 1 {
                     context.delete(plants[i])
