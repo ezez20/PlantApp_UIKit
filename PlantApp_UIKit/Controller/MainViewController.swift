@@ -76,7 +76,6 @@ class MainViewController: UIViewController {
                 self.loadPlants()
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
-          
         }
         
         // Load plants from Core Data
@@ -236,7 +235,7 @@ class MainViewController: UIViewController {
     func resetUserNotification() {
         
         print("reset triggered")
-        var notificationCount = 0
+        let notificationCount = 0
 
         print("Notification count: \(notificationCount)")
         //Save the new value to User Defaults
@@ -640,6 +639,7 @@ extension MainViewController {
             }
             
             if plants.count == 0 {
+                savePlants()
                 completion()
             }
             

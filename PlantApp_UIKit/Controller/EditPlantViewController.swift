@@ -63,7 +63,7 @@ class EditPlantViewController: UIViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
-        updateUI()
+    
         print("View will appear")
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraButtonPressed))
@@ -196,12 +196,20 @@ class EditPlantViewController: UIViewController {
         
         // Temporary Soluton: to add padding for button.
         //NOTE: 'contentEdgeInsets' was deprecated in iOS 15.0: This property is ignored when using UIButtonConfiguration
-        waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+//        waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+   
+        waterHabitButton.configuration?.imagePlacement = .trailing
         waterHabitButton.setTitleColor(.placeholderText, for: .normal)
         waterHabitButton.contentHorizontalAlignment = .trailing
         waterHabitButton.backgroundColor = .white
         waterHabitButton.addTarget(self, action: #selector(waterHabitButtonClicked(sender:)), for: .touchUpInside)
-        
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "chevron.right")
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 10.0, bottom: 10.0, trailing: 10.0)
+        config.imagePlacement = .trailing
+        waterHabitButton.configuration = config
+        waterHabitButton.tintColor = .placeholderText
+        updateWaterButtonSelectionUI()
         
         // waterHabit label
         wateringSectionView.addSubview(waterHabitLabel)
@@ -320,9 +328,8 @@ class EditPlantViewController: UIViewController {
         
     }
     
-    func updateUI() {
+    func updateWaterButtonSelectionUI() {
         waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
-        print("UI Updated")
         print("WaterButton title updated to: \(selectedHabitDay)")
     }
     

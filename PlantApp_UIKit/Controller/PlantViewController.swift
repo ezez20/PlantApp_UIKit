@@ -230,7 +230,7 @@ class PlantViewController: UIViewController {
     func updatePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
-        print("Plant: \(currentPlant.plant) updated." )
+        print("Plant: \(String(describing: currentPlant.plant)) updated." )
  
         do {
             try context.save()
