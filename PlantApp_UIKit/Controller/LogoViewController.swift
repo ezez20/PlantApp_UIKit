@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class LogoViewController: UIViewController {
     
     let titleLogo = UIImageView()
-    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,17 +29,32 @@ class LogoViewController: UIViewController {
         titleLogo.image = UIImage(named: K.leaf)
         // Animate title logo.
         titleLogo.alpha = 0 // or newImage.fadeOut(duration: 0.0)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: NSNotification.Name("logoutTriggered"), object: nil)
+        
         titleLogo.fadeInAnimation {
-            let viewController = LoginViewController()
-            let navigation = UINavigationController(rootViewController: viewController)
-            navigation.navigationBar.tintColor = .systemGreen
-            navigation.modalTransitionStyle = .crossDissolve
-            navigation.modalPresentationStyle = .overFullScreen
-            navigation.isModalInPresentation = false
-            self.present(navigation, animated: true)
+            if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
+//                let navigation = UINavigationController(rootViewController: self.navigationController!)
+//                navigation.navigationBar.tintColor = .systemGreen
+//                navigation.modalTransitionStyle = .crossDissolve
+//                navigation.modalPresentationStyle = .overFullScreen
+//                navigation.isModalInPresentation = false
+//                navigation.pushViewController(viewController, animated: true)
+                let storyboard = UIStoryboard (name: "Main", bundle: nil)
+                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
+                self.navigationController?.modalPresentationStyle = .fullScreen
+                self.navigationController!.pushViewController(mainVC, animated: true)
+//                K.navigateToMainVC(self.navigationController!)
+//                self.present(navigation, animated: true)
+            } else {
+                let vc = LoginViewController()
+                self.navigationController!.pushViewController(vc, animated: true)
+            }
+
         }
         
     }
+    
     
 
     /*
@@ -68,4 +84,22 @@ public extension UIView {
         }
     }
 
+}
+
+extension LogoViewController {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    @objc func reloadView() {
+        if defaults.bool(forKey: "loginVCReload") {
+            self.viewDidLoad()
+            defaults.set(false, forKey: "loginVCReload")
+        }
+    }
 }

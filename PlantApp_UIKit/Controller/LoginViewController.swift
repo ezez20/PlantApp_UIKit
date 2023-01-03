@@ -157,6 +157,8 @@ class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
+        navigationItem.hidesBackButton = true
+        
         // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
 //            self.defaults.set(true, forKey: "userFirstLoggedIn")

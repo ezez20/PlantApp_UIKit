@@ -110,8 +110,9 @@ class MainViewController: UIViewController {
     
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
-        self.navigationController?.popToRootViewController(animated: true)
-
+        self.navigationController?.popViewController(animated: true)
+//        let loginVC = LoginViewController()
+//        self.navigationController?.pushViewController(loginVC, animated: true)
     }
 
     

@@ -225,11 +225,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             print("Error signing out: %@", signOutError)
         }
         
-        
-        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         dismiss(animated: true)
-        
         
     }
     

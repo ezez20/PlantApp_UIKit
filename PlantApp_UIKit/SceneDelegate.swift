@@ -27,11 +27,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         /// 3. Create a view hierarchy programmatically
         let viewController = LogoViewController()
-//        let navigation = UINavigationController(rootViewController: viewController)
-//        navigation.navigationBar.tintColor = .systemGreen
+        let navigation = UINavigationController(rootViewController: viewController)
+        navigation.navigationBar.tintColor = .systemGreen
 
         /// 4. Set the root view controller of the window with your view controller
-        window.rootViewController = viewController
+        window.rootViewController = navigation
         
         
         /// 5. Set the window and call makeKeyAndVisible()
@@ -45,9 +45,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
         
-        // Below will 
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        // Below will
         defaults.set(true, forKey: "userDiscardedApp")
+        defaults.set(true, forKey: "loginVCReload")
+        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         print("sceneDidDisconnect")
     }
 
