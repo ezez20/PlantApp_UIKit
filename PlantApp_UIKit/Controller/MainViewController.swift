@@ -238,11 +238,14 @@ class MainViewController: UIViewController {
         
         print("reset triggered")
         let notificationCount = 0
-
         print("Notification count: \(notificationCount)")
+        
         //Save the new value to User Defaults
         defaults.set(notificationCount, forKey: "NotificationBadgeCount")
         UIApplication.shared.applicationIconBadgeNumber = notificationCount
+        
+        let settingsVC = SettingsViewController()
+        settingsVC.refreshUserNotification()
         
     }
     
