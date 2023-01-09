@@ -46,6 +46,8 @@ class LoginViewController: UIViewController {
         passwordTextfield.delegate = self
         self.enableDismissKeyboardOnTapOutside()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(presentMainVC), name: NSNotification.Name("navigateToMainVC"), object: nil)
+        
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
@@ -161,13 +163,13 @@ class LoginViewController: UIViewController {
         
         // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
-//            self.defaults.set(true, forKey: "userFirstLoggedIn")
-            K.navigateToMainVC(self.navigationController!)
+            self.defaults.set(true, forKey: "userFirstLoggedIn")
+            K.navigateToMainVC(self)
         }
         
         // If user is logging in without a FB account, this will navigate to MainVC
         if defaults.bool(forKey: "useWithoutFBAccount") {
-            K.navigateToMainVC(self.navigationController!)
+            K.navigateToMainVC(self)
         }
         
     }
@@ -211,8 +213,9 @@ class LoginViewController: UIViewController {
                 // If no error signing in, navigate to MainViewController.
                 if self.authenticateFBUser() {
                     self.defaults.set(true, forKey: "userFirstLoggedIn")
-                    K.navigateToMainVC(self.navigationController!)
+                    K.navigateToMainVC(self)
                 }
+                
             }
             
         }
@@ -220,11 +223,7 @@ class LoginViewController: UIViewController {
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
         self.defaults.set(true, forKey: "useWithoutFBAccount")
-        
-        let storyboard = UIStoryboard (name: "Main", bundle: nil)
-        let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
-        self.navigationController?.pushViewController(mainVC, animated: true)
-        
+        K.navigateToMainVC(self)
         print("Use without login account - button clicked")
     }
     
@@ -232,7 +231,21 @@ class LoginViewController: UIViewController {
         // Add segue to SignUpViewController
         print("Sign up an account - button clicked")
         let signUpVC = SignUpViewController()
-        self.navigationController?.pushViewController(signUpVC, animated: true)
+        self.present(signUpVC, animated: true)
+    }
+    
+    @objc func presentMainVC() {
+        if self.authenticateFBUser() {
+            self.defaults.set(true, forKey: "userFirstLoggedIn")
+            
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
+            let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
+            mainVC.modalTransitionStyle = .crossDissolve
+            let navigation = UINavigationController(rootViewController: mainVC)
+            navigation.navigationBar.tintColor = .systemGreen
+            navigation.modalPresentationStyle = .fullScreen
+            self.present(navigation, animated: true)
+        }
     }
     
     //MARK: - Data Manipulation Methods

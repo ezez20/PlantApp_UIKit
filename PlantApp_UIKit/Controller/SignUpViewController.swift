@@ -183,10 +183,11 @@ class SignUpViewController: UIViewController {
                     
                     
                     // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
-                    let storyboard = UIStoryboard (name: "Main", bundle: nil)
-                    let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
-                    self.navigationController?.pushViewController(mainVC, animated: true)
-                    
+//                    let storyboard = UIStoryboard (name: "Main", bundle: nil)
+//                    let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
+//                    self.navigationController?.pushViewController(mainVC, animated: true)
+                    self.dismiss(animated: true)
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "navigateToMainVC"), object: nil)
                 } else {
                     print("User is not signed in.")
                 }

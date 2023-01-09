@@ -34,23 +34,14 @@ class LogoViewController: UIViewController {
         
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
-//                let navigation = UINavigationController(rootViewController: self.navigationController!)
-//                navigation.navigationBar.tintColor = .systemGreen
-//                navigation.modalTransitionStyle = .crossDissolve
-//                navigation.modalPresentationStyle = .overFullScreen
-//                navigation.isModalInPresentation = false
-//                navigation.pushViewController(viewController, animated: true)
-                let storyboard = UIStoryboard (name: "Main", bundle: nil)
-                let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
-                self.navigationController?.modalPresentationStyle = .fullScreen
-                self.navigationController!.pushViewController(mainVC, animated: true)
-//                K.navigateToMainVC(self.navigationController!)
-//                self.present(navigation, animated: true)
+                K.navigateToMainVC(self)
+                
             } else {
                 let vc = LoginViewController()
-                self.navigationController!.pushViewController(vc, animated: true)
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .overFullScreen
+                self.present(vc, animated: true)
             }
-
         }
         
     }
@@ -100,6 +91,7 @@ extension LogoViewController {
         if defaults.bool(forKey: "loginVCReload") {
             self.viewDidLoad()
             defaults.set(false, forKey: "loginVCReload")
+            print("Deez")
         }
     }
 }

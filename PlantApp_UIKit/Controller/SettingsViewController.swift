@@ -45,12 +45,12 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        title = "Settings"
+       
         
         loadPlants()
         notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
         selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
+      
         
         // Do any additional setup after loading the view.
         view.addSubview(containerView)
@@ -65,8 +65,6 @@ class SettingsViewController: UIViewController {
         containerView.addSubview(sectionView)
         sectionView.translatesAutoresizingMaskIntoConstraints = false
         sectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 108).isActive = true
-        
-        //        sectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -200).isActive = true
         sectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         sectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         
@@ -159,12 +157,19 @@ class SettingsViewController: UIViewController {
         sectionView.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        title = "Settings"
+    }
+    
     @objc func alertButtonPressed() {
         print("alertButtonPressed")
         // add segue to "alertTime" view controller.
         let alertTimeVC = AlertTimeViewController()
         alertTimeVC.alertOption = selectedAlertOption
         alertTimeVC.delegate = self
+//        alertTimeVC.navigationController?.navigationBar.prefersLargeTitles = false
+//        alertTimeVC.title = "Alert"
         self.navigationController?.pushViewController(alertTimeVC, animated: true)
    
     }
@@ -226,6 +231,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
+//        defaults.set(true, forKey: "loginVCReload")
         dismiss(animated: true)
         
     }
@@ -257,9 +263,10 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         center.getNotificationSettings { [self] settings in
             if settings.authorizationStatus == .authorized {
                 
-                loadPlants()
+//                loadPlants()
                 
                 let center = UNUserNotificationCenter.current()
+                defaults.set(0, forKey: "NotificationBadgeCount")
                 
                 // For each/every plant, this will create a notification
                 for plant in plants {

@@ -110,9 +110,7 @@ class MainViewController: UIViewController {
     
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
-        self.navigationController?.popViewController(animated: true)
-//        let loginVC = LoginViewController()
-//        self.navigationController?.pushViewController(loginVC, animated: true)
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     
@@ -174,7 +172,7 @@ class MainViewController: UIViewController {
         }
         
         
-        resetUserNotification()
+//        resetUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
@@ -246,6 +244,7 @@ class MainViewController: UIViewController {
         
         let settingsVC = SettingsViewController()
         settingsVC.refreshUserNotification()
+        settingsVC.plants = plants
         
     }
     

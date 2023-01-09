@@ -19,40 +19,43 @@ class AlertTimeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Alert"
-        navigationController?.navigationBar.prefersLargeTitles = false
 
         view.backgroundColor = .secondarySystemBackground
         
         view.addSubview(alertTimeTable)
         alertTimeTable.translatesAutoresizingMaskIntoConstraints = false
-        alertTimeTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
-        alertTimeTable.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        alertTimeTable.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-
+        alertTimeTable.topAnchor.constraint(equalTo: view.topAnchor, constant: 108).isActive = true
+        alertTimeTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+        alertTimeTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+        alertTimeTable.bottomAnchor.constraint(equalTo: view.topAnchor, constant: (50 * 4) + 108).isActive = true
+        alertTimeTable.layer.cornerRadius = 10
+        
+        alertTimeTable.tableHeaderView = UIView()
+        alertTimeTable.tableFooterView = UIView()
+        alertTimeTable.rowHeight = 50
+        alertTimeTable.layer.cornerRadius = 10
+        alertTimeTable.alwaysBounceVertical = false
+        alertTimeTable.alwaysBounceHorizontal = false
         
         alertTimeTable.delegate = self
         alertTimeTable.dataSource = self
         alertTimeTable.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
         
+        title = "Alert"
+//        navigationController?.navigationBar.prefersLargeTitles = false
+//        title = "Alert"
     }
     
     override func viewDidLayoutSubviews() {
         // ADJUST: tableview dynamically adjusts height based on contentSize.
-        alertTimeTable.heightAnchor.constraint(equalToConstant: alertTimeTable.contentSize.height).isActive = true
+
+
+    
         
-//        let rowsHeight = alertTimeTable.estimatedSectionFooterHeight
-//        print(rowsHeight)
-//        let distance = view.bounds.height - rowsHeight - CGFloat(50)
-//        print(distance)
-//        alertTimeTable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -distance).isActive = true
-        
-        alertTimeTable.layer.cornerRadius = 10
-        alertTimeTable.alwaysBounceVertical = false
-        alertTimeTable.alwaysBounceHorizontal = false
     }
     
-
+  
+    
 }
 
 
@@ -86,6 +89,8 @@ extension AlertTimeViewController: UITableViewDataSource, UITableViewDelegate {
         print("Option \(alertOption) picked")
         tableView.reloadData()
     }
+    
+
     
 }
 

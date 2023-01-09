@@ -66,10 +66,14 @@ struct K {
         }
     }
     
-    static func navigateToMainVC(_ navVC: UINavigationController) {
+    static func navigateToMainVC(_ vc: UIViewController) {
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
-        navVC.pushViewController(mainVC, animated: true)
+        mainVC.modalTransitionStyle = .crossDissolve
+        let navigation = UINavigationController(rootViewController: mainVC)
+        navigation.navigationBar.tintColor = .systemGreen
+        navigation.modalPresentationStyle = .fullScreen
+        vc.present(navigation, animated: true)
     }
     
 }
