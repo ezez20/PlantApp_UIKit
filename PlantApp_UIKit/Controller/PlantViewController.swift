@@ -275,10 +275,17 @@ extension PlantViewController {
             //3: FIREBASE: Declare collection("plants)
             let plantCollection =  userFireBase.collection("plants")
             
+            var wateredBool: Bool
+            if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
+                wateredBool = false
+            } else {
+                wateredBool = true
+            }
+            
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": datePicker.date,
-                "wateredBool": true
+                "wateredBool": wateredBool
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)

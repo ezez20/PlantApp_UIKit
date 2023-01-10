@@ -86,9 +86,13 @@ extension LogoViewController {
     }
     
     @objc func reloadView() {
+        self.viewDidLoad()
         if defaults.bool(forKey: "loginVCReload") {
-            self.viewDidLoad()
-            defaults.set(false, forKey: "loginVCReload")
+//            self.view.layoutIfNeeded()
+            let vc = LoginViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true)
         }
     }
 }

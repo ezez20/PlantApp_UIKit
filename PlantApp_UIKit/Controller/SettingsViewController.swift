@@ -49,7 +49,7 @@ class SettingsViewController: UIViewController {
         notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
         selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
       
-        
+        print("deez: \(defaults.bool(forKey: "loginVCReload"))")
         // Do any additional setup after loading the view.
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
