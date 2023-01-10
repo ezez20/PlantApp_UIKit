@@ -129,11 +129,10 @@ extension AppDelegate {
                         plant.wateredBool = true
                         print("Updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
-                        
                         center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
                         saveContext()
                         
-                        // Updates core data
+                        // Updates core data: refreshes plants with updated watered date.
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "notificationResponseClickedID"), object: nil)
                         
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
@@ -199,6 +198,7 @@ extension AppDelegate {
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": Date.now,
+                "wateredBool": true
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)

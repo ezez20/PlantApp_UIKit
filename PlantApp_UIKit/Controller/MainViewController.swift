@@ -172,7 +172,7 @@ class MainViewController: UIViewController {
         }
         
         
-//        resetUserNotification()
+        resetUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
@@ -234,17 +234,14 @@ class MainViewController: UIViewController {
     
     func resetUserNotification() {
         
-        print("reset triggered")
-        let notificationCount = 0
-        print("Notification count: \(notificationCount)")
-        
-        //Save the new value to User Defaults
-        defaults.set(notificationCount, forKey: "NotificationBadgeCount")
-        UIApplication.shared.applicationIconBadgeNumber = notificationCount
-        
-        let settingsVC = SettingsViewController()
-        settingsVC.refreshUserNotification()
-        settingsVC.plants = plants
+//        print("reset triggered")
+//        let notificationCount = 0
+//        print("Notification count: \(notificationCount)")
+//        
+//        //Save the new value to User Defaults
+//        defaults.set(notificationCount, forKey: "NotificationBadgeCount")
+//        UIApplication.shared.applicationIconBadgeNumber = notificationCount
+
         
     }
     

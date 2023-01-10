@@ -21,7 +21,6 @@ class LogoViewController: UIViewController {
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
-//        titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         titleLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
@@ -35,7 +34,6 @@ class LogoViewController: UIViewController {
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
-                
             } else {
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
@@ -91,7 +89,6 @@ extension LogoViewController {
         if defaults.bool(forKey: "loginVCReload") {
             self.viewDidLoad()
             defaults.set(false, forKey: "loginVCReload")
-            print("Deez")
         }
     }
 }

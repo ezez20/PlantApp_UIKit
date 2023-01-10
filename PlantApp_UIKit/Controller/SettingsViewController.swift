@@ -45,8 +45,6 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
-        
         loadPlants()
         notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
         selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
@@ -231,7 +229,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
-//        defaults.set(true, forKey: "loginVCReload")
+        defaults.set(true, forKey: "loginVCReload")
         dismiss(animated: true)
         
     }
@@ -263,7 +261,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         center.getNotificationSettings { [self] settings in
             if settings.authorizationStatus == .authorized {
                 
-//                loadPlants()
+                loadPlants()
                 
                 let center = UNUserNotificationCenter.current()
                 defaults.set(0, forKey: "NotificationBadgeCount")
@@ -299,9 +297,9 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                         // For debug purpose: Notification time - 10 seconds
                         selectedNotificationTime = Date.now.advanced(by: 10)
                         
-                        //                selectedNotificationTime = nextWaterDate.advanced(by: 20)
+                        // Uncomment below when not debugging:
+//                        selectedNotificationTime = nextWaterDate.advanced(by: 20)
                         print("selectedNotificationTime: \(selectedNotificationTime)")
-                        print("current time: \(Date.now)")
                     case 1: // 1 day before
                         selectedNotificationTime = nextWaterDate.advanced(by: -86400)
                         print("Notification Time: \(selectedNotificationTime)")

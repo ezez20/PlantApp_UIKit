@@ -42,19 +42,8 @@ class AlertTimeViewController: UIViewController {
         alertTimeTable.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
         
         title = "Alert"
-//        navigationController?.navigationBar.prefersLargeTitles = false
-//        title = "Alert"
     }
     
-    override func viewDidLayoutSubviews() {
-        // ADJUST: tableview dynamically adjusts height based on contentSize.
-
-
-    
-        
-    }
-    
-  
     
 }
 

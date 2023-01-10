@@ -175,6 +175,15 @@ class AddPlantViewController: UIViewController {
             newPlant.order = Int32(plants.endIndex)
             newPlant.lastWateredDate = datePicker.date
             
+            var wateredBool: Bool
+            if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
+                wateredBool = false
+            } else {
+                wateredBool = true
+            }
+            
+            newPlant.wateredBool = wateredBool
+            
             // Saves "plantImageString" to be used later to retrieve plant set images.
             K.plantImageStringReturn(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage, newPlant: newPlant)
             
@@ -445,6 +454,13 @@ extension AddPlantViewController {
         //3: FIREBASE: Declare collection("plants)
         let plantCollection =  userFireBase.collection("plants")
         
+        var wateredBool: Bool
+        if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
+            wateredBool = false
+        } else {
+            wateredBool = true
+        }
+        
         //4: FIREBASE: Plant entity input
         let plantAddedData: [String: Any] = [
             "dateAdded": Date.now,
@@ -453,7 +469,8 @@ extension AddPlantViewController {
             "waterHabit": Int16(selectedHabitDay),
             "plantOrder": Int32(plants.endIndex),
             "lastWatered": datePicker.date,
-            "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage)
+            "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+            "wateredBool": wateredBool
         ]
         
         // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -580,6 +597,10 @@ extension AddPlantViewController {
                     let waterHabit_FB = data["waterHabit"] as? Int ?? 0
                     print("waterHabit_FB: \(waterHabit_FB)")
                     
+                    //wateredBool
+                    let wateredBool_FB = data["wateredBool"] as? Bool ?? false
+                    print("wateredBool_FB: \(wateredBool_FB)")
+                    
                     let loadedPlant_FB = Plant(context: self.context)
                     loadedPlant_FB.id = plantUUID_FBCasted
                     loadedPlant_FB.plant = plantName_FB
@@ -588,6 +609,7 @@ extension AddPlantViewController {
                     loadedPlant_FB.order = Int32(plantOrder_FB)
                     loadedPlant_FB.lastWateredDate = lastWatered_FB
                     loadedPlant_FB.plantImageString = plantImageString_FB
+                    loadedPlant_FB.wateredBool = wateredBool_FB
                     
                     // Retrieve "customPlantImage" data from FB Storage.
                     let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String

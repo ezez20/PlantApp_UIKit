@@ -57,6 +57,7 @@ class PlantViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant: Plant!
     
+    let defaults = UserDefaults.standard
     
     
 // MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
@@ -88,7 +89,6 @@ class PlantViewController: UIViewController {
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
-            currentPlant.wateredBool = false
             return "):"
         } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
@@ -161,10 +161,10 @@ class PlantViewController: UIViewController {
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
         datePicker.date = lastWateredDateIn
-        currentPlant.wateredBool = true
         updatePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
+        updateNotificationBadgeCount()
         print("Water button pressed.")
     }
     
@@ -278,6 +278,7 @@ extension PlantViewController {
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": datePicker.date,
+                "wateredBool": true
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -300,6 +301,19 @@ extension PlantViewController {
             
             
             print("Plant successfully edited on Firebase")
+        }
+    }
+    
+    func updateNotificationBadgeCount() {
+        if defaults.bool(forKey: "notificationOn") {
+            if currentPlant.wateredBool == false {
+                let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+                //Save the new value to User Defaults
+                defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                UIApplication.shared.applicationIconBadgeNumber = badgeCount
+                currentPlant.wateredBool = true
+                updatePlant()
+            }
         }
     }
     
