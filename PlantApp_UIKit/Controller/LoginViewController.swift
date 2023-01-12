@@ -33,7 +33,7 @@ class LoginViewController: UIViewController {
     
     // MARK: - UserDefaults for saving small data/settings
     let defaults = UserDefaults.standard
-    
+
 
     override func viewDidLoad() {
         
@@ -180,7 +180,9 @@ class LoginViewController: UIViewController {
         emailTextfield.text = ""
         passwordTextfield.text = ""
     }
+
     
+    // MARK: - objc functions
     @objc func loginButtonClicked(sender: UIButton) {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
@@ -209,22 +211,15 @@ class LoginViewController: UIViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
 
+            // If no error signing in, navigate to MainViewController.
             } else {
-                // If no error signing in, navigate to MainViewController.
                 if self.authenticateFBUser() {
                     self.defaults.set(true, forKey: "userFirstLoggedIn")
                     K.navigateToMainVC(self)
                 }
-                
             }
             
         }
-    }
-    
-    @objc func useWithoutAccountButtonClicked(sender: UIButton) {
-        self.defaults.set(true, forKey: "useWithoutFBAccount")
-        K.navigateToMainVC(self)
-        print("Use without login account - button clicked")
     }
     
     @objc func signUpButtonClicked(sender: UIButton) {
@@ -232,6 +227,12 @@ class LoginViewController: UIViewController {
         print("Sign up an account - button clicked")
         let signUpVC = SignUpViewController()
         self.present(signUpVC, animated: true)
+    }
+    
+    @objc func useWithoutAccountButtonClicked(sender: UIButton) {
+        self.defaults.set(true, forKey: "useWithoutFBAccount")
+        K.navigateToMainVC(self)
+        print("Use without login account - button clicked")
     }
     
     @objc func presentMainVC() {
@@ -248,44 +249,9 @@ class LoginViewController: UIViewController {
         }
     }
     
-    //MARK: - Data Manipulation Methods
-//    func savePlants() {
-//        do {
-//            try context.save()
-//        } catch {
-//            print("Error saving category \(error)")
-//        }
-//
-//    }
-//
-//    func loadPlants() {
-//
-//        do {
-//            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-//            let sort = NSSortDescriptor(key: "order", ascending: true)
-//            request.sortDescriptors = [sort]
-//            plants = try context.fetch(request)
-//        } catch {
-//            print("Error loading categories \(error)")
-//        }
-//
-//        print("Plants loaded")
-//        print("Core Data count: \(plants.count)")
-//
-//    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
 }
 
+// MARK: - Extension: UITextFieldDelegate
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -319,7 +285,7 @@ extension LoginViewController: UITextFieldDelegate {
     
 }
 
-// MARK: - Firebase - Firestore
+// MARK: - Extension: Firebase - Firestore
 extension LoginViewController {
 
     // Firestore: Authenticate

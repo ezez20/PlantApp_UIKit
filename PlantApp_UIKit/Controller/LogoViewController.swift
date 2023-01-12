@@ -27,10 +27,11 @@ class LogoViewController: UIViewController {
         titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
         titleLogo.image = UIImage(named: K.leaf)
         // Animate title logo.
-        titleLogo.alpha = 0 // or newImage.fadeOut(duration: 0.0)
+        titleLogo.alpha = 0
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: NSNotification.Name("logoutTriggered"), object: nil)
         
+        // MARK: - Add Animation to titleLogo
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
@@ -68,8 +69,6 @@ public extension UIView {
         } completion: { _ in
             print("Animation completed")
             completion()
-//            let defaults = UserDefaults.standard
-//            defaults.set(true, forKey: "LogoVCDisplayCompleted")
         }
     }
 
@@ -88,7 +87,6 @@ extension LogoViewController {
     @objc func reloadView() {
         self.viewDidLoad()
         if defaults.bool(forKey: "loginVCReload") {
-//            self.view.layoutIfNeeded()
             let vc = LoginViewController()
             vc.modalTransitionStyle = .crossDissolve
             vc.modalPresentationStyle = .overFullScreen

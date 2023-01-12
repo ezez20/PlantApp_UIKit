@@ -37,6 +37,7 @@ class SettingsViewController: UIViewController {
     let options = ["day of event", "1 day before", "2 days before", "3 day before"]
     // Need to assign from Core Data: plant's water date
     let defaults = UserDefaults.standard
+    var userSettings = [String: Any]()
     
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
@@ -46,10 +47,11 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         
         loadPlants()
-        notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
-        selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
-      
-        print("deez: \(defaults.bool(forKey: "loginVCReload"))")
+        updateUserSettings {
+            self.selectedAlertOption = self.defaults.integer(forKey: "selectedAlertOption")
+            self.defaults.set(false, forKey: "firstUpdateUserSettings")
+        }
+        
         // Do any additional setup after loading the view.
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -166,8 +168,6 @@ class SettingsViewController: UIViewController {
         let alertTimeVC = AlertTimeViewController()
         alertTimeVC.alertOption = selectedAlertOption
         alertTimeVC.delegate = self
-//        alertTimeVC.navigationController?.navigationBar.prefersLargeTitles = false
-//        alertTimeVC.title = "Alert"
         self.navigationController?.pushViewController(alertTimeVC, animated: true)
    
     }
@@ -183,12 +183,14 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         if sender.isOn == true {
             refreshUserNotification()
             defaults.set(true, forKey: "notificationOn")
+            editUserSettings_FB()
             print("UISwitch state is now ON")
         } else {
             center.removeAllPendingNotificationRequests()
             center.removeAllDeliveredNotifications()
             defaults.set(false, forKey: "notificationOn")
             defaults.set(0, forKey: "NotificationBadgeCount")
+            editUserSettings_FB()
             UIApplication.shared.applicationIconBadgeNumber = 0
             print("UISwitch state is now Off")
         }
@@ -229,6 +231,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
+        defaults.set(true, forKey: "firstUpdateUserSettings")
         defaults.set(true, forKey: "loginVCReload")
         dismiss(animated: true)
         
@@ -334,14 +337,12 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                
                 }
                 
-                registerNotificationAction()
-
-                func registerNotificationAction() {
-                    let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
-                    let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
-                    let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
-                    center.setNotificationCategories([notificationActionsCategory])
-                }
+                // 6: Set UNNotificationActions
+                let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
+                let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
+                let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+                center.setNotificationCategories([notificationActionsCategory])
+                
                 
             } else if settings.authorizationStatus == .notDetermined {
 
@@ -402,6 +403,55 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         center.removeAllDeliveredNotifications()
         setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
     }
+    
+    func updateUserSettings(completion: @escaping () -> Void) {
+        if Auth.auth().currentUser?.uid != nil {
+            if defaults.bool(forKey: "firstUpdateUserSettings") {
+                // Set setting: Notification On
+                let notificationOn = userSettings["Notification On"] as? Bool ?? false
+                print("notificationOn: \(notificationOn)")
+                self.notificationToggleSwitch.isOn = notificationOn
+                self.defaults.set(notificationOn, forKey: "notificationOn")
+                
+                // Set setting: Notification Alert Time
+                let notificationAlertTime = userSettings["Notification Alert Time"] as? Int ?? 0
+                print("notificationAlertTime: \(notificationAlertTime)")
+                self.defaults.set(notificationAlertTime, forKey: "selectedAlertOption")
+                completion()
+            } else {
+                notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
+                selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
+            }
+        } else {
+            notificationToggleSwitch.isOn = defaults.bool(forKey: "notificationOn")
+            selectedAlertOption = defaults.integer(forKey: "selectedAlertOption")
+        }
+    }
+    
+    
+    func editUserSettings_FB() {
+        
+        let db = Firestore.firestore()
+        guard let currentUser = Auth.auth().currentUser?.uid else {return}
+        let userFireBase = db.collection("users").document(currentUser)
+        
+        // FIREBASE: Plant entity input
+        let userSettingEditedData: [String: Any] = [
+            "Notification On": defaults.bool(forKey: "notificationOn"),
+            "Notification Alert Time": defaults.integer(forKey: "selectedAlertOption"),
+            "Notification Badge Count": defaults.integer(forKey: "NotificationBadgeCount")
+        ]
+        
+        userFireBase.updateData(userSettingEditedData) { error in
+            if error != nil {
+                print("Error updating data on FB. Error: \(String(describing: error))")
+            }
+        }
+        
+        print("User Settingxs successfully edited on Firebase")
+        
+    }
+    
 }
 
 extension SettingsViewController: PassAlertDelegate {
@@ -410,6 +460,7 @@ extension SettingsViewController: PassAlertDelegate {
         
         selectedAlertOption = Alert
         defaults.set(selectedAlertOption, forKey: "selectedAlertOption")
+        editUserSettings_FB()
         
         if notificationToggleSwitch.isOn {
             refreshUserNotification()

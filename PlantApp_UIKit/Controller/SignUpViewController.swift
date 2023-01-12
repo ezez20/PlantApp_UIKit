@@ -174,7 +174,10 @@ class SignUpViewController: UIViewController {
                     newUserFireBase.setData(
                         ["userName": self.userNameTextfield.text!,
                          "userUID": userUID!,
-                         "email:": userEmail!
+                         "email:": userEmail!,
+                         "Notification On": false,
+                         "Notification Alert Time": 0,
+                         "Notification Badge Count": 0
                         ]) { error in
                             if error != nil {
                                 K.presentAlert(self, error!)
@@ -182,12 +185,11 @@ class SignUpViewController: UIViewController {
                         }
                     
                     
-                    // 3: Once user user creates account with no error, transition to MainViewController with database loaded.
-//                    let storyboard = UIStoryboard (name: "Main", bundle: nil)
-//                    let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID")  as! MainViewController
-//                    self.navigationController?.pushViewController(mainVC, animated: true)
+                    // Once succesfully signed up, SignUpVC will dismiss.
                     self.dismiss(animated: true)
+                    // Then, LoginVC will navigate to MainVC.
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "navigateToMainVC"), object: nil)
+                    
                 } else {
                     print("User is not signed in.")
                 }

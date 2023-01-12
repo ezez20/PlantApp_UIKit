@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
     // MARK: - Google Firebase
     var userID_FB = ""
     var plants_FBLoaded = [QueryDocumentSnapshot]()
+    var userSettings = [String: Any]()
   
     
     // MARK: - UserDefaults for saving small data/settings
@@ -44,8 +45,6 @@ class MainViewController: UIViewController {
     
     
 // MARK: - Views load state
-    
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -134,6 +133,7 @@ class MainViewController: UIViewController {
         // lead to settings page
         let settingsVC = SettingsViewController()
         let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
+        settingsVC.userSettings = userSettings
         settingsVC.modalPresentationStyle = .formSheet
         present(settingsPlantNavVC, animated: true, completion: nil)
 
@@ -248,7 +248,7 @@ class MainViewController: UIViewController {
 }
 
 
-// MARK: - Extensions: UITableViewDelegate, UITableViewDataSource, WeatherManagerDelegate, CLLocationManagerDelegate
+// MARK: - Extensions: UITableViewDelegate
 extension MainViewController: UITableViewDelegate {
     
     // TableView cell selected
@@ -297,6 +297,7 @@ extension MainViewController: UITableViewDelegate {
     
 }
 
+// MARK: - Extension: UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
     
     // Tells how many rows to list out in tableView.
@@ -350,11 +351,10 @@ extension MainViewController: UITableViewDataSource {
         
     }
     
-    
 }
 
-// MARK: - extension for weather call
-extension MainViewController: WeatherManagerDelegate {
+// MARK: - Extension: weather call
+extension MainViewController: WeatherManagerDelegate, CLLocationManagerDelegate   {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
@@ -368,9 +368,6 @@ extension MainViewController: WeatherManagerDelegate {
         print("Error updating weather. Error: \(error)")
     }
     
-}
-
-extension MainViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
@@ -387,7 +384,8 @@ extension MainViewController: CLLocationManagerDelegate {
     
 }
 
-// MARK: - Firebase functions
+
+// MARK: - Extension: Firebase functions
 extension MainViewController {
     
     func authenticateFBUser() -> Bool {
@@ -423,7 +421,7 @@ extension MainViewController {
 
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
-           
+    
             // Get all documents/plants and put it in "plants_FB"
             plantsCollection.getDocuments { (snapshot, error) in
                 if error == nil && snapshot != nil {
@@ -449,6 +447,17 @@ extension MainViewController {
                     print("Error getting documents from plant collection from firebase")
                 }
             }
+            
+            // Get user settings
+            currentUserCollection.getDocument { (snapshot, error) in
+                if error == nil && snapshot != nil {
+                    let settingsSnapshot = snapshot!.data()
+                    self.userSettings = settingsSnapshot!
+                } else {
+                    print("Error getting user Settings: \(String(describing: error))")
+                }
+            }
+            
             print("Current user logged in: \(String(describing: currentUser))")
         } else {
             print("No Firebase user logged in")
@@ -647,6 +656,11 @@ extension MainViewController {
         }
     }
     
+}
+
+// MARK: - Additional added Views
+extension MainViewController {
+    
     func addLoadingView() {
         print("addLoadingView")
         loadingSpinnerView.color = .gray
@@ -666,4 +680,3 @@ extension MainViewController {
     }
     
 }
-
