@@ -129,10 +129,6 @@ class AddPlantViewController: UIViewController {
     }
     
     
-
-    
-    
-    
     //MARK: - IBActions Buttons
     
     @IBAction func cameraButtonPressed(_ sender: Any) {

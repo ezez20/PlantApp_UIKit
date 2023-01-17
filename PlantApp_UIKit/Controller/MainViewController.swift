@@ -23,7 +23,7 @@ class MainViewController: UIViewController {
     var userID_FB = ""
     var plants_FBLoaded = [QueryDocumentSnapshot]()
     var userSettings = [String: Any]()
-  
+    
     
     // MARK: - UserDefaults for saving small data/settings
     let defaults = UserDefaults.standard
@@ -94,10 +94,10 @@ class MainViewController: UIViewController {
         locationManager.startUpdatingLocation()
         
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("notificationResponseClickedID"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
         
     }
     
@@ -106,10 +106,17 @@ class MainViewController: UIViewController {
         loadPlants()
     }
     
+    @objc func refreshUserNotification() {
+        // Need to add function to correctly refresh/setup user notification for plants.
+        // NOTE: only add notification for plants that have "wateredBool = false"
+    }
+    
     
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
+        self.presentingViewController?.dismiss(animated: true, completion: {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
+        })
     }
 
     
@@ -172,7 +179,6 @@ class MainViewController: UIViewController {
         }
         
         
-        resetUserNotification()
         print("Plants loaded")
         print("Core Data count: \(plants.count)")
         
@@ -230,19 +236,6 @@ class MainViewController: UIViewController {
         }
     
         return waterStatus
-    }
-    
-    func resetUserNotification() {
-        
-//        print("reset triggered")
-//        let notificationCount = 0
-//        print("Notification count: \(notificationCount)")
-//        
-//        //Save the new value to User Defaults
-//        defaults.set(notificationCount, forKey: "NotificationBadgeCount")
-//        UIApplication.shared.applicationIconBadgeNumber = notificationCount
-
-        
     }
     
 }
@@ -514,6 +507,10 @@ extension MainViewController {
             let waterHabit_FB = data["waterHabit"] as? Int ?? 0
             print("waterHabit_FB: \(waterHabit_FB)")
             
+            //waterHabit
+            let wateredBool_FB = data["wateredBool"] as? Bool ?? false
+            print("wateredBool_FB: \(wateredBool_FB)")
+            
             // MARK: - Below will save parse'd data from Firebase into Core Data.
             let loadedPlant_FB = Plant(context: self.context)
             loadedPlant_FB.id = plantUUID_FBCasted
@@ -523,6 +520,7 @@ extension MainViewController {
             loadedPlant_FB.order = Int32(plantOrder_FB)
             loadedPlant_FB.lastWateredDate = lastWatered_FB
             loadedPlant_FB.plantImageString = plantImageString_FB
+            loadedPlant_FB.wateredBool = wateredBool_FB
             
             let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
 

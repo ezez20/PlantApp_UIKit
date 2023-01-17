@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var plants = [Plant]()
     let defaults = UserDefaults.standard
+    let center = UNUserNotificationCenter.current()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -98,9 +99,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     
+    func loadPlants() {
+        let context = persistentContainer.viewContext
+        
+        do {
+            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+            let sort = NSSortDescriptor(key: "order", ascending: true)
+            request.sortDescriptors = [sort]
+            plants = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+        
+        print("Plants loaded")
+    }
+    
+    
 }
 
 extension AppDelegate {
+    
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         UIApplication.shared.applicationIconBadgeNumber = 0
@@ -133,7 +151,7 @@ extension AppDelegate {
                         saveContext()
                         
                         // Updates core data: refreshes plants with updated watered date.
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "notificationResponseClickedID"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                         
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                         //Save the new value to User Defaults
@@ -154,26 +172,133 @@ extension AppDelegate {
         completionHandler()
     }
     
+    func setupLocalUserNotification(selectedAlert: Int) {
+        
+        center.getNotificationSettings { [self] settings in
+            if settings.authorizationStatus == .authorized {
+                
+                loadPlants()
+                
+                let center = UNUserNotificationCenter.current()
+                defaults.set(0, forKey: "NotificationBadgeCount")
+                
+                // For each/every plant, this will create a notification
+                for plant in plants {
+                    
+                    // 2: Create the notification content
+                    let content = UNMutableNotificationContent()
+                    content.title = "Notification alert!"
+                    content.body = "Make sure to water your plant: \(plant.plant!)"
+                    
+                    //Retreive the value from User Defaults and increase it by 1
+                    let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int + 1
+                    //Save the new value to User Defaults
+                    defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                    //Set the value as the current badge count
+                    content.badge = badgeCount as NSNumber
+                    content.sound = .default
+                    content.categoryIdentifier = "categoryIdentifier"
+                    
+                    // 3: Create the notification trigger
+                    // "5 seconds" added
+                    var nextWaterDate: Date {
+                        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
+                        return calculatedDate!
+                    }
+                    
+                    var selectedNotificationTime = Date()
+                    
+                    switch defaults.integer(forKey: "selectedAlertOption") {
+                    case 0: // day of event
+                        // For debug purpose: Notification time - 10 seconds
+                        selectedNotificationTime = Date.now.advanced(by: 10)
+                        
+                        // Uncomment below when not debugging:
+//                        selectedNotificationTime = nextWaterDate.advanced(by: 20)
+                        print("selectedNotificationTime: \(selectedNotificationTime)")
+                    case 1: // 1 day before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    case 2: // 2 days before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    default: // 3 days before
+                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                        print("Notification Time: \(selectedNotificationTime)")
+                    }
+                    
+                    
+                    let notificationDate = selectedNotificationTime
+                    let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+                    let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
+                    
+                    // 4: Create the request
+                    let uuidString = UUID()
+                    plant.notificationRequestID = uuidString
+                    print("notificationActionID: \(uuidString)")
+                    let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
+                    
+                    // 5: Register the request
+                    center.add(notificationRequest) { (error) in
+                        // check the error parameter or handle any errors
+                        guard error == nil else {
+                            print("NotificationRequest error: \(error.debugDescription)")
+                            return
+                        }
+                    }
+                    
+               
+                }
+                
+                // 6: Set UNNotificationActions
+                let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
+                let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
+                let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+                center.setNotificationCategories([notificationActionsCategory])
+                
+                
+            } else if settings.authorizationStatus == .notDetermined {
+
+                center.delegate = self
+                center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                    if granted {
+                        // Access granted
+                        print("UserNotifcation Granted")
+                    } else {
+                        // Access denied
+                        print("UserNotifcation Denied")
+                    }
+                }
+                
+            } else {
+                
+                let alert = UIAlertController(title: "Error:", message: "Please enable push notification in settings to continue", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "Go to Settings", style: .default) { (action) -> Void in
+                    print("Go to Settings")
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                }
+                let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+                    print("Cancel")
+                }
+                alert.addAction(ok)
+                alert.addAction(cancel)
+              
+            }
+            
+        }
+        
+    }
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.badge, .sound])
     }
     
-    
-    func loadPlants() {
-        let context = persistentContainer.viewContext
-        
-        do {
-            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-            let sort = NSSortDescriptor(key: "order", ascending: true)
-            request.sortDescriptors = [sort]
-            plants = try context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
-        }
-        
-        print("Plants loaded")
+    func refreshUserNotification() {
+        center.removeAllPendingNotificationRequests()
+        center.removeAllDeliveredNotifications()
+        setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
     }
-    
+ 
     
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {

@@ -138,7 +138,6 @@ class PlantViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        updatePlant()
         // Will reload plants in MainVC
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
@@ -214,7 +213,6 @@ class PlantViewController: UIViewController {
     func updateUI() {
         plantHappinessLevel.text = "\(String(happinessLevelFormatted))%"
         waterStatusView.text = waterStatus
-        updatePlant()
     }
     
     func loadData() {
@@ -239,6 +237,7 @@ class PlantViewController: UIViewController {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
 

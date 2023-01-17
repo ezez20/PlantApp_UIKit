@@ -29,9 +29,9 @@ class LogoViewController: UIViewController {
         // Animate title logo.
         titleLogo.alpha = 0
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: NSNotification.Name("logoutTriggered"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: NSNotification.Name("reloadLogoView"), object: nil)
         
-        // MARK: - Add Animation to titleLogo
+        // MARK: - Add Animation to titleLogo when app is first loaded.
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
@@ -45,25 +45,12 @@ class LogoViewController: UIViewController {
         
     }
     
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
-    
 
 }
 
 public extension UIView {
 
-    func fadeInAnimation(duration: TimeInterval = 0.5, completion: @escaping () -> Void) {
+    func fadeInAnimation(duration: TimeInterval = 0.7, completion: @escaping () -> Void) {
         UIView.animate(withDuration: duration) {
             self.alpha = 1.0
         } completion: { _ in
@@ -85,12 +72,16 @@ extension LogoViewController {
     }
     
     @objc func reloadView() {
-        self.viewDidLoad()
-        if defaults.bool(forKey: "loginVCReload") {
-            let vc = LoginViewController()
-            vc.modalTransitionStyle = .crossDissolve
-            vc.modalPresentationStyle = .overFullScreen
-            self.present(vc, animated: true)
+        titleLogo.fadeInAnimation {
+            if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
+                K.navigateToMainVC(self)
+            } else {
+                let vc = LoginViewController()
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .overFullScreen
+                self.present(vc, animated: true)
+            }
         }
     }
+    
 }
