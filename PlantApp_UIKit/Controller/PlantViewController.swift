@@ -46,7 +46,14 @@ class PlantViewController: UIViewController {
     
     var waterHabitIn = 7
     var lastWateredDateIn = Date()
-    
+ 
+    var wateredBool: Bool {
+        if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
+            return false
+        } else {
+            return true
+        }
+    }
    
     // TO DO: add more plants and images
     var currentDate = Date.now
@@ -58,7 +65,7 @@ class PlantViewController: UIViewController {
     var currentPlant: Plant!
     
     let defaults = UserDefaults.standard
-    
+    let center = UNUserNotificationCenter.current()
     
 // MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
     var happinessLevelFormatted: Int {
@@ -124,8 +131,11 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = sender.date
         print("Last Watered Date changed to: \(sender.date)")
         updateUI()
+        updateNotificationBadgeCount()
         updatePlant()
         editPlant_FB(currentPlant.id!)
+      
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -160,10 +170,12 @@ class PlantViewController: UIViewController {
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
         datePicker.date = lastWateredDateIn
+        updateNotificationBadgeCount()
         updatePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
-        updateNotificationBadgeCount()
+      
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
         print("Water button pressed.")
     }
     
@@ -228,6 +240,7 @@ class PlantViewController: UIViewController {
     func updatePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
+        currentPlant.wateredBool = wateredBool
         print("Plant: \(String(describing: currentPlant.plant)) updated." )
  
         do {
@@ -237,7 +250,6 @@ class PlantViewController: UIViewController {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
 
@@ -273,13 +285,6 @@ extension PlantViewController {
             
             //3: FIREBASE: Declare collection("plants)
             let plantCollection =  userFireBase.collection("plants")
-            
-            var wateredBool: Bool
-            if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
-                wateredBool = false
-            } else {
-                wateredBool = true
-            }
             
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
@@ -317,8 +322,6 @@ extension PlantViewController {
                 //Save the new value to User Defaults
                 defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                 UIApplication.shared.applicationIconBadgeNumber = badgeCount
-                currentPlant.wateredBool = true
-                updatePlant()
             }
         }
     }

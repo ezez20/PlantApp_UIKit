@@ -13,15 +13,16 @@ import FirebaseFirestore
 
 class SettingsViewController: UIViewController {
     
+    // Container View
     let containerView = UIView()
     let sectionView = UIView()
     
-    // notification section
+    // Notification Section View
     let notificationLabel = UILabel()
     let notificationBell = UIImageView()
     let notificationToggleSwitch = UISwitch()
     
-    //divider
+    // Divider View
     let dividerView = UIView()
     
     // alertTimeButton
@@ -32,16 +33,21 @@ class SettingsViewController: UIViewController {
     // Login/Logout Button
     let logoutButton = UIButton()
     
-    let center = UNUserNotificationCenter.current()
+    // UserNotification selected alert option
     var selectedAlertOption = 0
     let options = ["day of event", "1 day before", "2 days before", "3 day before"]
-    // Need to assign from Core Data: plant's water date
+    
+    // UserDefaults to hold current settings for app.
     let defaults = UserDefaults.standard
+    // userSettings will be loaded in from MainVC(loaded from FB)
     var userSettings = [String: Any]()
     
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    // MARK: - UNUserNotificationCenter
+    let center = UNUserNotificationCenter.current()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -224,15 +230,17 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                 }
             }
             
-            defaults.set(false, forKey: "userFirstLoggedIn")
+            defaults.set(false, forKey: "fbUserFirstLoggedIn")
             
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
         
+        resetUserNotification()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         defaults.set(true, forKey: "firstUpdateUserSettings")
         defaults.set(true, forKey: "loginVCReload")
+        
         dismiss(animated: true)
         
     }
@@ -337,6 +345,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                             }
                         }
                         
+                        //6: Update plant
+                        updatePlant()
                     }
                
                 }
@@ -412,6 +422,12 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
     }
     
+    func resetUserNotification() {
+        center.removeAllPendingNotificationRequests()
+        center.removeAllDeliveredNotifications()
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
+    
     // If user FB user is logged in, user last settings will be loaded in UserDefaults.
     func updateUserSettings(completion: @escaping () -> Void) {
         
@@ -464,7 +480,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             }
         }
         
-        print("User Settingxs successfully edited on Firebase")
+        print("User Settings successfully edited on Firebase")
         
     }
     

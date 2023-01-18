@@ -163,7 +163,7 @@ class LoginViewController: UIViewController {
         
         // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
-            self.defaults.set(true, forKey: "userFirstLoggedIn")
+            self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
             K.navigateToMainVC(self)
         }
         
@@ -214,7 +214,7 @@ class LoginViewController: UIViewController {
             // If no error signing in, navigate to MainViewController.
             } else {
                 if self.authenticateFBUser() {
-                    self.defaults.set(true, forKey: "userFirstLoggedIn")
+                    self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
                     K.navigateToMainVC(self)
                 }
             }
@@ -237,7 +237,7 @@ class LoginViewController: UIViewController {
     
     @objc func presentMainVC() {
         if self.authenticateFBUser() {
-            self.defaults.set(true, forKey: "userFirstLoggedIn")
+            self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
             
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
             let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
