@@ -122,7 +122,7 @@ extension AppDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         UIApplication.shared.applicationIconBadgeNumber = 0
-        
+     
         loadPlants()
         
         for plant in plants {
@@ -145,6 +145,7 @@ extension AppDelegate {
                         
                         plant.lastWateredDate = Date.now
                         plant.wateredBool = true
+                        plant.notificationDelivered = false
                         print("Updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
                         center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
@@ -154,6 +155,7 @@ extension AppDelegate {
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                         
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+                        print("Badge Count: \(badgeCount)")
                         //Save the new value to User Defaults
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                         UIApplication.shared.applicationIconBadgeNumber = badgeCount
@@ -171,6 +173,14 @@ extension AppDelegate {
         
         completionHandler()
     }
+    
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.badge, .sound, .banner])
+    }
+    
+    
+    
     
     func setupLocalUserNotification(selectedAlert: Int) {
         
@@ -288,10 +298,7 @@ extension AppDelegate {
         }
         
     }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.badge, .sound])
-    }
+
     
     func refreshUserNotification() {
         center.removeAllPendingNotificationRequests()
@@ -350,3 +357,4 @@ extension AppDelegate {
     
     
 }
+

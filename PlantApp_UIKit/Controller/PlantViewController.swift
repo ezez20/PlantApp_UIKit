@@ -174,8 +174,7 @@ class PlantViewController: UIViewController {
         updatePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
-      
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+        
         print("Water button pressed.")
     }
     
@@ -318,10 +317,14 @@ extension PlantViewController {
     func updateNotificationBadgeCount() {
         if defaults.bool(forKey: "notificationOn") {
             if currentPlant.wateredBool == false {
+                currentPlant.notificationDelivered = false
                 let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                 //Save the new value to User Defaults
                 defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                 UIApplication.shared.applicationIconBadgeNumber = badgeCount
+                let notificationToRemove = [currentPlant.notificationRequestID?.uuidString ?? ""]
+                print("NN: \(notificationToRemove)")
+//                center.removeDeliveredNotifications(withIdentifiers: notificationToRemove)
             }
         }
     }

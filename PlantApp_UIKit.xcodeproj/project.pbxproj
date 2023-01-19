@@ -34,6 +34,19 @@
 		95A24EAD7D38C32067B3547B /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5118E6F52979B05400CA2736 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		3161195C411E20AD01A2E9FE /* Pods-PlantApp_UIKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.release.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.release.xcconfig"; sourceTree = "<group>"; };
 		431522D414A8E9B4D4279475 /* Pods-PlantApp_UIKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlantApp_UIKit.debug.xcconfig"; path = "Target Support Files/Pods-PlantApp_UIKit/Pods-PlantApp_UIKit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -48,6 +61,7 @@
 		510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTimeViewController.swift; sourceTree = "<group>"; };
 		510ECD0728F8825F0060FBDF /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
 		51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterHabitDaysViewController.swift; sourceTree = "<group>"; };
+		5118E6F92979B1DC00CA2736 /* PlantApp_UIKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlantApp_UIKit.entitlements; sourceTree = "<group>"; };
 		512515AF292C2873003FB226 /* PlantDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantDataModel.swift; sourceTree = "<group>"; };
 		513CBC4B28C7A6D100CBC760 /* WeatherData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
 		513CBC4E28C7A6D200CBC760 /* WeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
@@ -108,6 +122,7 @@
 		5102E02328AFFDC6006AF2AA /* PlantApp_UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				5118E6F92979B1DC00CA2736 /* PlantApp_UIKit.entitlements */,
 				5102E03028AFFDC7006AF2AA /* Assets.xcassets */,
 				5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */,
 				5102E03528AFFDC7006AF2AA /* Info.plist */,
@@ -189,6 +204,7 @@
 				5102E01E28AFFDC6006AF2AA /* Frameworks */,
 				5102E01F28AFFDC6006AF2AA /* Resources */,
 				A6F49215712B0357F81EEE21 /* [CP] Embed Pods Frameworks */,
+				5118E6F52979B05400CA2736 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -206,7 +222,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					5102E02028AFFDC6006AF2AA = {
@@ -456,8 +472,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 431522D414A8E9B4D4279475 /* Pods-PlantApp_UIKit.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PlantApp_UIKit/PlantApp_UIKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XUZG54S76B;
@@ -490,8 +508,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3161195C411E20AD01A2E9FE /* Pods-PlantApp_UIKit.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PlantApp_UIKit/PlantApp_UIKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XUZG54S76B;
