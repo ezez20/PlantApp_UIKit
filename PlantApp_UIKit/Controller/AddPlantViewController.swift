@@ -451,10 +451,13 @@ extension AddPlantViewController {
         let plantCollection =  userFireBase.collection("plants")
         
         var wateredBool: Bool
+        var notificationDelivered: Bool
         if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
             wateredBool = false
+            notificationDelivered = false
         } else {
             wateredBool = true
+            notificationDelivered = true
         }
         
         //4: FIREBASE: Plant entity input
@@ -466,7 +469,8 @@ extension AddPlantViewController {
             "plantOrder": Int32(plants.endIndex),
             "lastWatered": datePicker.date,
             "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
-            "wateredBool": wateredBool
+            "wateredBool": wateredBool,
+            "notificationDelivered": notificationDelivered
         ]
         
         // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -529,6 +533,7 @@ extension AddPlantViewController {
                 self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
                     print("Data has been parsed to Core Data")
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                     self.dismiss(animated: true)
                 }
                 

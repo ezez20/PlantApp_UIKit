@@ -7,7 +7,7 @@
         <attribute name="imageData" optional="YES" attributeType="Binary"/>
         <attribute name="lastWateredDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="notificationDelivered" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="notificationRequestID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="notificationRequestID" optional="YES" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="plant" optional="YES" attributeType="String"/>
         <attribute name="plantImageString" optional="YES" attributeType="String"/>

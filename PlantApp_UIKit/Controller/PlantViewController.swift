@@ -118,24 +118,14 @@ class PlantViewController: UIViewController {
         updateWeatherUI()
         loadData()
         updateUI()
+        
+        // Configure datePicker
         datePicker.maximumDate = Date.now
         datePicker.timeZone = .current
         datePicker.locale = .current
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
-    }
-   
-    
-    @objc func datePickerValueChanged(sender: UIDatePicker) {
-        lastWateredDateIn = sender.date
-        print("Last Watered Date changed to: \(sender.date)")
-        updateUI()
-        updateNotificationBadgeCount()
-        updatePlant()
-        editPlant_FB(currentPlant.id!)
-      
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -154,7 +144,6 @@ class PlantViewController: UIViewController {
     
 
     // MARK: - IBActions functions
-    
     @IBAction func editButtonPressed(_ sender: Any) {
 
         let editPlantVC = EditPlantViewController()
@@ -171,11 +160,23 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = currentDate
         datePicker.date = lastWateredDateIn
         updateNotificationBadgeCount()
-        updatePlant()
+        savePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
         
         print("Water button pressed.")
+    }
+
+    // MARK: - objc functions
+    @objc func datePickerValueChanged(sender: UIDatePicker) {
+        lastWateredDateIn = sender.date
+        print("Last Watered Date changed to: \(sender.date)")
+        updateUI()
+        updateNotificationBadgeCount()
+        savePlant()
+        editPlant_FB(currentPlant.id!)
+      
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
     
@@ -236,7 +237,7 @@ class PlantViewController: UIViewController {
         waterStatusView.text = waterStatus
     }
     
-    func updatePlant() {
+    func savePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
         currentPlant.wateredBool = wateredBool
@@ -288,7 +289,8 @@ extension PlantViewController {
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": datePicker.date,
-                "wateredBool": wateredBool
+                "wateredBool": wateredBool,
+                "notificationDelivered": currentPlant.notificationDelivered
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -322,9 +324,8 @@ extension PlantViewController {
                 //Save the new value to User Defaults
                 defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                 UIApplication.shared.applicationIconBadgeNumber = badgeCount
-                let notificationToRemove = [currentPlant.notificationRequestID?.uuidString ?? ""]
+                let notificationToRemove = [currentPlant.notificationRequestID ?? ""]
                 print("NN: \(notificationToRemove)")
-//                center.removeDeliveredNotifications(withIdentifiers: notificationToRemove)
             }
         }
     }

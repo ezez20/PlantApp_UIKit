@@ -181,6 +181,18 @@ class SettingsViewController: UIViewController {
     
 }
 
+extension SettingsViewController {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+}
+
 
 // MARK: - Local User Notification
 extension SettingsViewController: UNUserNotificationCenterDelegate {
@@ -188,16 +200,17 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     @objc func switchStateDidChange(_ sender: UISwitch!) {
         if sender.isOn == true {
             defaults.set(true, forKey: "notificationOn")
-            refreshUserNotification()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+//            refreshUserNotification()
             editUserSettings_FB()
             print("UISwitch state is now ON")
         } else {
             center.removeAllPendingNotificationRequests()
             center.removeAllDeliveredNotifications()
             defaults.set(false, forKey: "notificationOn")
-            defaults.set(0, forKey: "NotificationBadgeCount")
             editUserSettings_FB()
-            UIApplication.shared.applicationIconBadgeNumber = 0
+            //            defaults.set(0, forKey: "NotificationBadgeCount")
+//            UIApplication.shared.applicationIconBadgeNumber = 0
             print("UISwitch state is now Off")
         }
     }
@@ -214,26 +227,32 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             }
             self.defaults.set(false, forKey: "useWithoutFBAccount")
         }
-       
         
-        let firebaseAuth = Auth.auth()
         
-        do {
+        if authenticateFBUser() {
             
-            try firebaseAuth.signOut()
+            editUserSettings_FB()
             
-            // Ensures to delete in Core Data before signing out.
-            if plants.count != 0 {
-                for i in 0...plants.endIndex - 1 {
-                    context.delete(plants[i])
-                    updatePlant()
+            let firebaseAuth = Auth.auth()
+            
+            do {
+                
+                try firebaseAuth.signOut()
+                
+                // Ensures to delete in Core Data before signing out.
+                if plants.count != 0 {
+                    for i in 0...plants.endIndex - 1 {
+                        context.delete(plants[i])
+                        updatePlant()
+                    }
                 }
+                
+                defaults.set(false, forKey: "fbUserFirstLoggedIn")
+                print("Successfully signed out of FB")
+                
+            } catch let signOutError as NSError {
+                print("Error signing out: %@", signOutError)
             }
-            
-            defaults.set(false, forKey: "fbUserFirstLoggedIn")
-            
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
         }
         
         resetUserNotification()
@@ -334,7 +353,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                             
                             // 4: Create the request
                             let uuidString = UUID()
-                            plant.notificationRequestID = uuidString
+                            plant.notificationRequestID = uuidString.uuidString
                             plant.notificationDelivered = true
                             print("notificationActionID: \(uuidString)")
                             let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
@@ -429,6 +448,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     func resetUserNotification() {
         center.removeAllPendingNotificationRequests()
         center.removeAllDeliveredNotifications()
+        defaults.set(0, forKey: "NotificationBadgeCount")
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
     

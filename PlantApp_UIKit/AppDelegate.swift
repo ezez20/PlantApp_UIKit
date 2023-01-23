@@ -121,13 +121,13 @@ extension AppDelegate {
     
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        UIApplication.shared.applicationIconBadgeNumber = 0
+//        UIApplication.shared.applicationIconBadgeNumber = 0
      
         loadPlants()
         
         for plant in plants {
             
-            if response.notification.request.identifier == plant.notificationRequestID?.uuidString {
+            if response.notification.request.identifier == plant.notificationRequestID {
                 
                 if response.notification.request.content.categoryIdentifier == "categoryIdentifier" {
                     
@@ -141,14 +141,14 @@ extension AppDelegate {
                         print("Watered clicked")
                         
                         print("Notification request ID: \(response.notification.request.identifier)")
-                        print("Plant Notification Request ID: \(plant.notificationRequestID!.uuidString)")
+                        print("Plant Notification Request ID: \(plant.notificationRequestID!)")
                         
                         plant.lastWateredDate = Date.now
                         plant.wateredBool = true
                         plant.notificationDelivered = false
                         print("Updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
-                        center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!.uuidString])
+                        center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!])
                         saveContext()
                         
                         // Updates core data: refreshes plants with updated watered date.
@@ -244,7 +244,7 @@ extension AppDelegate {
                     
                     // 4: Create the request
                     let uuidString = UUID()
-                    plant.notificationRequestID = uuidString
+                    plant.notificationRequestID = uuidString.uuidString
                     print("notificationActionID: \(uuidString)")
                     let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
                     
@@ -330,7 +330,8 @@ extension AppDelegate {
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": Date.now,
-                "wateredBool": true
+                "wateredBool": true,
+                "notificationDelivered": false
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)

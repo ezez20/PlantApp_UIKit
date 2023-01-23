@@ -200,6 +200,12 @@ class MainViewController: UIViewController {
         let indexPathConst = indexPath
         deletePlant_FB(indexPath: indexPathConst)
         
+        guard let unID = plants[indexPathConst.row].notificationRequestID else {
+            return
+        }
+        
+        center.removePendingNotificationRequests(withIdentifiers: [unID])
+        
         context.delete(plants[indexPathConst.row])
         self.plants.remove(at: indexPathConst.row)
         self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
@@ -520,9 +526,17 @@ extension MainViewController {
             let waterHabit_FB = data["waterHabit"] as? Int ?? 0
             print("waterHabit_FB: \(waterHabit_FB)")
             
-            //waterHabit
+            //wateredBool
             let wateredBool_FB = data["wateredBool"] as? Bool ?? false
             print("wateredBool_FB: \(wateredBool_FB)")
+            
+            //notificationRequestID
+            let notificationRequestID_FB = data["notificationRequestID"] as? String ?? ""
+            print("notificationRequestID_FB: \(notificationRequestID_FB)")
+            
+            //notificationDelivered
+            let notificationDelivered_FB = data["notificationDelivered"] as? Bool ?? false
+            print("notificationDelivered_FB: \(notificationDelivered_FB)")
             
             // MARK: - Below will save parse'd data from Firebase into Core Data.
             let loadedPlant_FB = Plant(context: self.context)
@@ -534,6 +548,8 @@ extension MainViewController {
             loadedPlant_FB.lastWateredDate = lastWatered_FB
             loadedPlant_FB.plantImageString = plantImageString_FB
             loadedPlant_FB.wateredBool = wateredBool_FB
+            loadedPlant_FB.notificationRequestID = notificationRequestID_FB
+            loadedPlant_FB.notificationDelivered = notificationDelivered_FB
             
             let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
 
@@ -667,6 +683,44 @@ extension MainViewController {
         }
     }
     
+    func editPlant_FB(_ currentPlantID: UUID, plantEditedData: [String: Any] ) {
+        if authenticateFBUser() {
+            let db = Firestore.firestore()
+            
+            //2: FIREBASE: Get currentUser UID to use as document's ID.
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            //3: FIREBASE: Declare collection("plants)
+            let plantCollection =  userFireBase.collection("plants")
+            
+            //4: FIREBASE: Plant entity input
+        
+            
+            // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+            let plantDoc = plantCollection.document("\(currentPlantID.uuidString)")
+            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+            
+            // 6: Edited data for "Plant entity input"
+            plantDoc.updateData(plantEditedData) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            // 7: Add edited doc date on FB
+            plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                if error != nil {
+                    K.presentAlert(self, error!)
+                }
+            }
+            
+            
+            print("Plant successfully updated on Firebase")
+        }
+    }
+    
 }
 
 // MARK: - Extension: UNUserNotificationCenter functions
@@ -686,6 +740,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         let notificationBadgeCount = userSettings["Notification Badge Count"] as? Int ?? nil
         print("notificationBadgeCount: \(notificationBadgeCount)")
         self.defaults.set(notificationBadgeCount, forKey: "NotificationBadgeCount")
+        UIApplication.shared.applicationIconBadgeNumber = defaults.integer(forKey: "NotificationBadgeCount")
         
         if notificationOn != nil && notificationAlertTime != nil {
             updatedUserSettings = true
@@ -712,7 +767,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     if plant.wateredBool == false {
                         
                         if plant.notificationDelivered == false {
-                            
+                            print("DEEZ: \(plant.plant)")
                             // 2: Create the notification content
                             let content = UNMutableNotificationContent()
                             content.title = "Notification alert!"
@@ -761,7 +816,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             
                             // 4: Create the request
                             let uuidString = UUID()
-                            plant.notificationRequestID = uuidString
+                            plant.notificationRequestID = uuidString.uuidString
                             plant.notificationDelivered = true
                             print("notificationActionID: \(uuidString)")
                             let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
@@ -777,6 +832,10 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             }
                             
                             savePlants()
+                            editPlant_FB(plant.id!, plantEditedData: [
+                                "notificationDelivered": true,
+                                "notificationRequestID": plant.notificationRequestID as Any
+                            ])
                         }
                     }
                
@@ -828,18 +887,15 @@ extension MainViewController {
     func addLoadingView() {
         print("addLoadingView")
         loadingSpinnerView.color = .gray
-        loadingSpinnerView.startAnimating()
         loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
-
         plantsTableView.tableFooterView = loadingSpinnerView
+        loadingSpinnerView.startAnimating()
     }
     
     func removeLoadingView() {
         if plants.count != 0 {
             self.plantsTableView.tableFooterView?.removeFromSuperview()
             print("removeLoadingView")
-        } else {
-            self.plantsTableView.tableFooterView?.removeFromSuperview()
         }
     }
     

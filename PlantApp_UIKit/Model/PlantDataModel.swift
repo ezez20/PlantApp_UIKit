@@ -12,7 +12,7 @@ struct PlantDataModel: Codable {
     var id: UUID
     let imageData: String
     let lastWateredDate: Date
-    var notificationRequestID: UUID
+    var notificationRequestID: String
     var notificationDelivered: Bool
     let order: Int
     let plant: String
