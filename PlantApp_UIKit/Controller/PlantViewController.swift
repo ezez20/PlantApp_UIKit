@@ -142,6 +142,11 @@ class PlantViewController: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        print("notificationPending: \(currentPlant.notificationPending)")
+        print("notificationPresented: \(currentPlant.notificationPresented)")
+    }
+    
 
     // MARK: - IBActions functions
     @IBAction func editButtonPressed(_ sender: Any) {
@@ -163,6 +168,8 @@ class PlantViewController: UIViewController {
         savePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
+        
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
         
         print("Water button pressed.")
     }
@@ -286,11 +293,11 @@ extension PlantViewController {
             //3: FIREBASE: Declare collection("plants)
             let plantCollection =  userFireBase.collection("plants")
             
+            
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
                 "lastWatered": datePicker.date,
                 "wateredBool": wateredBool,
-                "notificationDelivered": currentPlant.notificationDelivered
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -318,15 +325,91 @@ extension PlantViewController {
     
     func updateNotificationBadgeCount() {
         if defaults.bool(forKey: "notificationOn") {
-            if currentPlant.wateredBool == false {
-                currentPlant.notificationDelivered = false
-                let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
-                //Save the new value to User Defaults
-                defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-                UIApplication.shared.applicationIconBadgeNumber = badgeCount
-                let notificationToRemove = [currentPlant.notificationRequestID ?? ""]
-                print("NN: \(notificationToRemove)")
+            guard let notificationToRemoveID = currentPlant.notificationRequestID else {
+                return
             }
+            
+            if currentPlant.notificationPending {
+                
+                // If notification is delivered, decrement badge count.
+                var deliveredNotifications = [String]()
+                center.getDeliveredNotifications { [self] unNotification in
+                    
+                    for deliveredNoti in unNotification {
+                        deliveredNotifications.append(deliveredNoti.request.identifier)
+//                        print("DDD: \(deliveredNoti.request.identifier)")
+    
+                    }
+//                    defaults.set(deliveredNotifications, forKey: "deliveredNotifications")
+//                    print("DDD: \(deliveredNotifications)")
+//                    print("DDD: \(defaults.object(forKey: "deliveredNotifications") as? [String] )")
+                    
+                    print("Delivered Noti: \(deliveredNotifications)")
+                    
+                    if deliveredNotifications.contains(notificationToRemoveID) {
+                        print("MATCH: \(notificationToRemoveID)")
+                        currentPlant.notificationPending = false
+                        center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
+                        savePlant()
+                        let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+                        //Save the new value to User Defaults
+                        defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                     
+                        DispatchQueue.main.async {
+                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                    }
+                }
+                
+                // If notification is pending, remove pending notification and refreshUserNotification.
+                // For cases while notification was already created previously: user water plant early. user changes water date/water habit.
+                var pendingNotifications = [String]()
+                center.getPendingNotificationRequests { [self] unNotification in
+                    for pendingNoti in unNotification {
+                        pendingNotifications.append(pendingNoti.identifier)
+                        print("pendingNotifications: \(pendingNotifications)")
+                    }
+                    
+                    if pendingNotifications.contains(notificationToRemoveID) {
+                        print("MATCH: \(notificationToRemoveID)")
+                        currentPlant.notificationPending = false
+                        center.removePendingNotificationRequests(withIdentifiers: [notificationToRemoveID])
+                        print("notificationToRemove: \(notificationToRemoveID)")
+                        savePlant()
+                        let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+                        //Save the new value to User Defaults
+                        defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                    }
+                }
+                
+            }
+            
+//            if currentPlant.notificationPresented {
+//
+//
+//
+//
+//                        currentPlant.notificationPending = false
+//                        center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
+//
+//                        let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+//                        //Save the new value to User Defaults
+//                        defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+//                        UIApplication.shared.applicationIconBadgeNumber = badgeCount
+//                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+//
+//
+//            } else {
+//                center.removePendingNotificationRequests(withIdentifiers: [notificationToRemoveID])
+//                currentPlant.notificationPending = false
+//                savePlant()
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+//            }
+            
+            
         }
     }
     

@@ -451,13 +451,10 @@ extension AddPlantViewController {
         let plantCollection =  userFireBase.collection("plants")
         
         var wateredBool: Bool
-        var notificationDelivered: Bool
         if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
             wateredBool = false
-            notificationDelivered = false
         } else {
-            wateredBool = true
-            notificationDelivered = true
+            wateredBool = false
         }
         
         //4: FIREBASE: Plant entity input
@@ -470,7 +467,7 @@ extension AddPlantViewController {
             "lastWatered": datePicker.date,
             "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
             "wateredBool": wateredBool,
-            "notificationDelivered": notificationDelivered
+            "notificationPending": false
         ]
         
         // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -602,6 +599,10 @@ extension AddPlantViewController {
                     let wateredBool_FB = data["wateredBool"] as? Bool ?? false
                     print("wateredBool_FB: \(wateredBool_FB)")
                     
+                    //notificationPending
+                    let notificationPending_FB = data["notificationPending"] as? Bool ?? false
+                    print("notificationPending_FB: \(notificationPending_FB)")
+                    
                     let loadedPlant_FB = Plant(context: self.context)
                     loadedPlant_FB.id = plantUUID_FBCasted
                     loadedPlant_FB.plant = plantName_FB
@@ -611,6 +612,7 @@ extension AddPlantViewController {
                     loadedPlant_FB.lastWateredDate = lastWatered_FB
                     loadedPlant_FB.plantImageString = plantImageString_FB
                     loadedPlant_FB.wateredBool = wateredBool_FB
+                    loadedPlant_FB.notificationPending = notificationPending_FB
                     
                     // Retrieve "customPlantImage" data from FB Storage.
                     let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String

@@ -30,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
         
+        application.registerForRemoteNotifications()
+        
 
         return true
     }
@@ -121,7 +123,7 @@ extension AppDelegate {
     
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-//        UIApplication.shared.applicationIconBadgeNumber = 0
+
      
         loadPlants()
         
@@ -145,7 +147,8 @@ extension AppDelegate {
                         
                         plant.lastWateredDate = Date.now
                         plant.wateredBool = true
-                        plant.notificationDelivered = false
+                        plant.notificationPending = false
+                       
                         print("Updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
                         center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!])
@@ -154,11 +157,16 @@ extension AppDelegate {
                         // Updates core data: refreshes plants with updated watered date.
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                         
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                        
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                         print("Badge Count: \(badgeCount)")
                         //Save the new value to User Defaults
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-                        UIApplication.shared.applicationIconBadgeNumber = badgeCount
+                        DispatchQueue.main.async {
+                            UIApplication.shared.applicationIconBadgeNumber =  UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                       
                         
                     default:
                         break;
@@ -176,9 +184,20 @@ extension AppDelegate {
     
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("Notification presented: \(notification.request.identifier)")
+        loadPlants()
+        for p in plants {
+            print(p.notificationRequestID)
+            if notification.request.identifier == p.notificationRequestID {
+                p.notificationPresented = true
+                print("DEBUG")
+                saveContext()
+                // Updates core data: refreshes plants with updated watered date.
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+            }
+        }
         completionHandler([.badge, .sound, .banner])
     }
-    
     
     
     
@@ -187,6 +206,7 @@ extension AppDelegate {
         center.getNotificationSettings { [self] settings in
             if settings.authorizationStatus == .authorized {
                 
+                // First, load plants into plant's context.
                 loadPlants()
                 
                 let center = UNUserNotificationCenter.current()
