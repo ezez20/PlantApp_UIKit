@@ -86,6 +86,7 @@ class EditPlantViewController: UIViewController {
         loadPlant()
         updateInputImage()
         
+        
         view.backgroundColor = .secondarySystemBackground
         // Do any additional setup after loading the view.
         
@@ -597,7 +598,8 @@ extension EditPlantViewController {
                 "plantName": plantTextField.text!,
                 "waterHabit": Int16(selectedHabitDay),
                 "lastWatered": datePicker.date,
-                "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage)
+                "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+                "notificationPending": true
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -657,9 +659,10 @@ extension EditPlantViewController {
                 }
                 
                 self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
-                    print("Data has been parsed to Core Data")
                     self.savePlant()
+                    print("Data has been parsed to Core Data")
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
                     self.dismiss(animated: true)
                 }
                 
@@ -724,7 +727,9 @@ extension EditPlantViewController {
                     let waterHabit_FB = data["waterHabit"] as? Int ?? 0
                     print("waterHabit_FB: \(waterHabit_FB)")
                     
-                    //                    let loadedPlant_FB = Plant(context: self.context)
+                    //notificationPending
+                    let notificationPending_FB = data["notificationPending"] as? Bool ?? false
+                    print("notificationPending_FB: \(notificationPending_FB)")
                     
                     currentPlant.id = plantUUID_FBCasted
                     currentPlant.plant = plantName_FB
@@ -733,6 +738,7 @@ extension EditPlantViewController {
                     currentPlant.order = Int32(plantOrder_FB)
                     currentPlant.lastWateredDate = lastWatered_FB
                     currentPlant.plantImageString = plantImageString_FB
+                    currentPlant.notificationPending = notificationPending_FB
                     
                     // Retrieve "customPlantImage" data from FB Storage.
                     let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String

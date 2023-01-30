@@ -10,14 +10,14 @@ import Foundation
 struct PlantDataModel: Codable {
     let dateAdded: Date
     var id: UUID
-    let imageData: String
+//    let imageData: String?
     let lastWateredDate: Date
-    var notificationRequestID: String
-    var notificationDelivered: Bool
     let order: Int
     let plant: String
     let plantImageString: String
-    let wateredBool: Bool
     let waterHabit: Int
+    let wateredBool: Bool
+    var notificationRequestID: String
+    var notificationPending: Bool
 
 }

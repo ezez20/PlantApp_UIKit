@@ -805,11 +805,11 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                         switch defaults.integer(forKey: "selectedAlertOption") {
                         case 0: // day of event
                             // For debug purpose: Notification time - 10 seconds
-                            selectedNotificationTime = Date.now.advanced(by: 10)
+//                            selectedNotificationTime = Date.now.advanced(by: 10)
                             
                             // Uncomment below when not debugging:
-                            //                                selectedNotificationTime = nextWaterDate.advanced(by: 20)
-                            print("selectedNotificationTime: \(selectedNotificationTime)")
+                            selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                            print("Notification Time:: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         case 1: // 1 day before
                             selectedNotificationTime = nextWaterDate.advanced(by: -86400)
                             print("Notification Time: \(selectedNotificationTime)")
@@ -844,7 +844,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             
                             self.savePlants()
                             self.editPlant_FB(plant.id!, plantEditedData: [
-                                "notificationDelivered": true,
+                                "notificationPending": true,
                                 "notificationRequestID": plant.notificationRequestID as Any
                             ])
                             
@@ -884,7 +884,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     
     @objc func refreshUserNotification() {
         if defaults.bool(forKey: "notificationOn") {
-//            center.removeAllDeliveredNotifications()
             setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
             print("DEEZ")
         }

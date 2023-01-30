@@ -351,7 +351,7 @@ extension AppDelegate {
             let plantEditedData: [String: Any] = [
                 "lastWatered": Date.now,
                 "wateredBool": true,
-                "notificationDelivered": false
+                "notificationPending": false
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)

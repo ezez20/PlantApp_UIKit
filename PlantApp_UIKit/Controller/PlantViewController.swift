@@ -126,6 +126,8 @@ class PlantViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControl.Event.valueChanged)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshBadgeAndNotification), name: NSNotification.Name("refreshBadgeAndNotification"), object: nil)
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -139,7 +141,7 @@ class PlantViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         // Will reload plants in MainVC
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,7 +166,7 @@ class PlantViewController: UIViewController {
     @IBAction func waterButtonPressed(_ sender: Any) {
         lastWateredDateIn = currentDate
         datePicker.date = lastWateredDateIn
-        updateNotificationBadgeCount()
+        refreshBadgeAndNotification()
         savePlant()
         updateUI()
         editPlant_FB(currentPlant.id!)
@@ -179,7 +181,7 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = sender.date
         print("Last Watered Date changed to: \(sender.date)")
         updateUI()
-        updateNotificationBadgeCount()
+        refreshBadgeAndNotification()
         savePlant()
         editPlant_FB(currentPlant.id!)
       
@@ -323,7 +325,8 @@ extension PlantViewController {
         }
     }
     
-    func updateNotificationBadgeCount() {
+    @objc func refreshBadgeAndNotification() {
+        
         if defaults.bool(forKey: "notificationOn") {
             guard let notificationToRemoveID = currentPlant.notificationRequestID else {
                 return
@@ -340,10 +343,7 @@ extension PlantViewController {
 //                        print("DDD: \(deliveredNoti.request.identifier)")
     
                     }
-//                    defaults.set(deliveredNotifications, forKey: "deliveredNotifications")
-//                    print("DDD: \(deliveredNotifications)")
-//                    print("DDD: \(defaults.object(forKey: "deliveredNotifications") as? [String] )")
-                    
+
                     print("Delivered Noti: \(deliveredNotifications)")
                     
                     if deliveredNotifications.contains(notificationToRemoveID) {
@@ -387,30 +387,8 @@ extension PlantViewController {
                 
             }
             
-//            if currentPlant.notificationPresented {
-//
-//
-//
-//
-//                        currentPlant.notificationPending = false
-//                        center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
-//
-//                        let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
-//                        //Save the new value to User Defaults
-//                        defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-//                        UIApplication.shared.applicationIconBadgeNumber = badgeCount
-//                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-//
-//
-//            } else {
-//                center.removePendingNotificationRequests(withIdentifiers: [notificationToRemoveID])
-//                currentPlant.notificationPending = false
-//                savePlant()
-//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-//            }
-            
-            
         }
+        
     }
     
     
