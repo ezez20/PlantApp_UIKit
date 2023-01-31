@@ -48,6 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Below will
         defaults.set(true, forKey: "userDiscardedApp")
         defaults.set(true, forKey: "loginVCReload")
+        defaults.set(true, forKey: "logoVCReload")
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         print("sceneDidDisconnect")
     }

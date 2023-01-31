@@ -659,10 +659,15 @@ extension EditPlantViewController {
                 }
                 
                 self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
+                    
                     self.savePlant()
+                    
                     print("Data has been parsed to Core Data")
+                    
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                    
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
+                    
                     self.dismiss(animated: true)
                 }
                 

@@ -72,14 +72,18 @@ extension LogoViewController {
     }
     
     @objc func reloadView() {
+        print("RELOADED")
+        defaults.set(false, forKey: "logoVCReload")
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
             } else {
+                print("DDD")
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 self.present(vc, animated: true)
+
             }
         }
     }

@@ -457,18 +457,6 @@ extension AddPlantViewController {
             wateredBool = false
         }
         
-        //4: FIREBASE: Plant entity input
-//        let plantAddedData: [String: Any] = [
-//            "dateAdded": Date.now,
-//            "plantUUID": newPlantID.uuidString,
-//            "plantName": self.plantName.text!,
-//            "waterHabit": Int16(selectedHabitDay),
-//            "plantOrder": Int32(plants.endIndex),
-//            "lastWatered": datePicker.date,
-//            "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
-//            "wateredBool": wateredBool,
-//            "notificationPending": false
-//        ]
         
         let plantAddedData = PlantDataModel_FB(
             dateAdded: Date.now,
@@ -639,14 +627,16 @@ extension AddPlantViewController {
                                 loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
                                 loadedPlant_FB.imageData = data!
                                 print("FB Storage imageData has been retrieved successfully: \(data!)")
+                                
+                                
+                                self.plants.append(loadedPlant_FB)
+                                self.savePlant()
                                 completion()
                             } else {
                                 print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
                             }
                         }
-                        
-                        self.plants.append(loadedPlant_FB)
-                        self.savePlant()
+                     
                         
                         
                     } else {

@@ -88,6 +88,7 @@ class MainViewController: UIViewController {
             loadPlants()
         }
         
+        
         print("View reload. Core Data: \(plants.count)")
     }
 
@@ -102,6 +103,7 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
+      
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
         
@@ -116,6 +118,10 @@ class MainViewController: UIViewController {
         }
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name("logoutTriggered"), object: nil)
+    }
+    
     
     @objc func notificationReceived() {
         loadPlants()
@@ -124,9 +130,13 @@ class MainViewController: UIViewController {
     
     @objc func logoutNotificationReceived() {
         print("Logout triggered")
+        
         self.presentingViewController?.dismiss(animated: true, completion: {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
+            if self.defaults.bool(forKey: "logoVCReload") {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
+            }
         })
+        
     }
 
     

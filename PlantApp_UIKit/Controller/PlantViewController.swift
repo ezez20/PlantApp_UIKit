@@ -330,7 +330,7 @@ extension PlantViewController {
     }
     
     @objc func refreshBadgeAndNotification() {
-        print("DDD")
+    
         if defaults.bool(forKey: "notificationOn") {
             guard let notificationToRemoveID = currentPlant.notificationRequestID else {
                 return

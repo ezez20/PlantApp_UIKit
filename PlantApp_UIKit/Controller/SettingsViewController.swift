@@ -238,7 +238,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
                 
                 // Ensures to delete in Core Data before signing out.
                 if plants.count != 0 {
-                    print("SIGN OUT: \(plants.count)")
                     for i in 0...plants.endIndex - 1 {
                         context.delete(plants[i])
                         updatePlant()
@@ -254,7 +253,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             
         }
         
-        
+
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         defaults.set(true, forKey: "firstUpdateUserSettings")
         defaults.set(true, forKey: "loginVCReload")
