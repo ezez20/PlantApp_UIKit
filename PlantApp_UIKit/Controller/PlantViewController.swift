@@ -139,6 +139,10 @@ class PlantViewController: UIViewController {
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        checkPendingNotification()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         // Will reload plants in MainVC
 //        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
@@ -326,7 +330,7 @@ extension PlantViewController {
     }
     
     @objc func refreshBadgeAndNotification() {
-        
+        print("DDD")
         if defaults.bool(forKey: "notificationOn") {
             guard let notificationToRemoveID = currentPlant.notificationRequestID else {
                 return
@@ -341,15 +345,15 @@ extension PlantViewController {
                     for deliveredNoti in unNotification {
                         deliveredNotifications.append(deliveredNoti.request.identifier)
 //                        print("DDD: \(deliveredNoti.request.identifier)")
-    
                     }
 
-                    print("Delivered Noti: \(deliveredNotifications)")
+                    print("Delivered Notifications list: \(deliveredNotifications)")
                     
                     if deliveredNotifications.contains(notificationToRemoveID) {
-                        print("MATCH: \(notificationToRemoveID)")
+                        
                         currentPlant.notificationPending = false
                         center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
+                        print("Delivered Notification removed: \(notificationToRemoveID)")
                         savePlant()
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                         //Save the new value to User Defaults
@@ -359,7 +363,9 @@ extension PlantViewController {
                             UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                         }
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                        
                     }
+                    
                 }
                 
                 // If notification is pending, remove pending notification and refreshUserNotification.
@@ -368,20 +374,23 @@ extension PlantViewController {
                 center.getPendingNotificationRequests { [self] unNotification in
                     for pendingNoti in unNotification {
                         pendingNotifications.append(pendingNoti.identifier)
-                        print("pendingNotifications: \(pendingNotifications)")
+//                        print("pendingNotifications: \(pendingNotifications)")
                     }
                     
+                    print("Pending Notifications list: \(deliveredNotifications)")
+                    
                     if pendingNotifications.contains(notificationToRemoveID) {
-                        print("MATCH: \(notificationToRemoveID)")
+                        
                         currentPlant.notificationPending = false
                         center.removePendingNotificationRequests(withIdentifiers: [notificationToRemoveID])
-                        print("notificationToRemove: \(notificationToRemoveID)")
+                        print("Pending Notification Removed: \(notificationToRemoveID)")
                         savePlant()
                         let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
                         //Save the new value to User Defaults
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                         
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                        
                     }
                 }
                 
@@ -389,6 +398,16 @@ extension PlantViewController {
             
         }
         
+    }
+    
+    func checkPendingNotification () {
+        var pendingNotifications = [String]()
+        center.getPendingNotificationRequests { [self] unNotification in
+            for pendingNoti in unNotification {
+                pendingNotifications.append(pendingNoti.identifier)
+                print("pendingNotifications: \(pendingNotifications)")
+            }
+        }
     }
     
     

@@ -458,17 +458,29 @@ extension AddPlantViewController {
         }
         
         //4: FIREBASE: Plant entity input
-        let plantAddedData: [String: Any] = [
-            "dateAdded": Date.now,
-            "plantUUID": newPlantID.uuidString,
-            "plantName": self.plantName.text!,
-            "waterHabit": Int16(selectedHabitDay),
-            "plantOrder": Int32(plants.endIndex),
-            "lastWatered": datePicker.date,
-            "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
-            "wateredBool": wateredBool,
-            "notificationPending": false
-        ]
+//        let plantAddedData: [String: Any] = [
+//            "dateAdded": Date.now,
+//            "plantUUID": newPlantID.uuidString,
+//            "plantName": self.plantName.text!,
+//            "waterHabit": Int16(selectedHabitDay),
+//            "plantOrder": Int32(plants.endIndex),
+//            "lastWatered": datePicker.date,
+//            "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+//            "wateredBool": wateredBool,
+//            "notificationPending": false
+//        ]
+        
+        let plantAddedData = PlantDataModel_FB(
+            dateAdded: Date.now,
+            plantUUID: newPlantID.uuidString,
+            plantName: self.plantName.text!,
+            waterHabit: Int16(selectedHabitDay),
+            plantOrder: Int32(plants.endIndex),
+            lastWatered: datePicker.date,
+            plantImageString: K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+            wateredBool: wateredBool,
+            notificationPending: false
+        )
         
         // 5: FIREBASE: Set doucment name(use index# to later use in core data)
         let plantDoc = plantCollection.document("\(newPlantID.uuidString)")

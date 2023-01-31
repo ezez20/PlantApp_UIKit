@@ -200,24 +200,7 @@ class MainViewController: UIViewController {
         let indexPathConst = indexPath
         deletePlant_FB(indexPath: indexPathConst)
         
-        guard let unID = plants[indexPathConst.row].notificationRequestID else {
-            return
-        }
-        
-        center.removePendingNotificationRequests(withIdentifiers: [unID])
-        center.getDeliveredNotifications { [self] deliveredNotifications in
-            for d in deliveredNotifications {
-                if d.request.identifier == unID {
-                    center.removeDeliveredNotifications(withIdentifiers: [unID])
-                    print("Delivered Notification removed: \(unID)")
-                    let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
-                    defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-                    DispatchQueue.main.async {
-                        UIApplication.shared.applicationIconBadgeNumber = badgeCount
-                    }
-                }
-            }
-        }
+        deleteNotification(indexPath: indexPath)
         
         context.delete(plants[indexPathConst.row])
         self.plants.remove(at: indexPathConst.row)
@@ -617,11 +600,11 @@ extension MainViewController {
                     print("FB deleted plant: \(plantUUID)")
                 }
             }
-            
+
             if let plantToDeleteImageID = self.plants[indexPath.row].customPlantImageID {
                 let path = plantToDeleteImageID
                 let plantRef = Storage.storage().reference(withPath: path)
-                
+
                 // Delete the file
                 plantRef.delete { error in
                     if let error = error {
@@ -845,7 +828,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             self.savePlants()
                             self.editPlant_FB(plant.id!, plantEditedData: [
                                 "notificationPending": true,
-                                "notificationRequestID": plant.notificationRequestID as Any
+                                "notificationRequestID": uuidString.uuidString as Any
                             ])
                             
                             print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
@@ -886,6 +869,27 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         if defaults.bool(forKey: "notificationOn") {
             setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
             print("DEEZ")
+        }
+    }
+    
+    func deleteNotification(indexPath: IndexPath) {
+        if defaults.bool(forKey: "notificationOn") {
+            if let unID = plants[indexPath.row].notificationRequestID {
+                center.removePendingNotificationRequests(withIdentifiers: [unID])
+                center.getDeliveredNotifications { [self] deliveredNotifications in
+                    for d in deliveredNotifications {
+                        if d.request.identifier == unID {
+                            center.removeDeliveredNotifications(withIdentifiers: [unID])
+                            print("Delivered Notification removed: \(unID)")
+                            let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int - 1
+                            defaults.set(badgeCount, forKey: "NotificationBadgeCount")
+                            DispatchQueue.main.async {
+                                UIApplication.shared.applicationIconBadgeNumber = badgeCount
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
