@@ -6,6 +6,7 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="imageData" optional="YES" attributeType="Binary"/>
         <attribute name="lastWateredDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="notificationBadgeCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="notificationPending" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="notificationPresented" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="notificationRequestID" optional="YES" attributeType="String"/>

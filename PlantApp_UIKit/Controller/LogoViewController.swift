@@ -18,6 +18,7 @@ class LogoViewController: UIViewController {
         view.backgroundColor = .secondarySystemBackground
         // Do any additional setup after loading the view.
         
+        
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +55,7 @@ public extension UIView {
         UIView.animate(withDuration: duration) {
             self.alpha = 1.0
         } completion: { _ in
-            print("Animation completed")
+            print("Logo Animation completed")
             completion()
         }
     }
@@ -72,18 +73,19 @@ extension LogoViewController {
     }
     
     @objc func reloadView() {
-        print("RELOADED")
+    
         defaults.set(false, forKey: "logoVCReload")
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
+                print("LogoVC presenting: MainVC")
             } else {
                 print("DDD")
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 self.present(vc, animated: true)
-
+                print("LogoVC presenting: LoginVC")
             }
         }
     }

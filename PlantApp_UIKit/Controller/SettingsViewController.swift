@@ -211,7 +211,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
     }
     
-    @objc func logoutButtonPressed(_ sender:UISwitch!) {
+    @objc func logoutButtonPressed(_ sender: UISwitch!) {
         print("LogoutButtonPressed")
         
         if defaults.bool(forKey: "useWithoutFBAccount") {
@@ -257,6 +257,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
         defaults.set(true, forKey: "firstUpdateUserSettings")
         defaults.set(true, forKey: "loginVCReload")
+        defaults.set(false, forKey: "userDiscardedApp")
         
         dismiss(animated: true)
         

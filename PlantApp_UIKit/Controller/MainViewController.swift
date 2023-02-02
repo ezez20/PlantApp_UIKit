@@ -77,10 +77,7 @@ class MainViewController: UIViewController {
         }
         
         if defaults.bool(forKey: "userDiscardedApp") {
-            resetContext {
-                self.loadPlants()
-                self.defaults.set(false, forKey: "userDiscardedApp")
-            }
+            self.loadPlants()
         }
         
         // Load plants from Core Data
@@ -88,8 +85,6 @@ class MainViewController: UIViewController {
             loadPlants()
         }
         
-        
-        print("View reload. Core Data: \(plants.count)")
     }
 
     
@@ -116,6 +111,7 @@ class MainViewController: UIViewController {
             print("DDD: \(defaults.integer(forKey: "NotificationBadgeCount"))")
             updatedUserSettings = false
         }
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -146,13 +142,13 @@ class MainViewController: UIViewController {
         // Future feature: Edit button to allow re-order tableView.
         self.plantsTableView.isEditing.toggle()
         updateOrderNumber_FB()
-        
+
         if self.plantsTableView.isEditing == true {
             editButton.title = "Done"
         } else {
             editButton.title = "Edit"
         }
-    
+        
     }
     
     
@@ -168,6 +164,7 @@ class MainViewController: UIViewController {
     
     @IBAction func addButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
+     
     }
     
     
@@ -233,6 +230,7 @@ class MainViewController: UIViewController {
     // MARK: - Formatting displayedNextWaterDate
     func displayedNextWaterDate(lastWateredDate: Date, waterHabit: Int) -> String {
         var nextWaterDate: Date {
+//            let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
             let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
             return calculatedDate!
         }
@@ -766,10 +764,14 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 
                 let center = UNUserNotificationCenter.current()
                 
+                updateNotificationBadgeCount()
+                center.removeAllPendingNotificationRequests()
+                
                 // For each/every plant, this will create a notification
                 for plant in plants {
                     
-                    if plant.notificationPending == false {
+                   
+                        
                         
                         print("Plant notification set: \(plant.plant)")
                         
@@ -783,7 +785,8 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                         //Save the new value to User Defaults
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                         //Set the value as the current badge count
-                        content.badge = badgeCount as NSNumber
+//                        content.badge = badgeCount as NSNumber
+                        content.badge = (plant.notificationBadgeCount) as NSNumber
                         content.sound = .default
                         content.categoryIdentifier = "categoryIdentifier"
                         
@@ -802,7 +805,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             
                             // Uncomment below when not debugging:
                             selectedNotificationTime = nextWaterDate.advanced(by: 100)
-                            print("Notification Time:: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            print("Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         case 1: // 1 day before
                             selectedNotificationTime = nextWaterDate.advanced(by: -86400)
                             print("Notification Time: \(selectedNotificationTime)")
@@ -838,13 +841,14 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             self.savePlants()
                             self.editPlant_FB(plant.id!, plantEditedData: [
                                 "notificationPending": true,
-                                "notificationRequestID": uuidString.uuidString as Any
+                                "notificationRequestID": uuidString.uuidString as Any,
+                                "notificationBadgeCount": plant.notificationBadgeCount
                             ])
                             
                             print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
                         }
                         
-                    }
+                    
                     
                 }
                 
@@ -901,6 +905,22 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 }
             }
         }
+    }
+    
+    func updateNotificationBadgeCount() {
+     
+        
+        let sortedPlantsByWatered = plants.sorted {
+            $0.lastWateredDate! < $1.lastWateredDate!
+        }
+       
+        
+        for o in 0...sortedPlantsByWatered.count - 1 {
+            let plant = sortedPlantsByWatered[o]
+            plant.notificationBadgeCount = Int16(o + 1)
+            savePlants()
+        }
+        
     }
     
 }
