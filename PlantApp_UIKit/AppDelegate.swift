@@ -123,9 +123,11 @@ extension AppDelegate {
     
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-
+        
      
         loadPlants()
+        
+        getDeliveredNotifications()
         
         for plant in plants {
             
@@ -148,6 +150,7 @@ extension AppDelegate {
                         plant.lastWateredDate = Date.now
                         plant.wateredBool = true
                         plant.notificationPending = false
+                        plant.notificationPresented = false
                        
                         print("Updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
@@ -165,6 +168,7 @@ extension AppDelegate {
                         defaults.set(badgeCount, forKey: "NotificationBadgeCount")
                         DispatchQueue.main.async {
                             UIApplication.shared.applicationIconBadgeNumber =  UIApplication.shared.applicationIconBadgeNumber - 1
+                            print("UIAppNumber: \(UIApplication.shared.applicationIconBadgeNumber)")
                         }
                        
                         
@@ -186,16 +190,17 @@ extension AppDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("Notification presented: \(notification.request.identifier)")
         loadPlants()
-        for p in plants {
-            print(p.notificationRequestID)
-            if notification.request.identifier == p.notificationRequestID {
-                p.notificationPresented = true
-                print("DEBUG")
-                saveContext()
-                // Updates core data: refreshes plants with updated watered date.
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-            }
-        }
+        getDeliveredNotifications()
+//        for p in plants {
+//            print(p.notificationRequestID)
+//            if notification.request.identifier == p.notificationRequestID {
+//                p.notificationPresented = true
+//                print("DEBUG")
+//                saveContext()
+//                // Updates core data: refreshes plants with updated watered date.
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+//            }
+//        }
         completionHandler([.badge, .sound, .banner])
     }
     
@@ -376,6 +381,41 @@ extension AppDelegate {
         }
     }
     
+    func getDeliveredNotifications() {
+        center.getDeliveredNotifications { [self] unNotification in
+            print("DDD: \(unNotification.count)")
+            var deliveredNotifications = [String]()
+            for deliveredNoti in unNotification {
+                
+                deliveredNotifications.append(deliveredNoti.request.identifier)
+                print("Delivered Notifications list: \(deliveredNoti.request.identifier)")
+                
+                if !deliveredNotifications.isEmpty {
+                    
+                    defaults.set(deliveredNotifications, forKey: "deliveredNotificationsStored")
+                    
+                    let deliveredNotificationsStored = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
+                    
+                    if !deliveredNotificationsStored.isEmpty {
+                        
+                        print("deliveredNotificationsStored: \(deliveredNotificationsStored)")
+                        
+                        for p in plants {
+                            guard let notificationID = p.notificationRequestID else { return }
+                            if deliveredNotifications.contains(notificationID) {
+                                p.notificationPresented = true
+                                saveContext()
+                            }
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+
+        }
+    }
     
 }
 

@@ -562,7 +562,7 @@ extension SettingsViewController: PassAlertDelegate {
         updateUserSettings_FB()
         
         if notificationToggleSwitch.isOn {
-            refreshUserNotification()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
             print("Notification Time switched")
         }
         

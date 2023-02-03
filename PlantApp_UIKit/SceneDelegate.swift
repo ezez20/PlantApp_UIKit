@@ -7,12 +7,18 @@
 
 import UIKit
 import UserNotifications
+import FirebaseAuth
+import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     let defaults = UserDefaults.standard
+    let center = UNUserNotificationCenter.current()
+    
+    var plants = [Plant]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -57,6 +63,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
+        print("DID BECOME ACTIVE")
+        
+
+       
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -67,6 +77,48 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        print("Scene did enter foreground")
+        if Auth.auth().currentUser?.uid != nil  {
+            
+            loadPlants()
+            
+            center.getDeliveredNotifications { [self] unNotification in
+                print("DDD: \(unNotification.count)")
+                var deliveredNotifications = [String]()
+                for deliveredNoti in unNotification {
+                    
+                    deliveredNotifications.append(deliveredNoti.request.identifier)
+                    print("Delivered Notifications list: \(deliveredNoti.request.identifier)")
+                    
+                    if !deliveredNotifications.isEmpty {
+                        
+                        defaults.set(deliveredNotifications, forKey: "deliveredNotificationsStored")
+                        
+                        let deliveredNotificationsStored = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
+                        
+                        if !deliveredNotificationsStored.isEmpty {
+                            print("deliveredNotificationsStored: \(deliveredNotificationsStored)")
+                            
+                            for p in plants {
+                                guard let notificationID = p.notificationRequestID else { return }
+                                if deliveredNotifications.contains(notificationID) {
+                                    p.notificationPresented = true
+                                    savePlants()
+                                }
+                                print("Scene: Plant: \(p.plant), ID: \(p.notificationRequestID) notificationPresented\(p.notificationPresented)")
+                            }
+                            
+                           
+                        }
+                        
+                    }
+                    
+                }
+
+            }
+            
+            
+        }
         
     }
 
@@ -83,3 +135,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
 }
 
+
+extension SceneDelegate {
+    
+    func loadPlants() {
+        
+    
+        do {
+            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+            let sort = NSSortDescriptor(key: "order", ascending: true)
+            request.sortDescriptors = [sort]
+            plants = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+        
+
+        
+        print("Plants loaded")
+        print("Core Data count: \(plants.count)")
+        
+    }
+    
+    func savePlants() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving category \(error)")
+        }
+        
+    }
+    
+}

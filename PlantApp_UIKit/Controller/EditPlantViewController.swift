@@ -304,6 +304,9 @@ class EditPlantViewController: UIViewController {
             }
             
             self.savePlant()
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+            
             dismiss(animated: true)
             
         }
