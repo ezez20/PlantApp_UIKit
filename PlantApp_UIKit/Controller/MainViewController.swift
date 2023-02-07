@@ -76,57 +76,67 @@ class MainViewController: UIViewController {
             defaults.set(false, forKey: "fbUserFirstLoggedIn")
         }
         
-        if defaults.bool(forKey: "userDiscardedApp") {
-            print("Reloading from userDiscardedApp")
-            self.loadPlants()
-            refreshUserNotification()
-        }
+//        if defaults.bool(forKey: "userDiscardedApp") {
+//            print("Reloading from userDiscardedApp")
+//            self.loadPlants()
+////            refreshUserNotification()
+//        }
         
         // Load plants from Core Data
         if authenticateFBUser() == false {
-            loadPlants()
+            loadPlants {
+                
+            }
         }
         
+      
     }
 
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        print("viewWillAppear")
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         locationManager.startUpdatingLocation()
         
+        
         NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
+        
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
       
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
-        
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         if updatedUserSettings == true {
             self.refreshUserNotification()
-//            print("DDD: \(defaults.integer(forKey: "NotificationBadgeCount"))")
             updatedUserSettings = false
         }
         
-      
-        
+        if defaults.bool(forKey: "userDiscardedApp") {
+            print("Reloading from userDiscardedApp")
+            self.loadPlants {
+                print("Plants Loaded. Core Data count: \(self.plants.count)")
+                self.defaults.set(false, forKey: "userDiscardedApp")
+            }
+            refreshUserNotification()
+
+        }
+       
     }
     
-    
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name("logoutTriggered"), object: nil)
-    }
     
     
     @objc func notificationReceived() {
-        loadPlants()
+        loadPlants {
+            print("Plants Loaded. Core Data count: \(self.plants.count)")
+        }
     }
     
     
@@ -184,7 +194,7 @@ class MainViewController: UIViewController {
         
     }
     
-    func loadPlants() {
+    func loadPlants(_ completion: @escaping () -> Void) {
         
         DispatchQueue.main.async {
             self.addLoadingView()
@@ -195,17 +205,16 @@ class MainViewController: UIViewController {
             let sort = NSSortDescriptor(key: "order", ascending: true)
             request.sortDescriptors = [sort]
             plants = try context.fetch(request)
+         
         } catch {
             print("Error loading categories \(error)")
         }
         
         DispatchQueue.main.async {
             self.plantsTableView.reloadData()
+            completion()
         }
         
-        
-        print("Plants loaded")
-        print("Core Data count: \(plants.count)")
         
     }
     
@@ -219,6 +228,12 @@ class MainViewController: UIViewController {
         self.plants.remove(at: indexPathConst.row)
         self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
         self.savePlants()
+        
+        loadPlants {
+            print("Plants Loaded. Core Data count: \(self.plants.count)")
+        }
+        
+        updateNotificationBadgeCount()
         
         refreshUserNotification()
 
@@ -461,7 +476,9 @@ extension MainViewController {
                     }
                     
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
-                        self.loadPlants()
+                        self.loadPlants {
+                            print("Plants Loaded. Core Data count: \(self.plants.count)")
+                        }
                         completion()
                     }
              
@@ -740,18 +757,13 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     func updateUserSettings() {
     
         let notificationOn = userSettings["Notification On"] as? Bool ?? nil
-        print("notificationOn: \(notificationOn)")
+        print("notificationOn: \(String(describing: notificationOn))")
         self.defaults.set(notificationOn, forKey: "notificationOn")
         
         // Set setting: Notification Alert Time
         let notificationAlertTime = userSettings["Notification Alert Time"] as? Int ?? nil
-        print("notificationAlertTime: \(notificationAlertTime)")
+        print("notificationAlertTime: \(String(describing: notificationAlertTime))")
         self.defaults.set(notificationAlertTime, forKey: "selectedAlertOption")
-        
-//        let notificationBadgeCount = userSettings["Notification Badge Count"] as? Int ?? nil
-//        print("notificationBadgeCount: \(notificationBadgeCount)")
-//        self.defaults.set(notificationBadgeCount, forKey: "NotificationBadgeCount")
-//        UIApplication.shared.applicationIconBadgeNumber = defaults.integer(forKey: "NotificationBadgeCount")
         
         if notificationOn != nil && notificationAlertTime != nil {
             updatedUserSettings = true
@@ -768,7 +780,9 @@ extension MainViewController: UNUserNotificationCenterDelegate {
             if settings.authorizationStatus == .authorized {
                 
                 // First, load plants into plant's context.
-                loadPlants()
+                loadPlants {
+                    
+                }
                 
                 let center = UNUserNotificationCenter.current()
                 
@@ -781,19 +795,14 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     if plant.notificationPresented == false {
                         
                         
-                        print("Plant notification set: \(plant.plant)")
+                        print("Plant notification set: \(String(describing: plant.plant))")
                         
                         // 2: Create the notification content
                         let content = UNMutableNotificationContent()
                         content.title = "Notification alert!"
                         content.body = "Make sure to water your plant: \(plant.plant!)"
                         
-                        //Retreive the value from User Defaults and increase it by 1
-                        let badgeCount = defaults.value(forKey: "NotificationBadgeCount") as! Int + 1
-                        //Save the new value to User Defaults
-                        defaults.set(badgeCount, forKey: "NotificationBadgeCount")
-                        //Set the value as the current badge count
-                        //                        content.badge = badgeCount as NSNumber
+                        // NEW METHOD FOR SETTING BADGE COUNT:
                         content.badge = (plant.notificationBadgeCount) as NSNumber
                         content.sound = .default
                         content.categoryIdentifier = "categoryIdentifier"
@@ -862,7 +871,11 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 // Set UNNotificationActions
                 let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
                 let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
-                let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [])
+                let dismissAction = UNNotificationAction(identifier: UNNotificationDismissActionIdentifier,
+                                                     title: "Dismiss",
+                                                         options: [])
+//                let plantNotificationDismissCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [dismissAction], intentIdentifiers: [], options: .customDismissAction)
+                let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [.customDismissAction])
                 center.setNotificationCategories([notificationActionsCategory])
                 
              
@@ -874,6 +887,8 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     if granted {
                         // Access granted
                         print("UserNotifcation Granted")
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                     } else {
                         // Access denied
                         print("UserNotifcation Denied")
@@ -916,25 +931,28 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         }
        
         
-        for o in 0...sortedPlantsByWatered.count - 1 {
-            let plant = sortedPlantsByWatered[o]
-            plant.notificationBadgeCount = Int16(o + 1)
+        for i in 0...sortedPlantsByWatered.count - 1 {
+            let plant = sortedPlantsByWatered[i]
+            plant.notificationBadgeCount = Int16(i + 1)
             savePlants()
         }
         
-        loadPlants()
+        loadPlants {
+            
+        }
         
     }
     
     func getDeliveredNotifications() {
         
-        loadPlants()
+        loadPlants {
+            
+        }
         
         center.getDeliveredNotifications { [self] unNotification in
-            print("DDD: \(unNotification.count)")
+            print("unNotification Count: \(unNotification.count)")
             var deliveredNotifications = [String]()
             for deliveredNoti in unNotification {
-                
                 
                 deliveredNotifications.append(deliveredNoti.request.identifier)
                 print("Delivered Notifications list: \(deliveredNoti.request.identifier)")

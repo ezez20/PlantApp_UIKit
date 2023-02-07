@@ -225,10 +225,12 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         }
         
         
+        resetUserNotification()
         if authenticateFBUser() {
             
+            resetUndeliveredNotifications_FB()
             updateUserSettings_FB()
-            resetUserNotification()
+            
             
             let firebaseAuth = Auth.auth()
             
@@ -434,11 +436,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         
     }
     
-    func refreshUserNotification() {
-        center.removeAllDeliveredNotifications()
-        
-        setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
-    }
     
     func resetUserNotification() {
         center.removeAllPendingNotificationRequests()
@@ -452,8 +449,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             p.notificationPending = false
             updatePlant()
         }
-        
-        resetUndeliveredNotifications_FB()
         
     }
     
@@ -493,24 +488,28 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     func updateUserSettings_FB() {
         
-        let db = Firestore.firestore()
-        guard let currentUser = Auth.auth().currentUser?.uid else {return}
-        let userFireBase = db.collection("users").document(currentUser)
-        
-        // FIREBASE: Plant entity input
-        let userSettingEditedData: [String: Any] = [
-            "Notification On": defaults.bool(forKey: "notificationOn"),
-            "Notification Alert Time": defaults.integer(forKey: "selectedAlertOption"),
-            "Notification Badge Count": defaults.integer(forKey: "NotificationBadgeCount")
-        ]
-        
-        userFireBase.updateData(userSettingEditedData) { error in
-            if error != nil {
-                print("Error updating User Seetings to FB. Error: \(String(describing: error))")
+        if authenticateFBUser() {
+            
+            let db = Firestore.firestore()
+            guard let currentUser = Auth.auth().currentUser?.uid else {return}
+            let userFireBase = db.collection("users").document(currentUser)
+            
+            // FIREBASE: Plant entity input
+            let userSettingEditedData: [String: Any] = [
+                "Notification On": defaults.bool(forKey: "notificationOn"),
+                "Notification Alert Time": defaults.integer(forKey: "selectedAlertOption"),
+                "Notification Badge Count": defaults.integer(forKey: "NotificationBadgeCount")
+            ]
+            
+            userFireBase.updateData(userSettingEditedData) { error in
+                if error != nil {
+                    print("Error updating User Seetings to FB. Error: \(String(describing: error))")
+                }
             }
+            
+            print("User Settings successfully updated to Firebase")
+            
         }
-        
-        print("User Settings successfully updated to Firebase")
         
     }
     

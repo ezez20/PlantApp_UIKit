@@ -64,9 +64,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
         print("DID BECOME ACTIVE")
+        getDeliveredNotifications()
         
+        // This will trigger bug if user discards/terminate app. Add observer back first before calling this.
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
 
-       
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -78,6 +80,53 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         print("Scene did enter foreground")
+
+        
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        // Called as the scene transitions from the foreground to the background.
+        // Use this method to save data, release shared resources, and store enough scene-specific state information
+        // to restore the scene back to its current state.
+
+        // Save changes in the application's managed object context when the application transitions to the background.
+        
+        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+    }
+
+    
+}
+
+
+extension SceneDelegate {
+    
+    func loadPlants() {
+        
+        do {
+            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
+            let sort = NSSortDescriptor(key: "order", ascending: true)
+            request.sortDescriptors = [sort]
+            plants = try context.fetch(request)
+        } catch {
+            print("Error loading categories \(error)")
+        }
+        
+        print("SceneDelegate: Plants loaded")
+        print("SceneDelegate: Core Data count: \(plants.count)")
+        
+    }
+    
+    func savePlants() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving category \(error)")
+        }
+        
+    }
+    
+    func getDeliveredNotifications() {
+        
         if Auth.auth().currentUser?.uid != nil  {
             
             loadPlants()
@@ -101,67 +150,39 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             
                             for p in plants {
                                 guard let notificationID = p.notificationRequestID else { return }
+                                
                                 if deliveredNotifications.contains(notificationID) {
                                     p.notificationPresented = true
                                     savePlants()
                                 }
-                                print("Scene: Plant: \(p.plant), ID: \(p.notificationRequestID) notificationPresented\(p.notificationPresented)")
+                                
+                                print("Scene: Plant: \(String(describing: p.plant)), ID: \(String(describing: p.notificationRequestID)) notificationPresented\(p.notificationPresented)")
                             }
                             
-                           
                         }
                         
                     }
                     
                 }
+                
+                for p in plants {
+                    let waterHabitIn = p.waterHabit
+                    let lastWateredDateIn = p.lastWateredDate
+                    var nextWaterDate: Date {
+                        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
+                        return calculatedDate!
+                    }
+
+                    if nextWaterDate < Date.now {
+                        p.notificationPresented = true
+                        savePlants()
+                    }
+                }
 
             }
             
             
-        }
-        
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-
-        // Save changes in the application's managed object context when the application transitions to the background.
-        
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-    }
-
-    
-}
-
-
-extension SceneDelegate {
-    
-    func loadPlants() {
-        
-    
-        do {
-            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-            let sort = NSSortDescriptor(key: "order", ascending: true)
-            request.sortDescriptors = [sort]
-            plants = try context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
-        }
-        
-
-        
-        print("Plants loaded")
-        print("Core Data count: \(plants.count)")
-        
-    }
-    
-    func savePlants() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving category \(error)")
+            
         }
         
     }
