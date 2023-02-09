@@ -80,7 +80,6 @@ extension LogoViewController {
                 K.navigateToMainVC(self)
                 print("LogoVC presenting: MainVC")
             } else {
-                print("DDD")
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
@@ -88,6 +87,7 @@ extension LogoViewController {
                 print("LogoVC presenting: LoginVC")
             }
         }
+        
     }
     
 }

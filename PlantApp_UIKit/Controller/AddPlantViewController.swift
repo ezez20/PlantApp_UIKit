@@ -75,7 +75,7 @@ class AddPlantViewController: UIViewController {
         
         self.enableDismissKeyboardOnTapOutside()
         
-        
+        datePicker.maximumDate = Date.now
     }
     
     override func viewWillAppear(_ animated: Bool) {

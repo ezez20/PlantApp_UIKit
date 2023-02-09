@@ -85,7 +85,7 @@ class PlantViewController: UIViewController {
     }
     
     var nextWaterDate: Date {
-        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn.advanced(by: 86400))
+        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn)
         return calculatedDate!
     }
     
@@ -181,7 +181,7 @@ class PlantViewController: UIViewController {
     // MARK: - objc functions
     @objc func datePickerValueChanged(sender: UIDatePicker) {
         lastWateredDateIn = sender.date
-        print("Last Watered Date changed to: \(sender.date)")
+        print("Last Watered Date changed to: \(sender.date.formatted(date: .abbreviated, time: .standard))")
         updateUI()
         refreshBadgeAndNotification()
         savePlant()
@@ -329,37 +329,63 @@ extension PlantViewController {
     
     @objc func refreshBadgeAndNotification() {
         
+        
         if defaults.bool(forKey: "notificationOn") {
-            
-            guard let notificationToRemoveID = currentPlant.notificationRequestID else {
-                return
-            }
-            
+          
             if currentPlant.notificationPresented == true {
                 
-                let deliveredNotifications = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
-                
-                if !deliveredNotifications.isEmpty {
-                    print("deliveredNotificationsStored: \(deliveredNotifications)")
-                }
-                
-                if deliveredNotifications.contains(notificationToRemoveID) {
+                if let notificationToRemoveID = currentPlant.notificationRequestID {
+                   
+                    let deliveredNotifications = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
                     
-                    center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
-                    print("Pending Notification removed: \(notificationToRemoveID)")
+                    if !deliveredNotifications.isEmpty {
+                        print("deliveredNotificationsStored: \(deliveredNotifications)")
+                    }
                     
+                    if deliveredNotifications.contains(notificationToRemoveID) {
+                        
+                        center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
+                        print("Pending Notification removed: \(notificationToRemoveID)")
+                        
+                        
+                    }
                     
+                    DispatchQueue.main.async {
+                        let count = UIApplication.shared.applicationIconBadgeNumber - 1
+                        
+                        var safeCount = 0
+                        if count < 0 {
+                            safeCount = 0
+                        } else {
+                            safeCount = count
+                        }
+                        UIApplication.shared.applicationIconBadgeNumber = safeCount
+                    }
+                    
+                    currentPlant.notificationPresented = false
+                    savePlant()
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                } else {
+                    DispatchQueue.main.async {
+                        let count = UIApplication.shared.applicationIconBadgeNumber - 1
+                        
+                        var safeCount = 0
+                        if count < 0 {
+                            safeCount = 0
+                        } else {
+                            safeCount = count
+                        }
+                        UIApplication.shared.applicationIconBadgeNumber = safeCount
+                    }
+                    
+                    currentPlant.notificationPresented = false
+                    savePlant()
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                 }
-                
-                
-                currentPlant.notificationPresented = false
-                savePlant()
-                
-                DispatchQueue.main.async {
-                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                }
-                
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+               
+            
                 
             }
             
@@ -367,6 +393,11 @@ extension PlantViewController {
             // For cases while notification was already created previously: user water plant early. user changes water date/water habit.
             var pendingNotifications = [String]()
             center.getPendingNotificationRequests { [self] unNotification in
+                guard let notificationToRemoveID = currentPlant.notificationRequestID else {
+                   
+                    return
+                }
+                
                 for pendingNoti in unNotification {
                     pendingNotifications.append(pendingNoti.identifier)
                     print("Pending Notifications list:\(pendingNotifications)")

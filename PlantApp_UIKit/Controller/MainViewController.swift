@@ -76,12 +76,6 @@ class MainViewController: UIViewController {
             defaults.set(false, forKey: "fbUserFirstLoggedIn")
         }
         
-//        if defaults.bool(forKey: "userDiscardedApp") {
-//            print("Reloading from userDiscardedApp")
-//            self.loadPlants()
-////            refreshUserNotification()
-//        }
-        
         // Load plants from Core Data
         if authenticateFBUser() == false {
             loadPlants {
@@ -89,7 +83,6 @@ class MainViewController: UIViewController {
             }
         }
         
-      
     }
 
     
@@ -108,8 +101,8 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
       
-        
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -126,9 +119,10 @@ class MainViewController: UIViewController {
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
             refreshUserNotification()
-
+            print("DDDEZ")
         }
        
+        updateUnpresentedNotification()
     }
     
     
@@ -137,6 +131,7 @@ class MainViewController: UIViewController {
         loadPlants {
             print("Plants Loaded. Core Data count: \(self.plants.count)")
         }
+        updateUnpresentedNotification()
     }
     
     
@@ -254,7 +249,7 @@ class MainViewController: UIViewController {
     func displayedNextWaterDate(lastWateredDate: Date, waterHabit: Int) -> String {
         var nextWaterDate: Date {
 //            let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
-            let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate.advanced(by: 86400))
+            let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabit, to: lastWateredDate)
             return calculatedDate!
         }
         
@@ -794,7 +789,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     
                     if plant.notificationPresented == false {
                         
-                        
                         print("Plant notification set: \(String(describing: plant.plant))")
                         
                         // 2: Create the notification content
@@ -822,16 +816,16 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                             
                             // Uncomment below when not debugging:
                             selectedNotificationTime = nextWaterDate.advanced(by: 100)
-                            print("Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         case 1: // 1 day before
-                            selectedNotificationTime = nextWaterDate.advanced(by: -86400)
-                            print("Notification Time: \(selectedNotificationTime)")
+                            selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                            print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         case 2: // 2 days before
                             selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-                            print("Notification Time: \(selectedNotificationTime)")
+                            print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         default: // 3 days before
                             selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-                            print("Notification Time: \(selectedNotificationTime)")
+                            print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                         }
                         
                         
@@ -871,10 +865,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 // Set UNNotificationActions
                 let plantNotificationWateredAction = UNNotificationAction(identifier: "plantNotificationWateredActionID", title: "Watered", options: [])
                 let plantNotificationCancelAction = UNNotificationAction(identifier: "plantNotificationCancelActionID", title: "Not yet" , options: [])
-                let dismissAction = UNNotificationAction(identifier: UNNotificationDismissActionIdentifier,
-                                                     title: "Dismiss",
-                                                         options: [])
-//                let plantNotificationDismissCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [dismissAction], intentIdentifiers: [], options: .customDismissAction)
+            
                 let notificationActionsCategory = UNNotificationCategory(identifier: "categoryIdentifier", actions: [plantNotificationWateredAction, plantNotificationCancelAction], intentIdentifiers: [], options: [.customDismissAction])
                 center.setNotificationCategories([notificationActionsCategory])
                 
@@ -910,6 +901,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     
     func deleteNotification(indexPath: IndexPath) {
         if defaults.bool(forKey: "notificationOn") {
+            
             if let unID = plants[indexPath.row].notificationRequestID {
                 center.removePendingNotificationRequests(withIdentifiers: [unID])
                 
@@ -920,11 +912,18 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     }
                 }
                 
+            } else if plants[indexPath.row].notificationPresented == true {
+                DispatchQueue.main.async {
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                }
             }
+            
         }
     }
     
     func updateNotificationBadgeCount() {
+        
+        guard plants.count != 0 else { return }
         
         let sortedPlantsByWatered = plants.sorted {
             $0.lastWateredDate! < $1.lastWateredDate!
@@ -980,6 +979,62 @@ extension MainViewController: UNUserNotificationCenterDelegate {
 
         }
 
+    }
+    
+    func updateUnpresentedNotification() {
+        
+        print("updateUnpresentedNotification")
+        
+        loadPlants {
+            print("Plants Loaded")
+        }
+        
+        for p in plants {
+            let waterHabitIn = p.waterHabit
+            let lastWateredDateIn = p.lastWateredDate
+            var nextWaterDate: Date {
+                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
+                return calculatedDate!
+            }
+            
+            var selectedNotificationTime = Date()
+            switch defaults.integer(forKey: "selectedAlertOption") {
+            case 0: // day of event
+                // For debug purpose: Notification time - 10 seconds
+                //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                
+                // Uncomment below when not debugging:
+                selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+            case 1: // 1 day before
+                selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+            case 2: // 2 days before
+                selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+            default: // 3 days before
+                selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+            }
+            
+            if selectedNotificationTime < Date.now {
+                p.notificationPresented = true
+                savePlants()
+            }
+        }
+        
+        loadPlants {
+            var count = 0
+            for p in self.plants {
+                if p.notificationPresented == true {
+                    count += 1
+                }
+            }
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = count
+            }
+        }
+        
     }
     
 }

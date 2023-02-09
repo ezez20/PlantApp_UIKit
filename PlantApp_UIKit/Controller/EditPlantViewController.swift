@@ -254,6 +254,7 @@ class EditPlantViewController: UIViewController {
         
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        datePicker.maximumDate = Date.now
         
         print("View did layout subviews")
     }
