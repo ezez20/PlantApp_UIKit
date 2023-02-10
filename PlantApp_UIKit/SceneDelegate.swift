@@ -127,7 +127,7 @@ extension SceneDelegate {
     
     func getDeliveredNotifications() {
         
-        if Auth.auth().currentUser?.uid != nil  {
+        if defaults.bool(forKey: "notificationOn") {
             
             loadPlants()
             

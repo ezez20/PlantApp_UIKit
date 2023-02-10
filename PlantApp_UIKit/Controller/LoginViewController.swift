@@ -26,6 +26,7 @@ class LoginViewController: UIViewController {
     let passwordTextfield = UITextField()
     
     let loginButton = UIButton()
+    let forgotPasswordButton = UIButton()
     
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
@@ -89,7 +90,7 @@ class LoginViewController: UIViewController {
         emailTextfield.rightAnchor.constraint(equalTo: emailTextfieldView.rightAnchor, constant: -20).isActive = true
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
         emailTextfield.backgroundColor = .white
-        emailTextfield.placeholder = "Email"
+        emailTextfield.placeholder = "Email address"
         emailTextfield.autocapitalizationType = .none
         
         // Password textfieldView: UITextfieldView
@@ -112,7 +113,7 @@ class LoginViewController: UIViewController {
         passwordTextfield.backgroundColor = .white
         passwordTextfield.placeholder = "Password"
         
-        
+        // Login Button: UIButton
         view.addSubview(loginButton)
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.topAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: 20).isActive = true
@@ -129,6 +130,24 @@ class LoginViewController: UIViewController {
         loginButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         loginButton.layer.cornerRadius = 5.0
         loginButton.addTarget(self, action: #selector(loginButtonClicked(sender:)), for: .touchUpInside)
+        
+        // Forgot Password Button: UIButton
+        view.addSubview(forgotPasswordButton)
+        forgotPasswordButton.translatesAutoresizingMaskIntoConstraints = false
+        forgotPasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 10).isActive = true
+        forgotPasswordButton.leftAnchor.constraint(equalTo: loginButton.leftAnchor, constant: 40).isActive = true
+        forgotPasswordButton.rightAnchor.constraint(equalTo: loginButton.rightAnchor, constant: -40).isActive = true
+        forgotPasswordButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        
+        forgotPasswordButton.frame = CGRect(x: 100, y: 100, width: 200, height: 40)
+        forgotPasswordButton.setTitle("Forgot password?", for: .normal)
+        forgotPasswordButton.setTitleColor(.brown, for: .normal)
+        forgotPasswordButton.setTitleColor(.placeholderText, for: .highlighted)
+//        forgotPasswordButton.backgroundColor = UIColor(named: "customYellow1")
+        forgotPasswordButton.layer.borderWidth = 1.0
+        forgotPasswordButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
+        forgotPasswordButton.layer.cornerRadius = 5.0
+        forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordButtonClicked(sender:)), for: .touchUpInside)
         
         // useWithoutAccountButton: UIButton
         view.addSubview(useWithoutAccountButton)
@@ -168,9 +187,9 @@ class LoginViewController: UIViewController {
         }
         
         // If user is logging in without a FB account, this will navigate to MainVC
-        if defaults.bool(forKey: "useWithoutFBAccount") {
-            K.navigateToMainVC(self)
-        }
+//        if defaults.bool(forKey: "useWithoutFBAccount") {
+//            K.navigateToMainVC(self)
+//        }
         
         
     }
@@ -221,6 +240,19 @@ class LoginViewController: UIViewController {
             }
             
         }
+    }
+    
+    @objc func forgotPasswordButtonClicked(sender: UIButton) {
+        print("Forgot password button clicked")
+        
+        // Present half sheet/modally
+        let vc = ForgotPasswordViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        if let sheet = navVC.sheetPresentationController {
+            sheet.detents = [.medium()]
+        }
+        
+        present(navVC, animated: true)
     }
     
     @objc func signUpButtonClicked(sender: UIButton) {

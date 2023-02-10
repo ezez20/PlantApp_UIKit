@@ -195,7 +195,7 @@ class AddPlantViewController: UIViewController {
             
             // Tells MainViewController to "loadPlants"
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
             
             //ADD: dismiss AddPlantView.
             dismiss(animated: true)

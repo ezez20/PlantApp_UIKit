@@ -79,7 +79,7 @@ class MainViewController: UIViewController {
         // Load plants from Core Data
         if authenticateFBUser() == false {
             loadPlants {
-                
+                self.removeLoadingView()
             }
         }
         
@@ -116,6 +116,7 @@ class MainViewController: UIViewController {
             print("Reloading from userDiscardedApp")
             self.loadPlants {
                 print("Plants Loaded. Core Data count: \(self.plants.count)")
+                self.removeLoadingView()
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
             refreshUserNotification()
@@ -129,6 +130,7 @@ class MainViewController: UIViewController {
     
     @objc func notificationReceived() {
         loadPlants {
+            self.removeLoadingView()
             print("Plants Loaded. Core Data count: \(self.plants.count)")
         }
         updateUnpresentedNotification()
@@ -225,6 +227,7 @@ class MainViewController: UIViewController {
         self.savePlants()
         
         loadPlants {
+            self.removeLoadingView()
             print("Plants Loaded. Core Data count: \(self.plants.count)")
         }
         
@@ -335,8 +338,6 @@ extension MainViewController: UITableViewDataSource {
     
     // Tells how many rows to list out in tableView.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        removeLoadingView()
         
         return plants.count
     }
@@ -472,6 +473,7 @@ extension MainViewController {
                     
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
                         self.loadPlants {
+                            self.removeLoadingView()
                             print("Plants Loaded. Core Data count: \(self.plants.count)")
                         }
                         completion()
@@ -776,7 +778,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 
                 // First, load plants into plant's context.
                 loadPlants {
-                    
+                    self.removeLoadingView()
                 }
                 
                 let center = UNUserNotificationCenter.current()
@@ -882,10 +884,25 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                     } else {
                         // Access denied
-                        print("UserNotifcation Denied")
+                        print("UserNotification Denied")
                     }
                 }
              
+            } else {
+                let alert = UIAlertController(title: "Error:", message: "Please enable push notification in settings to continue", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "Go to Settings", style: .default) { (action) -> Void in
+                    print("Go to Settings")
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                }
+                let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+                    print("Cancel")
+                }
+                alert.addAction(ok)
+                alert.addAction(cancel)
+                
+                DispatchQueue.main.async {
+                    self.activeVC()?.present(alert, animated: true)
+                }
             }
             
         }
@@ -937,7 +954,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         }
         
         loadPlants {
-            
+            self.removeLoadingView()
         }
         
     }
@@ -945,7 +962,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     func getDeliveredNotifications() {
         
         loadPlants {
-            
+            self.removeLoadingView()
         }
         
         center.getDeliveredNotifications { [self] unNotification in
@@ -986,6 +1003,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         print("updateUnpresentedNotification")
         
         loadPlants {
+            self.removeLoadingView()
             print("Plants Loaded")
         }
         
@@ -1024,6 +1042,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         }
         
         loadPlants {
+            self.removeLoadingView()
             var count = 0
             for p in self.plants {
                 if p.notificationPresented == true {
@@ -1051,10 +1070,30 @@ extension MainViewController {
     }
     
     func removeLoadingView() {
-        if plants.count != 0 {
+//        if plants.count != 0 {
+//            self.plantsTableView.tableFooterView?.removeFromSuperview()
+//            print("removeLoadingView")
+//        }
+        DispatchQueue.main.async {
             self.plantsTableView.tableFooterView?.removeFromSuperview()
-            print("removeLoadingView")
         }
+    }
+    
+    func activeVC() -> UIViewController? {
+        // Use connectedScenes to find the .foregroundActive rootViewController
+        var rootVC: UIViewController?
+        for scene in UIApplication.shared.connectedScenes {
+            if scene.activationState == .foregroundActive {
+                rootVC = (scene.delegate as? UIWindowSceneDelegate)?.window!!.rootViewController
+                break
+            }
+        }
+        // Then, find the topmost presentedVC from it.
+        var presentedVC = rootVC
+        while presentedVC?.presentedViewController != nil {
+            presentedVC = presentedVC?.presentedViewController
+        }
+        return presentedVC
     }
     
 }
