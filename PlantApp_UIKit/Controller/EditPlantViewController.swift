@@ -291,6 +291,9 @@ class EditPlantViewController: UIViewController {
         if authenticateFBUser() {
             // MARK: - Editing new plant with Firebase/Core Data
             editPlant_FB(currentPlant.id!)
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+            
         } else {
             // MARK: - Adding new plant to Core Data
             currentPlant.plant = plantTextField.text
@@ -415,6 +418,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         plantTextField.text = filteredSuggestion[indexPath.row]
+        updateInputImage()
         removeSuggestionScrollView()
     }
     
@@ -436,6 +440,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
         if validateEntry() {
             updatePlantButton.isEnabled = true
+            textField.clearButtonMode = .whileEditing
         }
         
         if validateEntry() == false {

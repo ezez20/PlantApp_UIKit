@@ -320,11 +320,11 @@ extension MainViewController: UITableViewDelegate {
                 vc?.currentPlant = plant
                 
                 // Assigns plant's image to tableView.
-                if imageSetNames.contains(plant.plantImageString!) {
-                    vc?.plantImageLoadedIn = UIImage(named: plant.plantImageString!)!
-                } else {
-                    vc?.plantImageLoadedIn = loadedImage(with: plant.imageData)
-                }
+//                if imageSetNames.contains(plant.plantImageString!) {
+//                    vc?.plantImageLoadedIn = UIImage(named: plant.plantImageString!)!
+//                } else {
+//                    vc?.plantImageLoadedIn = loadedImage(with: plant.imageData)
+//                }
                 
             }
         }

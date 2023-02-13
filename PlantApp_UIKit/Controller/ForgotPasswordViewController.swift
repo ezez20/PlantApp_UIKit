@@ -81,7 +81,15 @@ class ForgotPasswordViewController: UIViewController {
                 print("Error sending password reset link. Error: \(String(describing: error))")
                 self.instructionTitle.text = "Oops! Looks like you typed your email incorrectly or this email is not in our record."
             } else {
-                print("No error")
+                print("Password reset link successfully sent")
+                self.instructionTitle.text = "A password reset link has been sent to your email!"
+                self.sendLinkButton.setTitle("", for: .disabled)
+                self.sendLinkButton.isEnabled = false
+                if let checkMarkImage = UIImage(systemName: "checkmark") {
+                    self.sendLinkButton.setImage(checkMarkImage, for: .disabled)
+                    self.sendLinkButton.tintColor = .white
+                }
+                self.view.endEditing(true)
             }
         }
     }

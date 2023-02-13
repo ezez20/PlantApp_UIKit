@@ -33,6 +33,9 @@ class SettingsViewController: UIViewController {
     // Login/Logout Button
     let logoutButton = UIButton()
     
+    // Account Settings Button
+    let accountSettingsButton = UIButton()
+    
     // UserNotification selected alert option
     var selectedAlertOption = 0
     let options = ["day of event", "1 day before", "2 days before", "3 day before"]
@@ -158,6 +161,15 @@ class SettingsViewController: UIViewController {
         logoutButton.setTitleColor(.placeholderText, for: .highlighted)
         logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
         
+        containerView.addSubview(accountSettingsButton)
+        accountSettingsButton.translatesAutoresizingMaskIntoConstraints = false
+        accountSettingsButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        accountSettingsButton.bottomAnchor.constraint(equalTo: logoutButton.topAnchor, constant: -10).isActive = true
+        accountSettingsButton.setTitle("Account settings", for: .normal)
+        accountSettingsButton.setTitleColor(.systemCyan, for: .normal)
+        accountSettingsButton.setTitleColor(.placeholderText, for: .highlighted)
+        accountSettingsButton.addTarget(self, action: #selector(accountSettingsButtonPressed), for: .touchUpInside)
+        
         
         // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"
         sectionView.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
@@ -265,6 +277,10 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         
         dismiss(animated: true)
         
+    }
+    
+    @objc func accountSettingsButtonPressed(_ sender: UISwitch!) {
+     print("accountSettingsButtonPressed")
     }
     
     func loadPlants() {

@@ -52,11 +52,10 @@ class LoginViewController: UIViewController {
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
-        titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
+        titleLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
         titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        
         titleLogo.image = UIImage(named: K.leaf)
         
         // App Name: UILabel

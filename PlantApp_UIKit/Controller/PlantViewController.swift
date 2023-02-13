@@ -47,13 +47,13 @@ class PlantViewController: UIViewController {
     var waterHabitIn = 7
     var lastWateredDateIn = Date()
  
-    var wateredBool: Bool {
-        if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
-            return false
-        } else {
-            return true
-        }
-    }
+//    var wateredBool: Bool {
+//        if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
    
     // TO DO: add more plants and images
     var currentDate = Date.now
@@ -173,8 +173,6 @@ class PlantViewController: UIViewController {
         updateUI()
         editPlant_FB(currentPlant.id!)
         
-//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-        
         print("Water button pressed.")
     }
 
@@ -244,14 +242,19 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = currentPlant.lastWateredDate!
         
         datePicker.date = lastWateredDateIn
-        plantImage.image = plantImageLoadedIn
+        if imageSetNames.contains(currentPlant.plantImageString!) {
+            plantImage.image = UIImage(named: currentPlant.plantImageString!)
+        } else {
+            plantImage.image = loadedImage(with: currentPlant.imageData)
+        }
+//        plantImage.image = UIImage(named: currentPlant.plantImageString) ?? loadedImage(with: currentPlant.imageData)
         waterStatusView.text = waterStatus
     }
     
     func savePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
-        currentPlant.wateredBool = wateredBool
+//        currentPlant.wateredBool = wateredBool
         print("Plant: \(String(describing: currentPlant.plant)) updated." )
  
         do {
@@ -267,12 +270,14 @@ class PlantViewController: UIViewController {
 }
 
 extension PlantViewController: ModalViewControllerDelegate {
+    
     func modalControllerWillDisapear(_ modal: EditPlantViewController) {
             // This is called when your modal will disappear. You can reload your data.
             print("reload")
             loadData()
             updateUI()
         }
+    
 }
 
 extension PlantViewController {
@@ -300,8 +305,8 @@ extension PlantViewController {
             
             //4: FIREBASE: Plant entity input
             let plantEditedData: [String: Any] = [
-                "lastWatered": datePicker.date,
-                "wateredBool": wateredBool,
+                "lastWatered": datePicker.date
+//                "wateredBool": wateredBool,
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
@@ -329,19 +334,25 @@ extension PlantViewController {
     
     @objc func refreshBadgeAndNotification() {
         
-        
         if defaults.bool(forKey: "notificationOn") {
-          
+            
+            // 1: If notification is already presented for this plant
             if currentPlant.notificationPresented == true {
                 
+                // MARK: - OPTION 1, when PLANT'S USER NOTIFICATION IS ALREADY PRESENTED
+                
+                // 2: And if notification request was made for this plant
                 if let notificationToRemoveID = currentPlant.notificationRequestID {
                    
+                    // 3: Get the deliveredNotificationsStored from User Defaults
                     let deliveredNotifications = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
                     
+                    // 4: If deliveredNotificationsStored array is not empty, print.
                     if !deliveredNotifications.isEmpty {
                         print("deliveredNotificationsStored: \(deliveredNotifications)")
                     }
                     
+                    // 5: If deliveredNotificationsStored array contains this plant's notification ID, remove the delivered notification.
                     if deliveredNotifications.contains(notificationToRemoveID) {
                         
                         center.removeDeliveredNotifications(withIdentifiers: [notificationToRemoveID])
@@ -350,6 +361,7 @@ extension PlantViewController {
                         
                     }
                     
+                    // 6: Then, update the badge count by subtracting 1.
                     DispatchQueue.main.async {
                         let count = UIApplication.shared.applicationIconBadgeNumber - 1
                         
@@ -362,10 +374,12 @@ extension PlantViewController {
                         UIApplication.shared.applicationIconBadgeNumber = safeCount
                     }
                     
+                    // 7: Lastly, update plant's notificationPresented to false, so it can be setup for notification again. Save context, then RefreshUserNotification.
                     currentPlant.notificationPresented = false
                     savePlant()
-                    
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                
+                // MARK: - OPTION 2, when PLANT NEVER HAD A NOTIFICATION REQUEST SETUP because it had a water time passed its water date.
                 } else {
                     DispatchQueue.main.async {
                         let count = UIApplication.shared.applicationIconBadgeNumber - 1
@@ -384,9 +398,7 @@ extension PlantViewController {
                     
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                 }
-               
             
-                
             }
             
             // If notification is pending, remove pending notification and refreshUserNotification.

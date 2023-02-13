@@ -273,6 +273,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         plantName.text = filteredSuggestion[indexPath.row]
+        updateInputImage()
         removeSuggestionScrollView()
     }
     
@@ -294,6 +295,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         
         if validateEntry() {
             addPlantButton.isEnabled = true
+            textField.clearButtonMode = .whileEditing
         }
         
         func validateEntry() -> Bool {
