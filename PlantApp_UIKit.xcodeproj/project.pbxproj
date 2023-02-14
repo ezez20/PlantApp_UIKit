@@ -13,6 +13,7 @@
 		5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E02A28AFFDC6006AF2AA /* Main.storyboard */; };
 		5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03028AFFDC7006AF2AA /* Assets.xcassets */; };
 		5102E03428AFFDC7006AF2AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5102E03228AFFDC7006AF2AA /* LaunchScreen.storyboard */; };
+		51052E61299AD42200FE65AD /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51052E60299AD42200FE65AD /* AccountViewController.swift */; };
 		510ACD0E28F609DC0011EACD /* AlertTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */; };
 		510ECD0828F8825F0060FBDF /* PlantApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510ECD0628F8825F0060FBDF /* PlantApp.xcdatamodeld */; };
 		51180ABA28CA80080072BC8E /* WaterHabitDaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */; };
@@ -59,6 +60,7 @@
 		5102E03028AFFDC7006AF2AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5102E03328AFFDC7006AF2AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5102E03528AFFDC7006AF2AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51052E60299AD42200FE65AD /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTimeViewController.swift; sourceTree = "<group>"; };
 		510ECD0728F8825F0060FBDF /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
 		51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterHabitDaysViewController.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */,
 				5183A1EF29140F00003E9666 /* SignUpViewController.swift */,
 				51885F662995853D0080CC14 /* ForgotPasswordViewController.swift */,
+				51052E60299AD42200FE65AD /* AccountViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 			files = (
 				510ACD0E28F609DC0011EACD /* AlertTimeViewController.swift in Sources */,
 				51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */,
+				51052E61299AD42200FE65AD /* AccountViewController.swift in Sources */,
 				51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */,
 				510ECD0828F8825F0060FBDF /* PlantApp.xcdatamodeld in Sources */,
 				513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */,

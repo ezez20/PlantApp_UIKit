@@ -281,6 +281,8 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func accountSettingsButtonPressed(_ sender: UISwitch!) {
      print("accountSettingsButtonPressed")
+        let accountVC = AccountViewController()
+        self.navigationController?.pushViewController(accountVC, animated: true)
     }
     
     func loadPlants() {
