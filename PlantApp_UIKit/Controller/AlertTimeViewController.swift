@@ -59,6 +59,7 @@ extension AlertTimeViewController: UITableViewDataSource, UITableViewDelegate {
         // UI Update: Tick on cell when selected.
         if alertOption == indexPath.row {
             cell.accessoryType = .checkmark
+            cell.tintColor = UIColor(named: K.customGreen2)
         } else {
             cell.accessoryType = .none
         }

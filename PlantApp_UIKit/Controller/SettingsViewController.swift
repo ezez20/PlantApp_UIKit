@@ -54,6 +54,8 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.tintColor = UIColor(named: K.customGreen2)
+        
         
         loadPlants()
         saveUserSettings {
@@ -161,14 +163,16 @@ class SettingsViewController: UIViewController {
         logoutButton.setTitleColor(.placeholderText, for: .highlighted)
         logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
         
-        containerView.addSubview(accountSettingsButton)
-        accountSettingsButton.translatesAutoresizingMaskIntoConstraints = false
-        accountSettingsButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        accountSettingsButton.bottomAnchor.constraint(equalTo: logoutButton.topAnchor, constant: -10).isActive = true
-        accountSettingsButton.setTitle("Account settings", for: .normal)
-        accountSettingsButton.setTitleColor(.systemCyan, for: .normal)
-        accountSettingsButton.setTitleColor(.placeholderText, for: .highlighted)
-        accountSettingsButton.addTarget(self, action: #selector(accountSettingsButtonPressed), for: .touchUpInside)
+        if authenticateFBUser() {
+            containerView.addSubview(accountSettingsButton)
+            accountSettingsButton.translatesAutoresizingMaskIntoConstraints = false
+            accountSettingsButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+            accountSettingsButton.bottomAnchor.constraint(equalTo: logoutButton.topAnchor, constant: -10).isActive = true
+            accountSettingsButton.setTitle("Account settings", for: .normal)
+            accountSettingsButton.setTitleColor(.systemCyan, for: .normal)
+            accountSettingsButton.setTitleColor(.placeholderText, for: .highlighted)
+            accountSettingsButton.addTarget(self, action: #selector(accountSettingsButtonPressed), for: .touchUpInside)
+        }
         
         
         // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"

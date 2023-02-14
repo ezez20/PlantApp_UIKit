@@ -195,6 +195,8 @@ class AccountViewController: UIViewController {
     
     @objc func changeEmailButtonPressed() {
         print("changeEmailButtonPressed")
+        let vc = ChangeEmailViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func changePasswordButtonPressed() {

@@ -270,14 +270,7 @@ class LoginViewController: UIViewController {
     @objc func presentMainVC() {
         if self.authenticateFBUser() {
             self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
-            
-            let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
-            mainVC.modalTransitionStyle = .crossDissolve
-            let navigation = UINavigationController(rootViewController: mainVC)
-            navigation.navigationBar.tintColor = .systemGreen
-            navigation.modalPresentationStyle = .fullScreen
-            self.present(navigation, animated: true)
+            K.navigateToMainVC(self)
         }
     }
     

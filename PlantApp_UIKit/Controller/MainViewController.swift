@@ -53,7 +53,7 @@ class MainViewController: UIViewController {
         
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+    
         title = K.title
         self.plantsTableView.contentInsetAdjustmentBehavior = .never
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -141,9 +141,9 @@ class MainViewController: UIViewController {
         print("Logout triggered")
         
         self.presentingViewController?.dismiss(animated: true, completion: {
-            if self.defaults.bool(forKey: "logoVCReload") {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
-            }
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
+            
         })
         
     }

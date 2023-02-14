@@ -71,7 +71,8 @@ struct K {
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
         mainVC.modalTransitionStyle = .crossDissolve
         let navigation = UINavigationController(rootViewController: mainVC)
-        navigation.navigationBar.tintColor = .systemGreen
+        navigation.navigationBar.tintColor = UIColor(named: K.customGreen2)
+        navigation.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2)]
         navigation.modalPresentationStyle = .fullScreen
         vc.present(navigation, animated: true)
     }

@@ -46,6 +46,7 @@ class LogoViewController: UIViewController {
         
     }
     
+    
 
 }
 
@@ -73,18 +74,20 @@ extension LogoViewController {
     }
     
     @objc func reloadView() {
-    
-        defaults.set(false, forKey: "logoVCReload")
+        
+        print("reloading view")
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
                 K.navigateToMainVC(self)
                 print("LogoVC presenting: MainVC")
+                self.defaults.set(false, forKey: "logoVCReload")
             } else {
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 self.present(vc, animated: true)
                 print("LogoVC presenting: LoginVC")
+                self.defaults.set(false, forKey: "logoVCReload")
             }
         }
         

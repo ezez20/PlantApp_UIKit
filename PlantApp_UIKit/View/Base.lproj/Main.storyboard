@@ -39,7 +39,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Gng-un-vIy">
-                                <rect key="frame" x="0.0" y="143" width="428" height="783"/>
+                                <rect key="frame" x="0.0" y="91" width="428" height="835"/>
                                 <color key="backgroundColor" systemColor="systemGroupedBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -55,20 +55,17 @@
                     <navigationItem key="navigationItem" id="xZw-nT-lBO">
                         <leftBarButtonItems>
                             <barButtonItem title="Edit" style="done" id="qgj-3U-jyd">
-                                <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <connections>
                                     <action selector="editButtonPressed:" destination="BYZ-38-t0r" id="ojF-Q5-NYz"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem title="Item" image="gear" catalog="system" id="2hb-aT-UZB">
-                                <color key="tintColor" name="customGreen"/>
                                 <connections>
                                     <action selector="settingButtonPressed:" destination="BYZ-38-t0r" id="xs5-WE-Z3H"/>
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="RxJ-jo-2Yv">
-                            <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
                                 <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
                             </connections>
@@ -598,9 +595,6 @@
         <image name="gear" catalog="system" width="128" height="122"/>
         <image name="leaf.circle" catalog="system" width="128" height="123"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
-        <namedColor name="customGreen">
-            <color red="0.39599999785423279" green="0.76899999380111694" blue="0.40000000596046448" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
         <namedColor name="custom_blue_1">
             <color red="0.2460000067949295" green="0.76800000667572021" blue="0.77999997138977051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
