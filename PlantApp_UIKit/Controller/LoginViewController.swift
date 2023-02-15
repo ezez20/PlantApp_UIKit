@@ -54,17 +54,19 @@ class LoginViewController: UIViewController {
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
         titleLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        let titleLogoFrameConstant = view.frame.height / 5
+        titleLogo.heightAnchor.constraint(equalToConstant: titleLogoFrameConstant).isActive = true
+        titleLogo.widthAnchor.constraint(equalToConstant: titleLogoFrameConstant).isActive = true
         titleLogo.image = UIImage(named: K.leaf)
+        
         
         // App Name: UILabel
         view.addSubview(appName)
         appName.translatesAutoresizingMaskIntoConstraints = false
-        appName.topAnchor.constraint(equalTo: titleLogo.bottomAnchor, constant: 5).isActive = true
-        appName.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        appName.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        appName.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        appName.topAnchor.constraint(equalTo: titleLogo.bottomAnchor, constant: 0).isActive = true
+        appName.centerXAnchor.constraint(equalTo: titleLogo.centerXAnchor).isActive = true
+        let appNameFrameConstant = view.frame.height / 10
+        appName.heightAnchor.constraint(equalToConstant: appNameFrameConstant).isActive = true
         
         appName.text = "PlantApp"
         appName.font = UIFont.boldSystemFont(ofSize: 50)
@@ -91,6 +93,8 @@ class LoginViewController: UIViewController {
         emailTextfield.backgroundColor = .white
         emailTextfield.placeholder = "Email address"
         emailTextfield.autocapitalizationType = .none
+        emailTextfield.keyboardType = .emailAddress
+        emailTextfield.autocorrectionType = .no
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
@@ -111,6 +115,9 @@ class LoginViewController: UIViewController {
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
         passwordTextfield.backgroundColor = .white
         passwordTextfield.placeholder = "Password"
+        passwordTextfield.keyboardType = .emailAddress
+        passwordTextfield.autocapitalizationType = .none
+        passwordTextfield.autocorrectionType = .no
         
         // Login Button: UIButton
         view.addSubview(loginButton)

@@ -123,6 +123,7 @@ class SignUpViewController: UIViewController {
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
         passwordTextfield.backgroundColor = .white
         passwordTextfield.placeholder = "Password"
+        passwordTextfield.autocapitalizationType = .none
         
         
         view.addSubview(createAnAccountButton)

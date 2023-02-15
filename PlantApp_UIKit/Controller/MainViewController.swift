@@ -319,13 +319,6 @@ extension MainViewController: UITableViewDelegate {
                 let plant = plants[indexPath.row]
                 vc?.currentPlant = plant
                 
-                // Assigns plant's image to tableView.
-//                if imageSetNames.contains(plant.plantImageString!) {
-//                    vc?.plantImageLoadedIn = UIImage(named: plant.plantImageString!)!
-//                } else {
-//                    vc?.plantImageLoadedIn = loadedImage(with: plant.imageData)
-//                }
-                
             }
         }
         
@@ -465,24 +458,18 @@ extension MainViewController {
                     plants_FB = snapshot!.documents
                     self.plants_FBLoaded = plants_FB
                     
-                    var plantDocIDsArray = [String]()
-
-                    for d in snapshot!.documents {
-                        plantDocIDsArray.append(d.documentID)
-                    }
-                    
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
                         self.loadPlants {
                             self.removeLoadingView()
                             print("Plants Loaded. Core Data count: \(self.plants.count)")
+                            completion()
                         }
-                        completion()
+
                     }
-             
-                    print("Core Data count after FB loaded: \(self.plants.count)")
 
                 } else {
                     print("Error getting documents from plant collection from firebase")
+                    completion()
                 }
             }
             
@@ -1070,10 +1057,6 @@ extension MainViewController {
     }
     
     func removeLoadingView() {
-//        if plants.count != 0 {
-//            self.plantsTableView.tableFooterView?.removeFromSuperview()
-//            print("removeLoadingView")
-//        }
         DispatchQueue.main.async {
             self.plantsTableView.tableFooterView?.removeFromSuperview()
         }
