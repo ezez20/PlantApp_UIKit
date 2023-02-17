@@ -17,6 +17,7 @@
 		51052E63299C1ECB00FE65AD /* ChangeEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51052E62299C1ECB00FE65AD /* ChangeEmailViewController.swift */; };
 		510ACD0E28F609DC0011EACD /* AlertTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */; };
 		510ECD0828F8825F0060FBDF /* PlantApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510ECD0628F8825F0060FBDF /* PlantApp.xcdatamodeld */; };
+		510F5BDC299E844B00D8A593 /* AccountFilloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */; };
 		51180ABA28CA80080072BC8E /* WaterHabitDaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */; };
 		512515B0292C2873003FB226 /* PlantDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512515AF292C2873003FB226 /* PlantDataModel.swift */; };
 		513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4B28C7A6D100CBC760 /* WeatherData.swift */; };
@@ -65,6 +66,7 @@
 		51052E62299C1ECB00FE65AD /* ChangeEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmailViewController.swift; sourceTree = "<group>"; };
 		510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTimeViewController.swift; sourceTree = "<group>"; };
 		510ECD0728F8825F0060FBDF /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
+		510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountFilloutViewController.swift; sourceTree = "<group>"; };
 		51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterHabitDaysViewController.swift; sourceTree = "<group>"; };
 		5118E6F92979B1DC00CA2736 /* PlantApp_UIKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlantApp_UIKit.entitlements; sourceTree = "<group>"; };
 		512515AF292C2873003FB226 /* PlantDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantDataModel.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				51885F662995853D0080CC14 /* ForgotPasswordViewController.swift */,
 				51052E60299AD42200FE65AD /* AccountViewController.swift */,
 				51052E62299C1ECB00FE65AD /* ChangeEmailViewController.swift */,
+				510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */,
 				5164153428F4B6B20053C05D /* SettingsViewController.swift in Sources */,
 				5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */,
+				510F5BDC299E844B00D8A593 /* AccountFilloutViewController.swift in Sources */,
 				51052E63299C1ECB00FE65AD /* ChangeEmailViewController.swift in Sources */,
 				51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */,
 				51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */,

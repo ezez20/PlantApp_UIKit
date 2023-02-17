@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
+
 
 class AccountViewController: UIViewController {
     
@@ -38,6 +41,7 @@ class AccountViewController: UIViewController {
     // deleteAccountLabel
     let deleteAccountLabel = UILabel()
     
+//    var AccountVCUpdateFilloutDelegate: AccountVCUpdateFilloutDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -201,20 +205,111 @@ class AccountViewController: UIViewController {
     
     @objc func changePasswordButtonPressed() {
         print("changePasswordButtonPressed")
+        let vc = AccountFilloutViewController(vcTitle: "Change Password", label1Text: getFBUserEmail(), instructionTitleText: "Please enter the following to update your password:", textfield1PlaceholderText: "Current Email", textfield2PlaceholderText: "Current Password", textfield3PlaceholderText: "New Password", button1TitleText: "Update")
+        vc.delegate = self
+//        AccountVCUpdateFilloutDelegate = self
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func deleteAccountButtonPressed() {
         print("deleteAccountButtonPressed")
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
+
+extension AccountViewController: AccountFilloutVCButtonDelegate {
+    
+    func buttonPressed(textfield1Text: String?, textfield2Text: String?, textfield3Text: String?) {
+        print("AccountFilloutVCButton pressed")
+        
+        updateFBPassword(currentEmail: textfield1Text!, currentPassword: textfield2Text!, newPassword: textfield3Text!) { message in
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateAccountFilloutViewController"), object: nil, userInfo: ["message" : message])
+            
+            //            self.AccountVCUpdateFilloutDelegate?.updateAccountFilloutVC(data: message)
+        }
+        
+        
+        
+    }
+    
+    func getFBUserEmail() -> String {
+        guard let userEmail = Auth.auth().currentUser?.email else { return "" }
+        return userEmail
+    }
+    
+    func updateAccountInfoFB(_ email: String) {
+        let db = Firestore.firestore()
+        
+        // Add collection("users")
+        let userUID = Auth.auth().currentUser?.uid
+        let newUserFireBase = db.collection("users").document(userUID!)
+        
+        // set/add document(userName, unique ID/documentID).
+        newUserFireBase.updateData ([
+            "email": email
+        ]) { error in
+            if error != nil {
+                K.presentAlert(self, error!)
+            }
+        }
+    }
+    
+    func updateFBPassword(currentEmail: String, currentPassword: String, newPassword: String, completion: @escaping (String) -> ()) {
+        
+        let user = Auth.auth().currentUser
+        //        var returnedMessage: String
+        // Prompt the user to re-provide their sign-in credentials
+        let credential = EmailAuthProvider.credential(withEmail: currentEmail, password: currentPassword)
+        user?.reauthenticate(with: credential) { result, error in
+            
+            if result != nil {
+                // User re-authenticated.
+                print("User re-authenticated")
+                
+                user?.updatePassword(to: newPassword) { error in
+                    if error != nil {
+                        print("Error updating FB password. Error: \(String(describing: error))")
+                        let message = "Error updating email. Please try again. ):"
+                        completion(message)
+                    } else {
+                        let message = "Your password has updated successfuly!"
+                        completion(message)
+                    }
+                }
+                
+            } else {
+                // An error happened.
+                print(error)
+                if let nsError = error as? NSError {
+                    
+                    switch AuthErrorCode(_nsError: nsError).code {
+                    case AuthErrorCode.wrongPassword:
+                        let message = "Wrong password"
+                        print(message)
+                        completion(message)
+                    case AuthErrorCode.invalidEmail:
+                        let message = "Invalid Email"
+                        print(message)
+                        completion(message)
+                    case AuthErrorCode.accountExistsWithDifferentCredential:
+                        let message = "Account exists with different credential"
+                        print(message)
+                        completion(message)
+                    default:
+                        print("unknown error: \(nsError.localizedDescription)")
+                        
+                    }
+
+                }
+            }
+            
+        }
+
+    }
+    
+}
+
+//protocol AccountVCUpdateFilloutDelegate {
+//    func updateAccountFilloutVC(data: String)
+//}

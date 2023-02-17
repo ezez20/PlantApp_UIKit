@@ -24,6 +24,8 @@ class LoginViewController: UIViewController {
     let emailTextfield = UITextField()
     let passwordTextfieldView = UIView()
     let passwordTextfield = UITextField()
+    let revealPasswordButton = UIButton()
+    let passwordReveal = true
     
     let loginButton = UIButton()
     let forgotPasswordButton = UIButton()
@@ -94,7 +96,6 @@ class LoginViewController: UIViewController {
         emailTextfield.placeholder = "Email address"
         emailTextfield.autocapitalizationType = .none
         emailTextfield.keyboardType = .emailAddress
-        emailTextfield.autocorrectionType = .no
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
@@ -106,18 +107,30 @@ class LoginViewController: UIViewController {
         passwordTextfieldView.backgroundColor = .white
         passwordTextfieldView.layer.cornerRadius = 5.0
         
-      
+        // Reveal Password Button: UIButton
+        passwordTextfieldView.addSubview(revealPasswordButton)
+        revealPasswordButton.translatesAutoresizingMaskIntoConstraints = false
+        revealPasswordButton.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor).isActive = true
+        revealPasswordButton.centerYAnchor.constraint(equalTo: passwordTextfieldView.centerYAnchor).isActive = true
+        revealPasswordButton.heightAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.widthAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.backgroundColor = .clear
+        revealPasswordButton.tintColor = .lightGray
+        revealPasswordButton.addTarget(self, action: #selector(revealPasswordButtonClicked(sender:)), for: .touchUpInside)
+        
+        // Password Textfield: UITextfield
         passwordTextfieldView.addSubview(passwordTextfield)
         passwordTextfield.translatesAutoresizingMaskIntoConstraints = false
         passwordTextfield.topAnchor.constraint(equalTo: passwordTextfieldView.topAnchor, constant: 5).isActive = true
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
-        passwordTextfield.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor, constant: -20).isActive = true
+        passwordTextfield.rightAnchor.constraint(equalTo: revealPasswordButton.leftAnchor).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
-        passwordTextfield.backgroundColor = .white
+        passwordTextfield.backgroundColor = .clear
         passwordTextfield.placeholder = "Password"
-        passwordTextfield.keyboardType = .emailAddress
+        passwordTextfield.keyboardType = .default
         passwordTextfield.autocapitalizationType = .none
         passwordTextfield.autocorrectionType = .no
+        passwordTextfield.isSecureTextEntry = true
         
         // Login Button: UIButton
         view.addSubview(loginButton)
@@ -149,7 +162,6 @@ class LoginViewController: UIViewController {
         forgotPasswordButton.setTitle("Forgot password?", for: .normal)
         forgotPasswordButton.setTitleColor(.brown, for: .normal)
         forgotPasswordButton.setTitleColor(.placeholderText, for: .highlighted)
-//        forgotPasswordButton.backgroundColor = UIColor(named: "customYellow1")
         forgotPasswordButton.layer.borderWidth = 1.0
         forgotPasswordButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         forgotPasswordButton.layer.cornerRadius = 5.0
@@ -281,6 +293,16 @@ class LoginViewController: UIViewController {
         }
     }
     
+    @objc func revealPasswordButtonClicked(sender: UIButton) {
+        print("dd")
+        passwordTextfield.isSecureTextEntry.toggle()
+        if passwordTextfield.isSecureTextEntry == false {
+            revealPasswordButton.tintColor = .darkGray
+        } else {
+            revealPasswordButton.tintColor = .lightGray
+        }
+    }
+    
 }
 
 // MARK: - Extension: UITextFieldDelegate
@@ -290,22 +312,30 @@ extension LoginViewController: UITextFieldDelegate {
         validateEntry()
     }
     
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
     }
     
     func enableDismissKeyboardOnTapOutside() {
+        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action:    #selector(dismissKeyboardTouchOutside))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+        
     }
     
     @objc private func dismissKeyboardTouchOutside() {
-        view.endEditing(true)
+
+        if !passwordTextfield.isEditing {
+            view.endEditing(true)
+        }
+        
     }
     
     func validateEntry() {
+        
         if emailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
             loginButton.isEnabled = false
             loginButton.backgroundColor = UIColor(named: "customYellow1")
@@ -313,6 +343,13 @@ extension LoginViewController: UITextFieldDelegate {
             loginButton.isEnabled = true
             loginButton.backgroundColor = .systemYellow
         }
+        
+        if !passwordTextfield.text!.isEmpty {
+            revealPasswordButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        } else {
+            revealPasswordButton.setImage(UIImage(systemName: ""), for: .normal)
+        }
+        
     }
     
 }

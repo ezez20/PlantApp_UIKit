@@ -418,6 +418,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         plantTextField.text = filteredSuggestion[indexPath.row]
+        plantImageString = filteredSuggestion[indexPath.row]
         updateInputImage()
         removeSuggestionScrollView()
     }

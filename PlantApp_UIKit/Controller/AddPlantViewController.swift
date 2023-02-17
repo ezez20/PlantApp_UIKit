@@ -273,6 +273,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         plantName.text = filteredSuggestion[indexPath.row]
+        plantImageString = filteredSuggestion[indexPath.row]
         updateInputImage()
         removeSuggestionScrollView()
     }

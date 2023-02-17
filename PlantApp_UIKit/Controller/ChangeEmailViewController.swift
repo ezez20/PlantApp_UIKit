@@ -49,7 +49,7 @@ class ChangeEmailViewController: UIViewController {
         instructionTitle.sizeToFit()
         instructionTitle.font = .systemFont(ofSize: 15)
         instructionTitle.numberOfLines = 2
-        instructionTitle.text = "Please enter the new email address you’d like you change to:"
+        instructionTitle.text = "Please enter the following to update your email:"
         instructionTitle.tintColor = .lightText
         
         view.addSubview(currentEmailTextfieldView)
@@ -133,9 +133,11 @@ class ChangeEmailViewController: UIViewController {
     }
     
     @objc func updateEmailButtonPressed() {
+        
         let user = Auth.auth().currentUser
-        let credential = EmailAuthProvider.credential(withEmail: currentEmailTextfield.text!, password: passwordTextfield.text!)
+        
         // Prompt the user to re-provide their sign-in credentials
+        let credential = EmailAuthProvider.credential(withEmail: currentEmailTextfield.text!, password: passwordTextfield.text!)
         user?.reauthenticate(with: credential) { result, error in
             if result != nil {
                 // User re-authenticated.
@@ -151,6 +153,7 @@ class ChangeEmailViewController: UIViewController {
                         self.updateAccountInfoFB(self.newEmailTextfield.text!.lowercased())
                         self.instructionTitle.text = "Email successfully updated to: \(self.newEmailTextfield.text!.lowercased())"
                         self.currentEmailLabel.text = "Current Email: \(self.getFBUserEmail())"
+                        // Reset textfields.
                         self.currentEmailTextfield.text = ""
                         self.newEmailTextfield.text = ""
                         self.passwordTextfield.text = ""
@@ -164,20 +167,8 @@ class ChangeEmailViewController: UIViewController {
             }
         }
         
-
-        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -205,8 +196,8 @@ extension ChangeEmailViewController {
         let newUserFireBase = db.collection("users").document(userUID!)
         
         // set/add document(userName, unique ID/documentID).
-        newUserFireBase.updateData (
-            ["email": email
+        newUserFireBase.updateData ([
+            "email": email
             ]) { error in
                 if error != nil {
                     K.presentAlert(self, error!)
