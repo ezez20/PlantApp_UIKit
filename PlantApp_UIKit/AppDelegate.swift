@@ -24,12 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         
         // Set UNUserNotificationCenter delegate
-        let center = UNUserNotificationCenter.current()
         center.delegate = self
 
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
-        
         
 
         return true

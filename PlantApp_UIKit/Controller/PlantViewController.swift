@@ -185,7 +185,7 @@ class PlantViewController: UIViewController {
         savePlant()
         editPlant_FB(currentPlant.id!)
       
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
     }
     
     
@@ -422,7 +422,7 @@ extension PlantViewController {
                     currentPlant.notificationPresented = false
                     print("Pending Notification Removed: \(notificationToRemoveID)")
                     savePlant()
-                    
+        
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                     
                 }

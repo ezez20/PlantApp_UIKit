@@ -13,6 +13,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 
+
 class MainViewController: UIViewController {
     
     // MARK: - Core Data - Persisting data
@@ -23,8 +24,6 @@ class MainViewController: UIViewController {
     var userID_FB = ""
     var plants_FBLoaded = [QueryDocumentSnapshot]()
     var userSettings = [String: Any]()
-    var updatedUserSettings = false
-    
     
     // MARK: - UserDefaults for saving small data/settings
     let defaults = UserDefaults.standard
@@ -69,19 +68,12 @@ class MainViewController: UIViewController {
         
         loadFirebaseUser()
         
-        if defaults.bool(forKey: "fbUserFirstLoggedIn") {
-            loadPlantsFB {
-                self.updateUserSettings()
-            }
-            defaults.set(false, forKey: "fbUserFirstLoggedIn")
-        }
         
-        // Load plants from Core Data
-        if authenticateFBUser() == false {
-            loadPlants {
-                self.removeLoadingView()
-            }
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
         
     }
 
@@ -94,33 +86,39 @@ class MainViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
         locationManager.startUpdatingLocation()
-        
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
-        
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
       
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
+        
+        if defaults.bool(forKey: "fbUserFirstLoggedIn") {
+            loadPlantsFB {
+                self.updateUserSettings {
+                    print("updateUserSettings completed")
+                    self.refreshUserNotification()
+                }
+            }
+
+            defaults.set(false, forKey: "fbUserFirstLoggedIn")
+        }
+        
+        // Load plants from Core Data
+        if authenticateFBUser() == false {
+            loadPlants {
+                self.removeLoadingView()
+            }
+        }
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
-        if updatedUserSettings == true {
-            self.refreshUserNotification()
-            updatedUserSettings = false
-        }
-        
+
         if defaults.bool(forKey: "userDiscardedApp") {
             print("Reloading from userDiscardedApp")
             self.loadPlants {
+                self.refreshUserNotification()
                 print("Plants Loaded. Core Data count: \(self.plants.count)")
                 self.removeLoadingView()
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
-            refreshUserNotification()
-            print("DDDEZ")
+           
         }
        
         updateUnpresentedNotification()
@@ -169,6 +167,8 @@ class MainViewController: UIViewController {
         // lead to settings page
         let settingsVC = SettingsViewController()
         let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
+        settingsVC.context = context
+        settingsVC.plants = plants
         settingsVC.userSettings = userSettings
         settingsVC.modalPresentationStyle = .formSheet
         present(settingsPlantNavVC, animated: true, completion: nil)
@@ -193,9 +193,7 @@ class MainViewController: UIViewController {
     
     func loadPlants(_ completion: @escaping () -> Void) {
         
-        DispatchQueue.main.async {
-            self.addLoadingView()
-        }
+//            self.addLoadingView()
     
         do {
             let request = Plant.fetchRequest() as NSFetchRequest<Plant>
@@ -459,12 +457,16 @@ extension MainViewController {
                     self.plants_FBLoaded = plants_FB
                     
                     self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
+                        
+                        let docCount = plants_FB.count
                         self.loadPlants {
-                            self.removeLoadingView()
-                            print("Plants Loaded. Core Data count: \(self.plants.count)")
-                            completion()
+                            if self.plants.count == docCount {
+                                self.removeLoadingView()
+                                print("Plants Loaded. Core Data count: \(self.plants.count)")
+                                completion()
+                            }
                         }
-
+                        
                     }
 
                 } else {
@@ -493,6 +495,7 @@ extension MainViewController {
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], completion: @escaping () -> Void) {
         
         // MARK: - Parse plants from Firebase to Core Data
+
         for doc in plants_FB {
             
             let data = doc.data()
@@ -591,6 +594,7 @@ extension MainViewController {
                 self.savePlants()
                 completion()
             }
+            
             
         }
 
@@ -738,7 +742,7 @@ extension MainViewController {
 // MARK: - Extension: UNUserNotificationCenter functions
 extension MainViewController: UNUserNotificationCenterDelegate {
     
-    func updateUserSettings() {
+    func updateUserSettings(_ completion: @escaping () -> Void) {
     
         let notificationOn = userSettings["Notification On"] as? Bool ?? nil
         print("notificationOn: \(String(describing: notificationOn))")
@@ -750,8 +754,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         self.defaults.set(notificationAlertTime, forKey: "selectedAlertOption")
         
         if notificationOn != nil && notificationAlertTime != nil {
-            updatedUserSettings = true
-        
+            completion()
         }
         
     }
@@ -899,7 +902,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     @objc func refreshUserNotification() {
         if defaults.bool(forKey: "notificationOn") {
             setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
-            print("DEEZ")
+            print("DEEEZ")
         }
     }
     
@@ -987,60 +990,63 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     
     func updateUnpresentedNotification() {
         
-        print("updateUnpresentedNotification")
-        
-        loadPlants {
-            self.removeLoadingView()
-            print("Plants Loaded")
-        }
-        
-        for p in plants {
-            let waterHabitIn = p.waterHabit
-            let lastWateredDateIn = p.lastWateredDate
-            var nextWaterDate: Date {
-                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
-                return calculatedDate!
+        if defaults.bool(forKey: "notificationOn") {
+            
+            print("updateUnpresentedNotification")
+            
+            loadPlants {
+                self.removeLoadingView()
+                print("Plants Loaded")
             }
             
-            var selectedNotificationTime = Date()
-            switch defaults.integer(forKey: "selectedAlertOption") {
-            case 0: // day of event
-                // For debug purpose: Notification time - 10 seconds
-                //                            selectedNotificationTime = Date.now.advanced(by: 10)
+            for p in plants {
+                let waterHabitIn = p.waterHabit
+                let lastWateredDateIn = p.lastWateredDate
+                var nextWaterDate: Date {
+                    let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
+                    return calculatedDate!
+                }
                 
-                // Uncomment below when not debugging:
-                selectedNotificationTime = nextWaterDate.advanced(by: 100)
-                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-            case 1: // 1 day before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
-                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-            case 2: // 2 days before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-            default: // 3 days before
-                selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-                print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-            }
-            
-            if selectedNotificationTime < Date.now {
-                p.notificationPresented = true
-                savePlants()
-            }
-        }
-        
-        loadPlants {
-            self.removeLoadingView()
-            var count = 0
-            for p in self.plants {
-                if p.notificationPresented == true {
-                    count += 1
+                var selectedNotificationTime = Date()
+                switch defaults.integer(forKey: "selectedAlertOption") {
+                case 0: // day of event
+                    // For debug purpose: Notification time - 10 seconds
+                    //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                    
+                    // Uncomment below when not debugging:
+                    selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                case 1: // 1 day before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                case 2: // 2 days before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                default: // 3 days before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                }
+                
+                if selectedNotificationTime < Date.now {
+                    p.notificationPresented = true
+                    savePlants()
                 }
             }
-            DispatchQueue.main.async {
-                UIApplication.shared.applicationIconBadgeNumber = count
+            
+            loadPlants {
+                self.removeLoadingView()
+                var count = 0
+                for p in self.plants {
+                    if p.notificationPresented == true {
+                        count += 1
+                    }
+                }
+                DispatchQueue.main.async {
+                    UIApplication.shared.applicationIconBadgeNumber = count
+                }
             }
+            
         }
-        
     }
     
 }
@@ -1049,15 +1055,18 @@ extension MainViewController: UNUserNotificationCenterDelegate {
 extension MainViewController {
     
     func addLoadingView() {
-        print("addLoadingView")
-        loadingSpinnerView.color = .gray
-        loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
-        plantsTableView.tableFooterView = loadingSpinnerView
-        loadingSpinnerView.startAnimating()
+        DispatchQueue.main.async { [self] in
+            print("addLoadingView")
+            loadingSpinnerView.color = .gray
+            loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
+            plantsTableView.tableFooterView = loadingSpinnerView
+            loadingSpinnerView.startAnimating()
+        }
     }
     
     func removeLoadingView() {
         DispatchQueue.main.async {
+            self.loadingSpinnerView.stopAnimating()
             self.plantsTableView.tableFooterView?.removeFromSuperview()
         }
     }

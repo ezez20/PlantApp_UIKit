@@ -22,6 +22,7 @@ class ChangeEmailViewController: UIViewController {
     
     let passwordTextfieldView = UIView()
     let passwordTextfield = UITextField()
+    let revealPasswordButton = UIButton()
     
     let updateEmailButton = UIButton()
 
@@ -104,18 +105,32 @@ class ChangeEmailViewController: UIViewController {
         passwordTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         passwordTextfieldView.backgroundColor = .white
-        // Do any additional setup after loading the view.
+        passwordTextfield.isSecureTextEntry = true
+        
+        
+        // Reveal Password Button: UIButton
+        passwordTextfieldView.addSubview(revealPasswordButton)
+        revealPasswordButton.translatesAutoresizingMaskIntoConstraints = false
+        revealPasswordButton.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor).isActive = true
+        revealPasswordButton.centerYAnchor.constraint(equalTo: passwordTextfieldView.centerYAnchor).isActive = true
+        revealPasswordButton.heightAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.widthAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.backgroundColor = .clear
+        revealPasswordButton.tintColor = .lightGray
+        revealPasswordButton.addTarget(self, action: #selector(revealPasswordButtonClicked(sender:)), for: .touchUpInside)
         
         passwordTextfieldView.addSubview(passwordTextfield)
         passwordTextfield.translatesAutoresizingMaskIntoConstraints = false
         passwordTextfield.topAnchor.constraint(equalTo: passwordTextfieldView.topAnchor, constant: 5).isActive = true
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
-        passwordTextfield.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor, constant: -20).isActive = true
+        passwordTextfield.rightAnchor.constraint(equalTo: revealPasswordButton.leftAnchor).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
         passwordTextfield.backgroundColor = .white
         passwordTextfield.placeholder = "Current password"
         passwordTextfield.keyboardType = .emailAddress
+        passwordTextfield.keyboardType = .default
         passwordTextfield.autocapitalizationType = .none
+        passwordTextfield.autocorrectionType = .no
         passwordTextfield.delegate = self
         
         view.addSubview(updateEmailButton)
@@ -127,12 +142,88 @@ class ChangeEmailViewController: UIViewController {
         updateEmailButton.backgroundColor = .systemYellow
         updateEmailButton.layer.cornerRadius = 15
         updateEmailButton.setTitle("Update", for: .normal)
+        updateEmailButton.isEnabled = false
+        updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
         updateEmailButton.addTarget(self, action: #selector(updateEmailButtonPressed), for: .touchUpInside)
 
         // Do any additional setup after loading the view.
     }
     
     @objc func updateEmailButtonPressed() {
+        print("updateEmailButtonPressed")
+        updateEmailFB()
+        
+    }
+    
+    @objc private func revealPasswordButtonClicked(sender: UIButton) {
+        print("dd")
+        passwordTextfield.isSecureTextEntry.toggle()
+        if passwordTextfield.isSecureTextEntry == false {
+            revealPasswordButton.tintColor = .darkGray
+        } else {
+            revealPasswordButton.tintColor = .lightGray
+        }
+    }
+    
+
+}
+
+extension ChangeEmailViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            self.view.endEditing(true)
+            return false
+        }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        validateEntry()
+    }
+    
+    func validateEntry() {
+        
+        if currentEmailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || newEmailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            updateEmailButton.isEnabled = false
+            updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
+        } else {
+            updateEmailButton.isEnabled = true
+            updateEmailButton.backgroundColor = .systemYellow
+        }
+        
+        if !passwordTextfield.text!.isEmpty {
+            revealPasswordButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        } else {
+            revealPasswordButton.setImage(UIImage(systemName: ""), for: .normal)
+        }
+        
+    }
+    
+}
+
+extension ChangeEmailViewController {
+    
+    func getFBUserEmail() -> String {
+        guard let userEmail = Auth.auth().currentUser?.email else { return "" }
+        return userEmail
+    }
+    
+    func updateAccountInfoFB(_ email: String) {
+        let db = Firestore.firestore()
+        
+        // Add collection("users")
+        let userUID = Auth.auth().currentUser?.uid
+        let newUserFireBase = db.collection("users").document(userUID!)
+        
+        // set/add document(userName, unique ID/documentID).
+        newUserFireBase.updateData ([
+            "email": email
+        ]) { error in
+            if error != nil {
+                K.presentAlert(self, error!)
+            }
+        }
+    }
+    
+    func updateEmailFB() {
         
         let user = Auth.auth().currentUser
         
@@ -166,43 +257,6 @@ class ChangeEmailViewController: UIViewController {
                 print("Error authenticating user")
             }
         }
-        
-    }
-    
-
-}
-
-extension ChangeEmailViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            self.view.endEditing(true)
-            return false
-        }
-    
-}
-
-extension ChangeEmailViewController {
-    
-    func getFBUserEmail() -> String {
-        guard let userEmail = Auth.auth().currentUser?.email else { return "" }
-        return userEmail
-    }
-    
-    func updateAccountInfoFB(_ email: String) {
-        let db = Firestore.firestore()
-        
-        // Add collection("users")
-        let userUID = Auth.auth().currentUser?.uid
-        let newUserFireBase = db.collection("users").document(userUID!)
-        
-        // set/add document(userName, unique ID/documentID).
-        newUserFireBase.updateData ([
-            "email": email
-            ]) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
-                }
-            }
     }
     
 }

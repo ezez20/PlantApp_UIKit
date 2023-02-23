@@ -63,9 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         print("DID BECOME ACTIVE")
         getDeliveredNotifications()
-        
-        // This will trigger bug if user discards/terminate app. Add observer back first before calling this.
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+      
 
     }
 
@@ -179,7 +177,7 @@ extension SceneDelegate {
 
             }
             
-            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
             
         }
         

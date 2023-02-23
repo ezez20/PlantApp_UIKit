@@ -46,8 +46,8 @@ class SettingsViewController: UIViewController {
     var userSettings = [String: Any]()
     
     // MARK: - Core Data - Persisting data
-    var plants = [Plant]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var plants: [Plant]!
+    var context : NSManagedObjectContext!
     
     // MARK: - UNUserNotificationCenter
     let center = UNUserNotificationCenter.current()
@@ -57,7 +57,7 @@ class SettingsViewController: UIViewController {
         navigationController?.navigationBar.tintColor = UIColor(named: K.customGreen2)
         
         
-        loadPlants()
+//        loadPlants()
         saveUserSettings {
             self.selectedAlertOption = self.defaults.integer(forKey: "selectedAlertOption")
             self.defaults.set(false, forKey: "firstUpdateUserSettings")
@@ -286,21 +286,9 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     @objc func accountSettingsButtonPressed(_ sender: UISwitch!) {
      print("accountSettingsButtonPressed")
         let accountVC = AccountViewController()
+        accountVC.context = context
+        accountVC.plants = plants
         self.navigationController?.pushViewController(accountVC, animated: true)
-    }
-    
-    func loadPlants() {
-
-        do {
-            let request = Plant.fetchRequest() as NSFetchRequest<Plant>
-            let sort = NSSortDescriptor(key: "order", ascending: true)
-            request.sortDescriptors = [sort]
-            plants = try context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
-        }
-
-        print("Plants loaded")
     }
 
     func updatePlant() {

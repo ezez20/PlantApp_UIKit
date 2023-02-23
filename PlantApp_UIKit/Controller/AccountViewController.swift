@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+import CoreData
 
 
 class AccountViewController: UIViewController {
@@ -41,7 +42,10 @@ class AccountViewController: UIViewController {
     // deleteAccountLabel
     let deleteAccountLabel = UILabel()
     
-//    var AccountVCUpdateFilloutDelegate: AccountVCUpdateFilloutDelegate!
+    // MARK: - Core Data - Persisting data
+    var plants: [Plant]!
+    var context : NSManagedObjectContext!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -207,12 +211,15 @@ class AccountViewController: UIViewController {
         print("changePasswordButtonPressed")
         let vc = AccountFilloutViewController(vcTitle: "Change Password", label1Text: getFBUserEmail(), instructionTitleText: "Please enter the following to update your password:", textfield1PlaceholderText: "Current Email", textfield2PlaceholderText: "Current Password", textfield3PlaceholderText: "New Password", button1TitleText: "Update")
         vc.delegate = self
-//        AccountVCUpdateFilloutDelegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func deleteAccountButtonPressed() {
         print("deleteAccountButtonPressed")
+        let vc = DeleteAccountViewController()
+        vc.context = context
+        vc.plants = plants
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 
 
@@ -225,11 +232,7 @@ extension AccountViewController: AccountFilloutVCButtonDelegate {
         
         updateFBPassword(currentEmail: textfield1Text!, currentPassword: textfield2Text!, newPassword: textfield3Text!) { message in
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateAccountFilloutViewController"), object: nil, userInfo: ["message" : message])
-            
-            //            self.AccountVCUpdateFilloutDelegate?.updateAccountFilloutVC(data: message)
         }
-        
-        
         
     }
     
@@ -280,7 +283,7 @@ extension AccountViewController: AccountFilloutVCButtonDelegate {
                 
             } else {
                 // An error happened.
-                print(error)
+                print(error as Any)
                 if let nsError = error as? NSError {
                     
                     switch AuthErrorCode(_nsError: nsError).code {

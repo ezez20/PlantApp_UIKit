@@ -18,7 +18,6 @@ class LogoViewController: UIViewController {
         view.backgroundColor = .secondarySystemBackground
         // Do any additional setup after loading the view.
         
-        
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +30,7 @@ class LogoViewController: UIViewController {
         titleLogo.alpha = 0
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadView), name: NSNotification.Name("reloadLogoView"), object: nil)
+
         
         // MARK: - Add Animation to titleLogo when app is first loaded.
         titleLogo.fadeInAnimation {
@@ -46,9 +46,10 @@ class LogoViewController: UIViewController {
         
     }
     
-    
+
 
 }
+
 
 public extension UIView {
 

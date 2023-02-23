@@ -14,28 +14,40 @@ import FirebaseStorage
 
 class LoginViewController: UIViewController {
     
-    let titleLogo = UIImageView()
-    let appName = UILabel()
-    
-    let signUpButton = UIButton()
-    let useWithoutAccountButton = UIButton()
-    
-    let emailTextfieldView = UIView()
-    let emailTextfield = UITextField()
-    let passwordTextfieldView = UIView()
-    let passwordTextfield = UITextField()
-    let revealPasswordButton = UIButton()
-    let passwordReveal = true
-    
-    let loginButton = UIButton()
-    let forgotPasswordButton = UIButton()
-    
-    // MARK: - Core Data - Persisting data
-    var plants = [Plant]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let titleLogo = UIImageView()
+    private let appName = UILabel()
+
+    private let signUpButton = UIButton()
+    private let useWithoutAccountButton = UIButton()
+
+    private let emailTextfieldView = UIView()
+    private let emailTextfield = UITextField()
+    private let passwordTextfieldView = UIView()
+    private let passwordTextfield = UITextField()
+    private let revealPasswordButton = UIButton()
+    private let passwordReveal = true
+
+    private let loginButton = UIButton()
+    private let forgotPasswordButton = UIButton()
+
+//    let titleLogo = UIImageView()
+//    let appName = UILabel()
+//
+//    let signUpButton = UIButton()
+//    let useWithoutAccountButton = UIButton()
+//
+//    let emailTextfieldView = UIView()
+//    let emailTextfield = UITextField()
+//    let passwordTextfieldView = UIView()
+//    let passwordTextfield = UITextField()
+//    let revealPasswordButton = UIButton()
+//    let passwordReveal = true
+//
+//    let loginButton = UIButton()
+//    let forgotPasswordButton = UIButton()
     
     // MARK: - UserDefaults for saving small data/settings
-    let defaults = UserDefaults.standard
+    private let defaults = UserDefaults.standard
 
 
     override func viewDidLoad() {
@@ -45,8 +57,6 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .secondarySystemBackground
         
-        emailTextfield.delegate = self
-        passwordTextfield.delegate = self
         self.enableDismissKeyboardOnTapOutside()
         
         NotificationCenter.default.addObserver(self, selector: #selector(presentMainVC), name: NSNotification.Name("navigateToMainVC"), object: nil)
@@ -96,6 +106,7 @@ class LoginViewController: UIViewController {
         emailTextfield.placeholder = "Email address"
         emailTextfield.autocapitalizationType = .none
         emailTextfield.keyboardType = .emailAddress
+        emailTextfield.delegate = self
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
@@ -131,6 +142,7 @@ class LoginViewController: UIViewController {
         passwordTextfield.autocapitalizationType = .none
         passwordTextfield.autocorrectionType = .no
         passwordTextfield.isSecureTextEntry = true
+        passwordTextfield.delegate = self
         
         // Login Button: UIButton
         view.addSubview(loginButton)
@@ -145,6 +157,7 @@ class LoginViewController: UIViewController {
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.setTitleColor(.placeholderText, for: .highlighted)
         loginButton.backgroundColor = UIColor(named: "customYellow1")
+        loginButton.isEnabled = false
         loginButton.layer.borderWidth = 1.0
         loginButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         loginButton.layer.cornerRadius = 5.0
@@ -227,7 +240,7 @@ class LoginViewController: UIViewController {
         
         // Signing in Firebase
         Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) {
-            (authResult, error) in
+            [unowned self] (authResult, error) in
             
             // Check for error signing in
             if error != nil {

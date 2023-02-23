@@ -17,9 +17,11 @@ class AccountFilloutViewController: UIViewController {
     
     let textfieldView2 = UIView()
     let textfield2 = UITextField()
+    let revealTextfield2Button = UIButton()
     
     let textfieldView3 = UIView()
     let textfield3 = UITextField()
+    let revealTextfield3Button = UIButton()
     
     let button1 = UIButton()
     
@@ -30,7 +32,7 @@ class AccountFilloutViewController: UIViewController {
     let textfield2PlaceholderText: String?
     let textfield3PlaceholderText: String?
     let button1TitleText: String?
-    
+
     var delegate: AccountFilloutVCButtonDelegate!
 
     init(vcTitle: String?, label1Text: String?, instructionTitleText: String?, textfield1PlaceholderText: String?, textfield2PlaceholderText: String?, textfield3PlaceholderText: String?, button1TitleText: String?) {
@@ -110,17 +112,28 @@ class AccountFilloutViewController: UIViewController {
         textfieldView2.backgroundColor = .white
         // Do any additional setup after loading the view.
         
+        textfieldView2.addSubview(revealTextfield2Button)
+        revealTextfield2Button.translatesAutoresizingMaskIntoConstraints = false
+        revealTextfield2Button.rightAnchor.constraint(equalTo: textfieldView2.rightAnchor).isActive = true
+        revealTextfield2Button.centerYAnchor.constraint(equalTo: textfieldView2.centerYAnchor).isActive = true
+        revealTextfield2Button.heightAnchor.constraint(equalTo: textfieldView2.heightAnchor).isActive = true
+        revealTextfield2Button.widthAnchor.constraint(equalTo: textfieldView2.heightAnchor).isActive = true
+        revealTextfield2Button.backgroundColor = .clear
+        revealTextfield2Button.tintColor = .lightGray
+        revealTextfield2Button.addTarget(self, action: #selector(revealTextfield2ButtonClicked(sender:)), for: .touchUpInside)
+        
         textfieldView2.addSubview(textfield2)
         textfield2.translatesAutoresizingMaskIntoConstraints = false
         textfield2.topAnchor.constraint(equalTo: textfieldView2.topAnchor, constant: 5).isActive = true
         textfield2.leftAnchor.constraint(equalTo: textfieldView2.leftAnchor, constant: 20).isActive = true
-        textfield2.rightAnchor.constraint(equalTo: textfieldView2.rightAnchor, constant: -20).isActive = true
+        textfield2.rightAnchor.constraint(equalTo: revealTextfield2Button.leftAnchor).isActive = true
         textfield2.bottomAnchor.constraint(equalTo: textfieldView2.bottomAnchor, constant: -5).isActive = true
         textfield2.backgroundColor = .white
         textfield2.placeholder = textfield2PlaceholderText
         textfield2.keyboardType = .emailAddress
         textfield2.autocapitalizationType = .none
         textfield2.delegate = self
+        textfield2.isSecureTextEntry = true
         
         view.addSubview(textfieldView3)
         textfieldView3.translatesAutoresizingMaskIntoConstraints = false
@@ -130,19 +143,30 @@ class AccountFilloutViewController: UIViewController {
         textfieldView3.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         textfieldView3.heightAnchor.constraint(equalToConstant: 50).isActive = true
         textfieldView3.backgroundColor = .white
-        // Do any additional setup after loading the view.
+        
+        
+        textfieldView3.addSubview(revealTextfield3Button)
+        revealTextfield3Button.translatesAutoresizingMaskIntoConstraints = false
+        revealTextfield3Button.rightAnchor.constraint(equalTo: textfieldView3.rightAnchor).isActive = true
+        revealTextfield3Button.centerYAnchor.constraint(equalTo: textfieldView3.centerYAnchor).isActive = true
+        revealTextfield3Button.heightAnchor.constraint(equalTo: textfieldView3.heightAnchor).isActive = true
+        revealTextfield3Button.widthAnchor.constraint(equalTo: textfieldView3.heightAnchor).isActive = true
+        revealTextfield3Button.backgroundColor = .clear
+        revealTextfield3Button.tintColor = .lightGray
+        revealTextfield3Button.addTarget(self, action: #selector(revealTextfield3ButtonClicked(sender:)), for: .touchUpInside)
         
         textfieldView3.addSubview(textfield3)
         textfield3.translatesAutoresizingMaskIntoConstraints = false
         textfield3.topAnchor.constraint(equalTo: textfieldView3.topAnchor, constant: 5).isActive = true
         textfield3.leftAnchor.constraint(equalTo: textfieldView3.leftAnchor, constant: 20).isActive = true
-        textfield3.rightAnchor.constraint(equalTo: textfieldView3.rightAnchor, constant: -20).isActive = true
+        textfield3.rightAnchor.constraint(equalTo: revealTextfield3Button.leftAnchor).isActive = true
         textfield3.bottomAnchor.constraint(equalTo: textfieldView3.bottomAnchor, constant: -5).isActive = true
         textfield3.backgroundColor = .white
         textfield3.placeholder = textfield3PlaceholderText
         textfield3.keyboardType = .emailAddress
         textfield3.autocapitalizationType = .none
         textfield3.delegate = self
+        textfield3.isSecureTextEntry = true
         
         view.addSubview(button1)
         button1.translatesAutoresizingMaskIntoConstraints = false
@@ -154,6 +178,8 @@ class AccountFilloutViewController: UIViewController {
         button1.layer.cornerRadius = 15
         button1.setTitle(button1TitleText, for: .normal)
         button1.addTarget(self, action: #selector(button1Pressed), for: .touchUpInside)
+        button1.backgroundColor = UIColor(named: "customYellow1")
+        button1.isEnabled = false
 
         // Do any additional setup after loading the view.
     }
@@ -167,6 +193,30 @@ class AccountFilloutViewController: UIViewController {
         delegate?.buttonPressed(textfield1Text: textfield1.text, textfield2Text: textfield2.text, textfield3Text: textfield3.text)
 
     }
+    
+    @objc private func revealTextfield2ButtonClicked(sender: UIButton) {
+        print("revealTextfield2ButtonClicked")
+        
+        textfield2.isSecureTextEntry.toggle()
+        if textfield2.isSecureTextEntry == false {
+            revealTextfield2Button.tintColor = .darkGray
+        } else {
+            revealTextfield2Button.tintColor = .lightGray
+        }
+
+    }
+    
+    @objc private func revealTextfield3ButtonClicked(sender: UIButton) {
+        print("revealTextfield3ButtonClicked")
+        
+        textfield3.isSecureTextEntry.toggle()
+        if textfield3.isSecureTextEntry == false {
+            revealTextfield3Button.tintColor = .darkGray
+        } else {
+            revealTextfield3Button.tintColor = .lightGray
+        }
+        
+    }
 
 }
 
@@ -176,6 +226,34 @@ extension AccountFilloutViewController: UITextFieldDelegate {
             self.view.endEditing(true)
             return false
         }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        validateEntry()
+    }
+    
+    func validateEntry() {
+        
+        if textfield1.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || textfield2.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || textfield3.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            button1.isEnabled = false
+            button1.backgroundColor = UIColor(named: "customYellow1")
+        } else {
+            button1.isEnabled = true
+            button1.backgroundColor = .systemYellow
+        }
+        
+        if !textfield2.text!.isEmpty {
+            revealTextfield2Button.setImage(UIImage(systemName: "eye"), for: .normal)
+        } else {
+            revealTextfield2Button.setImage(UIImage(systemName: ""), for: .normal)
+        }
+        
+        if !textfield3.text!.isEmpty {
+            revealTextfield3Button.setImage(UIImage(systemName: "eye"), for: .normal)
+        } else {
+            revealTextfield3Button.setImage(UIImage(systemName: ""), for: .normal)
+        }
+        
+    }
     
     @objc func updateInstructionLabel(_ notification: NSNotification) {
         if let userInfo = notification.userInfo {
@@ -199,11 +277,3 @@ protocol AccountFilloutVCButtonDelegate {
     
 }
 
-
-//extension AccountViewController: AccountVCUpdateFilloutDelegate {
-//    func updateAccountFilloutVC(data: String) {
-//        print("Data sent back: \(data)")
-//        AccountVCUpdateFilloutDelegate = self
-//    }
-//
-//}
