@@ -63,6 +63,9 @@ class DeleteAccountViewController: UIViewController {
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
         emailTextfield.backgroundColor = .white
         emailTextfield.placeholder = "Email address"
+        emailTextfield.keyboardType = .emailAddress
+        emailTextfield.autocorrectionType = .no
+        emailTextfield.autocapitalizationType = .none
         emailTextfield.delegate = self
 
         view.addSubview(passwordTextfieldView)
@@ -294,25 +297,30 @@ extension DeleteAccountViewController {
             }
 
             // Logout
+            deleteDataGroup.enter()
             do {
                 
                 try Auth.auth().signOut()
                 
-                // Ensures to delete in Core Data before signing out.
-                if plants.count != 0 {
-                    for i in 0...plants.endIndex - 1 {
-                        context.delete(plants[i])
-                        updatePlants()
-                    }
-                }
-                
                 defaults.set(false, forKey: "fbUserFirstLoggedIn")
                 print("Successfully signed out of FB")
+                deleteDataGroup.leave()
                 
             } catch let signOutError as NSError {
                 print("Error signing out: %@", signOutError)
+                deleteDataGroup.leave()
             }
-
+            
+            // Ensures to delete in Core Data before signing out.
+            if plants.count != 0 {
+                for i in 0...plants.endIndex - 1 {
+                    deleteDataGroup.enter()
+                    context.delete(plants[i])
+                    updatePlants()
+                    deleteDataGroup.leave()
+                }
+            }
+            
               NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
               defaults.set(true, forKey: "firstUpdateUserSettings")
               defaults.set(true, forKey: "loginVCReload")

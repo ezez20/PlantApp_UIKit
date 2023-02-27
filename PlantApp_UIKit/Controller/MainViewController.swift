@@ -44,7 +44,15 @@ class MainViewController: UIViewController {
     
     // MARK: - UIViews added
     let opaqueView = UIView()
-    let loadingSpinnerView = UIActivityIndicatorView(style: .large)
+    let loadingSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        spinner.color = .gray
+        return spinner
+    }()
+    
+    let disableLoadingSpinnerView = false
     
     
 // MARK: - Views load state
@@ -65,8 +73,16 @@ class MainViewController: UIViewController {
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
         
         weatherManager.delegate = self
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+        locationManager.startUpdatingLocation()
         
         loadFirebaseUser()
+        
+        view.addSubview(loadingSpinnerView)
+        loadingSpinnerView.centerXAnchor.constraint(equalTo: plantsTableView.centerXAnchor).isActive = true
+        loadingSpinnerView.centerYAnchor.constraint(equalTo: plantsTableView.centerYAnchor).isActive = true
         
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
@@ -76,19 +92,11 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
         
     }
-
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-        print("viewWillAppear")
-        
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
-        locationManager.startUpdatingLocation()
-      
+    override func viewDidAppear(_ animated: Bool) {
         
         if defaults.bool(forKey: "fbUserFirstLoggedIn") {
+            addLoadingSpinner()
             loadPlantsFB {
                 self.updateUserSettings {
                     print("updateUserSettings completed")
@@ -101,16 +109,14 @@ class MainViewController: UIViewController {
         
         // Load plants from Core Data
         if authenticateFBUser() == false {
+            addLoadingSpinner()
             loadPlants {
                 self.removeLoadingView()
             }
         }
         
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-
         if defaults.bool(forKey: "userDiscardedApp") {
+            addLoadingSpinner()
             print("Reloading from userDiscardedApp")
             self.loadPlants {
                 self.refreshUserNotification()
@@ -122,13 +128,16 @@ class MainViewController: UIViewController {
         }
        
         updateUnpresentedNotification()
+        
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        print("View will disappear")
+    }
     
     
     @objc func notificationReceived() {
         loadPlants {
-            self.removeLoadingView()
             print("Plants Loaded. Core Data count: \(self.plants.count)")
         }
         updateUnpresentedNotification()
@@ -139,9 +148,7 @@ class MainViewController: UIViewController {
         print("Logout triggered")
         
         self.presentingViewController?.dismiss(animated: true, completion: {
-            
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
-            
         })
         
     }
@@ -193,8 +200,6 @@ class MainViewController: UIViewController {
     
     func loadPlants(_ completion: @escaping () -> Void) {
         
-//            self.addLoadingView()
-    
         do {
             let request = Plant.fetchRequest() as NSFetchRequest<Plant>
             let sort = NSSortDescriptor(key: "order", ascending: true)
@@ -225,11 +230,8 @@ class MainViewController: UIViewController {
         self.savePlants()
         
         loadPlants {
-            self.removeLoadingView()
             print("Plants Loaded. Core Data count: \(self.plants.count)")
         }
-        
-        updateNotificationBadgeCount()
         
         refreshUserNotification()
 
@@ -375,6 +377,8 @@ extension MainViewController: UITableViewDataSource {
         savePlants()
         
     }
+    
+    
     
 }
 
@@ -771,8 +775,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     self.removeLoadingView()
                 }
                 
-                let center = UNUserNotificationCenter.current()
-                
                 updateNotificationBadgeCount()
                 center.removeAllPendingNotificationRequests()
                 
@@ -995,7 +997,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
             print("updateUnpresentedNotification")
             
             loadPlants {
-                self.removeLoadingView()
                 print("Plants Loaded")
             }
             
@@ -1054,20 +1055,18 @@ extension MainViewController: UNUserNotificationCenterDelegate {
 // MARK: - Additional added Views
 extension MainViewController {
     
-    func addLoadingView() {
+    func addLoadingSpinner() {
         DispatchQueue.main.async { [self] in
-            print("addLoadingView")
-            loadingSpinnerView.color = .gray
-            loadingSpinnerView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: plantsTableView.bounds.width, height: CGFloat(44))
-            plantsTableView.tableFooterView = loadingSpinnerView
+            loadingSpinnerView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.midX, y: CGFloat(0), width: view.safeAreaLayoutGuide.layoutFrame.midY, height: CGFloat(44))
             loadingSpinnerView.startAnimating()
+            print("addLoadingView")
         }
     }
     
     func removeLoadingView() {
         DispatchQueue.main.async {
             self.loadingSpinnerView.stopAnimating()
-            self.plantsTableView.tableFooterView?.removeFromSuperview()
+            print("removedLoadingView")
         }
     }
     

@@ -46,14 +46,6 @@ class PlantViewController: UIViewController {
     
     var waterHabitIn = 7
     var lastWateredDateIn = Date()
- 
-//    var wateredBool: Bool {
-//        if Date(timeInterval: TimeInterval(Int(currentPlant.waterHabit) * 86400), since: datePicker.date) < Date.now {
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
    
     // TO DO: add more plants and images
     var currentDate = Date.now

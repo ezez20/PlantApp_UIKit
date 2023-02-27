@@ -76,7 +76,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         print("Scene did enter foreground")
-
         
     }
 
@@ -86,8 +85,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        
+        print("Scene did enter background")
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        getDeliveredNotifications()
     }
 
     

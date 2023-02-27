@@ -32,6 +32,13 @@ class AccountFilloutViewController: UIViewController {
     let textfield2PlaceholderText: String?
     let textfield3PlaceholderText: String?
     let button1TitleText: String?
+    
+    let loadingSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        return spinner
+    }()
 
     var delegate: AccountFilloutVCButtonDelegate!
 
@@ -180,8 +187,12 @@ class AccountFilloutViewController: UIViewController {
         button1.addTarget(self, action: #selector(button1Pressed), for: .touchUpInside)
         button1.backgroundColor = UIColor(named: "customYellow1")
         button1.isEnabled = false
+        
+        view.addSubview(loadingSpinnerView)
+        loadingSpinnerView.centerXAnchor.constraint(equalTo: button1.centerXAnchor).isActive = true
+        loadingSpinnerView.centerYAnchor.constraint(equalTo: button1.centerYAnchor).isActive = true
 
-        // Do any additional setup after loading the view.
+       
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -190,6 +201,10 @@ class AccountFilloutViewController: UIViewController {
     }
     
     @objc func button1Pressed() {
+        
+        addLoadingSpinner()
+        instructionTitle.text = "..."
+        
         delegate?.buttonPressed(textfield1Text: textfield1.text, textfield2Text: textfield2.text, textfield3Text: textfield3.text)
 
     }
@@ -258,14 +273,36 @@ extension AccountFilloutViewController: UITextFieldDelegate {
     @objc func updateInstructionLabel(_ notification: NSNotification) {
         if let userInfo = notification.userInfo {
             if let data = userInfo["message"] as? String {
-                print("Change password status: \(data)")
+                print("Data passed back: \(data)")
                 instructionTitle.text = data
                 textfield1.text = ""
                 textfield2.text = ""
                 textfield3.text = ""
+                removeLoadingSpinner()
+                view.endEditing(true)
             }
         }
      
+    }
+    
+}
+
+extension AccountFilloutViewController {
+    
+    func addLoadingSpinner() {
+        DispatchQueue.main.async { [self] in
+            button1.backgroundColor = UIColor(named: "customYellow1")
+            button1.isEnabled = false
+            loadingSpinnerView.startAnimating()
+        }
+    }
+    
+    func removeLoadingSpinner() {
+        DispatchQueue.main.async { [self] in
+            button1.isEnabled = true
+            button1.backgroundColor = .systemYellow
+            loadingSpinnerView.stopAnimating()
+        }
     }
     
 }

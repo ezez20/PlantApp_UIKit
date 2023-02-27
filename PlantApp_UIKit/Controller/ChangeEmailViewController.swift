@@ -25,6 +25,13 @@ class ChangeEmailViewController: UIViewController {
     let revealPasswordButton = UIButton()
     
     let updateEmailButton = UIButton()
+    
+    let loadingSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        return spinner
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,20 +140,22 @@ class ChangeEmailViewController: UIViewController {
         passwordTextfield.autocorrectionType = .no
         passwordTextfield.delegate = self
         
+        
         view.addSubview(updateEmailButton)
         updateEmailButton.translatesAutoresizingMaskIntoConstraints = false
         updateEmailButton.topAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: 20).isActive = true
         updateEmailButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         updateEmailButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
         updateEmailButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        updateEmailButton.backgroundColor = .systemYellow
+        updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
         updateEmailButton.layer.cornerRadius = 15
         updateEmailButton.setTitle("Update", for: .normal)
         updateEmailButton.isEnabled = false
-        updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
         updateEmailButton.addTarget(self, action: #selector(updateEmailButtonPressed), for: .touchUpInside)
 
-        // Do any additional setup after loading the view.
+        view.addSubview(loadingSpinnerView)
+        loadingSpinnerView.centerXAnchor.constraint(equalTo: updateEmailButton.centerXAnchor).isActive = true
+        loadingSpinnerView.centerYAnchor.constraint(equalTo: updateEmailButton.centerYAnchor).isActive = true
     }
     
     @objc func updateEmailButtonPressed() {
@@ -225,37 +234,65 @@ extension ChangeEmailViewController {
     
     func updateEmailFB() {
         
-        let user = Auth.auth().currentUser
+        addLoadingSpinner()
+        instructionTitle.text = "..."
         
+        let user = Auth.auth().currentUser
+
         // Prompt the user to re-provide their sign-in credentials
         let credential = EmailAuthProvider.credential(withEmail: currentEmailTextfield.text!, password: passwordTextfield.text!)
-        user?.reauthenticate(with: credential) { result, error in
+        user?.reauthenticate(with: credential) { [self] result, error in
             if result != nil {
                 // User re-authenticated.
                 print("User re-authenticated")
-        
-                user?.updateEmail(to: self.newEmailTextfield.text!) { error in
+
+                user?.updateEmail(to: newEmailTextfield.text!) { [self] error in
                     if error != nil {
+                        removeLoadingSpinner()
                         print("Error updating FB email. Error: \(String(describing: error))")
-                        self.instructionTitle.text = "Error updating email. Please try again."
+                        instructionTitle.text = "Error updating email. Please try again."
 
                     } else {
+                        removeLoadingSpinner()
                         print("FB email updated successfuly")
-                        self.updateAccountInfoFB(self.newEmailTextfield.text!.lowercased())
-                        self.instructionTitle.text = "Email successfully updated to: \(self.newEmailTextfield.text!.lowercased())"
-                        self.currentEmailLabel.text = "Current Email: \(self.getFBUserEmail())"
+                        updateAccountInfoFB(self.newEmailTextfield.text!.lowercased())
+                        instructionTitle.text = "Email successfully updated to: \(self.newEmailTextfield.text!.lowercased())"
+                        currentEmailLabel.text = "Current Email: \(self.getFBUserEmail())"
                         // Reset textfields.
-                        self.currentEmailTextfield.text = ""
-                        self.newEmailTextfield.text = ""
-                        self.passwordTextfield.text = ""
+                        currentEmailTextfield.text = ""
+                        newEmailTextfield.text = ""
+                        passwordTextfield.text = ""
+                        view.endEditing(true)
                     }
                 }
-                
+
             } else {
                 // An error happened.
-                self.instructionTitle.text = "Error updating email. Please try again."
+                removeLoadingSpinner()
+                instructionTitle.text = "Error updating email. Please try again."
                 print("Error authenticating user")
             }
+        }
+        
+    }
+    
+}
+
+extension ChangeEmailViewController {
+    
+    func addLoadingSpinner() {
+        DispatchQueue.main.async { [self] in
+            updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
+            updateEmailButton.isEnabled = false
+            loadingSpinnerView.startAnimating()
+        }
+    }
+    
+    func removeLoadingSpinner() {
+        DispatchQueue.main.async { [self] in
+            updateEmailButton.isEnabled = true
+            updateEmailButton.backgroundColor = .systemYellow
+            loadingSpinnerView.stopAnimating()
         }
     }
     

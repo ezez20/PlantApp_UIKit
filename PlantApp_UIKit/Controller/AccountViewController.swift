@@ -227,6 +227,12 @@ class AccountViewController: UIViewController {
 
 extension AccountViewController: AccountFilloutVCButtonDelegate {
     
+    func getFBUserEmail() -> String {
+        guard let userEmail = Auth.auth().currentUser?.email else { return "" }
+        return userEmail
+    }
+    
+    // Below function will trigger when - AccountViewController: "button1Pressed" is triggered.
     func buttonPressed(textfield1Text: String?, textfield2Text: String?, textfield3Text: String?) {
         print("AccountFilloutVCButton pressed")
         
@@ -236,28 +242,7 @@ extension AccountViewController: AccountFilloutVCButtonDelegate {
         
     }
     
-    func getFBUserEmail() -> String {
-        guard let userEmail = Auth.auth().currentUser?.email else { return "" }
-        return userEmail
-    }
-    
-    func updateAccountInfoFB(_ email: String) {
-        let db = Firestore.firestore()
-        
-        // Add collection("users")
-        let userUID = Auth.auth().currentUser?.uid
-        let newUserFireBase = db.collection("users").document(userUID!)
-        
-        // set/add document(userName, unique ID/documentID).
-        newUserFireBase.updateData ([
-            "email": email
-        ]) { error in
-            if error != nil {
-                K.presentAlert(self, error!)
-            }
-        }
-    }
-    
+    // Used for updating Firebase Account's password
     func updateFBPassword(currentEmail: String, currentPassword: String, newPassword: String, completion: @escaping (String) -> ()) {
         
         let user = Auth.auth().currentUser
@@ -300,8 +285,9 @@ extension AccountViewController: AccountFilloutVCButtonDelegate {
                         print(message)
                         completion(message)
                     default:
+                        let message = "The supplied credentials do not correspond to the previously signed in user."
+                        completion(message)
                         print("unknown error: \(nsError.localizedDescription)")
-                        
                     }
 
                 }
@@ -313,6 +299,3 @@ extension AccountViewController: AccountFilloutVCButtonDelegate {
     
 }
 
-//protocol AccountVCUpdateFilloutDelegate {
-//    func updateAccountFilloutVC(data: String)
-//}

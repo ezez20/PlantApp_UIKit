@@ -118,9 +118,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
 extension AppDelegate {
     
-    
+    // When user provides a response/action on the presented notification.
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
      
         loadPlants()
         
@@ -155,8 +154,6 @@ extension AppDelegate {
                         saveContext()
                         
                         // Updates core data: refreshes plants with updated watered date.
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-                        
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                         
                         
@@ -190,7 +187,7 @@ extension AppDelegate {
         completionHandler()
     }
     
-    
+    // Asks the delegate how to handle a notification that arrived while the app was running in the foreground.
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("Notification presented: \(notification.request.identifier)")
         loadPlants()
@@ -211,6 +208,7 @@ extension AppDelegate {
     }
     
     func editPlant_FB(_ currentPlantID: UUID) {
+        
         if authenticateFBUser() {
             let db = Firestore.firestore()
             

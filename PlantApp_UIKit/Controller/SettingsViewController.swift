@@ -52,12 +52,12 @@ class SettingsViewController: UIViewController {
     // MARK: - UNUserNotificationCenter
     let center = UNUserNotificationCenter.current()
     
+    let dispatchGroup = DispatchGroup()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.tintColor = UIColor(named: K.customGreen2)
         
-        
-//        loadPlants()
         saveUserSettings {
             self.selectedAlertOption = self.defaults.integer(forKey: "selectedAlertOption")
             self.defaults.set(false, forKey: "firstUpdateUserSettings")
@@ -231,13 +231,26 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         print("LogoutButtonPressed")
         
         if defaults.bool(forKey: "useWithoutFBAccount") {
+            
             if plants.count != 0 {
                 for i in 0...plants.endIndex - 1 {
+                    dispatchGroup.enter()
+                    print("Dispatch group enter - 2")
                     context.delete(plants[i])
                     updatePlant()
+                    dispatchGroup.leave()
+                    print("Dispatch group enter leave - 2")
                 }
             }
-            self.defaults.set(false, forKey: "useWithoutFBAccount")
+            
+            print("Trigger dismiss")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
+            defaults.set(true, forKey: "loginVCReload")
+            defaults.set(false, forKey: "userDiscardedApp")
+            defaults.set(false, forKey: "notificationOn")
+            defaults.set(0, forKey: "selectedAlertOption")
+            defaults.set(false, forKey: "useWithoutFBAccount")
+            dismiss(animated: true)
         }
         
         resetUserNotification()
@@ -250,36 +263,47 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             
             let firebaseAuth = Auth.auth()
             
+            dispatchGroup.enter()
+            print("Dispatch group enter - 1")
             do {
                 
                 try firebaseAuth.signOut()
                 
-                // Ensures to delete in Core Data before signing out.
-                if plants.count != 0 {
-                    for i in 0...plants.endIndex - 1 {
-                        context.delete(plants[i])
-                        updatePlant()
-                    }
-                }
-                
                 defaults.set(false, forKey: "fbUserFirstLoggedIn")
                 print("Successfully signed out of FB")
+                dispatchGroup.leave()
+                print("Dispatch group leave - 1")
                 
             } catch let signOutError as NSError {
                 print("Error signing out: %@", signOutError)
+                dispatchGroup.leave()
+                print("Dispatch group leave - 1")
             }
             
+            // Ensures to delete in Core Data before signing out.
+            if plants.count != 0 {
+                for i in 0...plants.endIndex - 1 {
+                    dispatchGroup.enter()
+                    print("Dispatch group enter - 2")
+                    context.delete(plants[i])
+                    updatePlant()
+                    dispatchGroup.leave()
+                    print("Dispatch group enter leave - 2")
+                }
+            }
+            
+            print("Trigger dismiss")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
+            defaults.set(true, forKey: "firstUpdateUserSettings")
+            defaults.set(true, forKey: "loginVCReload")
+            defaults.set(false, forKey: "userDiscardedApp")
+            defaults.set(false, forKey: "notificationOn")
+            defaults.set(0, forKey: "selectedAlertOption")
+            
+            dismiss(animated: true)
+            
+            
         }
-        
-
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logoutTriggered"), object: nil)
-        defaults.set(true, forKey: "firstUpdateUserSettings")
-        defaults.set(true, forKey: "loginVCReload")
-        defaults.set(false, forKey: "userDiscardedApp")
-        defaults.set(false, forKey: "notificationOn")
-        defaults.set(0, forKey: "selectedAlertOption")
-        
-        dismiss(animated: true)
         
     }
     
