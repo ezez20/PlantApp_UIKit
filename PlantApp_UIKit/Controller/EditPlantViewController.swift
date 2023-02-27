@@ -292,8 +292,6 @@ class EditPlantViewController: UIViewController {
             // MARK: - Editing new plant with Firebase/Core Data
             editPlant_FB(currentPlant.id!)
             
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-            
         } else {
             // MARK: - Adding new plant to Core Data
             currentPlant.plant = plantTextField.text
@@ -309,6 +307,7 @@ class EditPlantViewController: UIViewController {
             
             self.savePlant()
             
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
             
             dismiss(animated: true)

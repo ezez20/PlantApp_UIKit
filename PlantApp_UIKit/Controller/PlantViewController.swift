@@ -131,12 +131,6 @@ class PlantViewController: UIViewController {
 
     }
     
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        // Will reload plants in MainVC
-
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         print("notificationPending: \(currentPlant.notificationPending)")
         print("notificationPresented: \(currentPlant.notificationPresented)")
@@ -170,14 +164,14 @@ class PlantViewController: UIViewController {
 
     // MARK: - objc functions
     @objc func datePickerValueChanged(sender: UIDatePicker) {
+        
         lastWateredDateIn = sender.date
         print("Last Watered Date changed to: \(sender.date.formatted(date: .abbreviated, time: .standard))")
         updateUI()
         refreshBadgeAndNotification()
         savePlant()
         editPlant_FB(currentPlant.id!)
-      
-//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+    
     }
     
     
@@ -239,14 +233,13 @@ class PlantViewController: UIViewController {
         } else {
             plantImage.image = loadedImage(with: currentPlant.imageData)
         }
-//        plantImage.image = UIImage(named: currentPlant.plantImageString) ?? loadedImage(with: currentPlant.imageData)
+
         waterStatusView.text = waterStatus
     }
     
     func savePlant() {
         // update currentPlant on Core Data
         currentPlant.lastWateredDate = lastWateredDateIn
-//        currentPlant.wateredBool = wateredBool
         print("Plant: \(String(describing: currentPlant.plant)) updated." )
  
         do {

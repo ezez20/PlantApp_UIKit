@@ -248,7 +248,6 @@ extension DeleteAccountViewController {
         
         
         // 2: Loop through Firebase Storage to delete custom plant photos
-        print("DDG2 ENTER")
         if plants.isEmpty {
             print("Plants is empty. Nothing to delete.")
         } else {

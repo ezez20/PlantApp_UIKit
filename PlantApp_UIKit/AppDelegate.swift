@@ -168,8 +168,6 @@ extension AppDelegate {
                         plant.notificationPresented = true
                         saveContext()
                         
-                        updateUnpresentedNotification()
-                        
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
 
                     default:
@@ -285,25 +283,7 @@ extension AppDelegate {
         }
     }
     
-    func updateUnpresentedNotification() {
-        
-        print("updateNotificationsPassed")
-        
-        for p in plants {
-            let waterHabitIn = p.waterHabit
-            let lastWateredDateIn = p.lastWateredDate
-            var nextWaterDate: Date {
-                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
-                return calculatedDate!
-            }
-            
-            if nextWaterDate < Date.now {
-                p.notificationPresented = true
-                saveContext()
-            }
-        }
-        
-    }
+
     
 }
 

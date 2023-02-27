@@ -62,8 +62,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
         print("DID BECOME ACTIVE")
-        getDeliveredNotifications()
-      
 
     }
 
@@ -76,7 +74,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         print("Scene did enter foreground")
-        
+
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -85,9 +83,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        print("Scene did enter background")
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        getDeliveredNotifications()
+
     }
 
     
@@ -121,66 +118,6 @@ extension SceneDelegate {
         
     }
     
-    func getDeliveredNotifications() {
-        
-        if defaults.bool(forKey: "notificationOn") {
-            
-            loadPlants()
-            
-            center.getDeliveredNotifications { [self] unNotification in
-                print("DDD: \(unNotification.count)")
-                var deliveredNotifications = [String]()
-                for deliveredNoti in unNotification {
-                    
-                    deliveredNotifications.append(deliveredNoti.request.identifier)
-                    print("Delivered Notifications list: \(deliveredNoti.request.identifier)")
-                    
-                    if !deliveredNotifications.isEmpty {
-                        
-                        defaults.set(deliveredNotifications, forKey: "deliveredNotificationsStored")
-                        
-                        let deliveredNotificationsStored = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
-                        
-                        if !deliveredNotificationsStored.isEmpty {
-                            print("deliveredNotificationsStored: \(deliveredNotificationsStored)")
-                            
-                            for p in plants {
-                                guard let notificationID = p.notificationRequestID else { return }
-                                
-                                if deliveredNotifications.contains(notificationID) {
-                                    p.notificationPresented = true
-                                    savePlants()
-                                }
-                                
-                                print("Scene: Plant: \(String(describing: p.plant)), ID: \(String(describing: p.notificationRequestID)) notificationPresented\(p.notificationPresented)")
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-                for p in plants {
-                    let waterHabitIn = p.waterHabit
-                    let lastWateredDateIn = p.lastWateredDate
-                    var nextWaterDate: Date {
-                        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
-                        return calculatedDate!
-                    }
-
-                    if nextWaterDate < Date.now {
-                        p.notificationPresented = true
-                        savePlants()
-                    }
-                }
-
-            }
-            
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-            
-        }
-        
-    }
+    
     
 }
