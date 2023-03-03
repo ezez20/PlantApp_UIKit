@@ -25,6 +25,9 @@ class SignUpViewController: UIViewController {
     
     let createAnAccountButton = UIButton()
     
+    deinit {
+        print("SignUpVC has been deinitialized")
+    }
 
     override func viewDidLoad() {
         

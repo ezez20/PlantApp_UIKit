@@ -46,6 +46,9 @@ class AccountViewController: UIViewController {
     var plants: [Plant]!
     var context : NSManagedObjectContext!
     
+    deinit {
+        print("AccountVC has been deinitialized")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

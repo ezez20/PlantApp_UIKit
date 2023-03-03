@@ -20,7 +20,10 @@ class WaterHabitDaysViewController: UIViewController {
     var selectedHabitDays = 7
     
     var delegate: PassDataDelegate?
- 
+    
+    deinit {
+        print("WaterHabitVC has been deinitialized")
+    }
 
 // MARK: - Views load state
     

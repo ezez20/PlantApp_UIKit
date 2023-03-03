@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
+   
     
     
     
@@ -139,8 +140,7 @@ extension AppDelegate {
                     case "plantNotificationWateredActionID":
                         print(response.actionIdentifier)
                         print("Watered clicked")
-                        
-                        print("Notification request ID: \(response.notification.request.identifier)")
+                        print("Response Notification request ID: \(response.notification.request.identifier)")
                         print("Plant Notification Request ID: \(plant.notificationRequestID!)")
                         
                         plant.lastWateredDate = Date.now
@@ -148,7 +148,7 @@ extension AppDelegate {
                         plant.notificationPending = false
                         plant.notificationPresented = false
                        
-                        print("Updated to: \(plant.lastWateredDate!)")
+                        print("Plant: \(plant.plant!) lastWateredDate - updated to: \(plant.lastWateredDate!)")
                         editPlant_FB(plant.id!)
                         center.removeDeliveredNotifications(withIdentifiers: [plant.notificationRequestID!])
                         saveContext()

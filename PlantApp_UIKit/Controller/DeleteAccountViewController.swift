@@ -30,6 +30,10 @@ class DeleteAccountViewController: UIViewController {
     var context : NSManagedObjectContext!
     let deleteDataGroup = DispatchGroup()
     
+    deinit {
+        print("DeleteAccountVC has been deinitialized")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondarySystemBackground

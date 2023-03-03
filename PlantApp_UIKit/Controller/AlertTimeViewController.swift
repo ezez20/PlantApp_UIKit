@@ -17,6 +17,10 @@ class AlertTimeViewController: UIViewController {
     let alertTimeTable = UITableView()
     var delegate: PassAlertDelegate!
     
+    deinit {
+        print("AlertTimeVC has been deinitialized")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

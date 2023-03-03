@@ -61,6 +61,10 @@ class EditPlantViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant: Plant!
     
+    deinit {
+        print("EditPlantVC has been deinitialized")
+    }
+    
     
     override func viewWillAppear(_ animated: Bool) {
     
@@ -631,11 +635,16 @@ extension EditPlantViewController {
             
             // FIREBASE STORAGE: if customImage is used, update photo on cloud storage as well.
             if customImageData() != nil {
-                // Handle Firebase Storage upload/update
-                updatePhotoOnFirebase(plantDoc) {
-                    print("Update photo on Firebase/Storage completed.")
-                    self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                
+                // Delete old photo from FB
+                deleteOldPhotoOnFB(customPlantImageID: currentPlant.customPlantImageID) {
+                    // Handle Firebase Storage upload/update
+                    self.uploadPhotoOnFirebase(plantDoc) {
+                        print("Update photo on Firebase/Storage completed.")
+                        self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                    }
                 }
+                
             } else {
                 self.loadPlantsFB(currentPlantUUID: currentPlantID)
             }
@@ -654,7 +663,7 @@ extension EditPlantViewController {
         let plantsCollection = currentUserCollection.collection("plants")
         
         // Get all documents/plants and put it in "plants_FB"
-        plantsCollection.getDocuments { (snapshot, error) in
+        plantsCollection.getDocuments { [weak self] (snapshot, error) in
             
             if error == nil && snapshot != nil {
                 
@@ -667,9 +676,9 @@ extension EditPlantViewController {
                     plantDocIDsArray.append(d.documentID)
                 }
                 
-                self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
+                self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
                     
-                    self.savePlant()
+//                    self?.savePlant()
                     
                     print("Data has been parsed to Core Data")
                     
@@ -677,7 +686,7 @@ extension EditPlantViewController {
                     
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
                     
-                    self.dismiss(animated: true)
+                    self?.dismiss(animated: true)
                 }
                 
             } else {
@@ -762,10 +771,11 @@ extension EditPlantViewController {
                         print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
                         
                         let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
-                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        fileRef.getData(maxSize: 5 * 1024 * 1024) { [weak self] data, error in
                             if error == nil && data != nil {
-                                self.currentPlant.customPlantImageID = customPlantImageUUID_FB!
-                                self.currentPlant.imageData = data!
+                                self?.currentPlant.customPlantImageID = customPlantImageUUID_FB!
+                                self?.currentPlant.imageData = data!
+                                self?.savePlant()
                                 print("FB Storage imageData has been retrieved successfully: \(data!)")
                                 completion()
                             } else {
@@ -775,6 +785,7 @@ extension EditPlantViewController {
                         
                     } else {
                         print("customPlantImage_FB is nil.")
+                        self.savePlant()
                         completion()
                     }
                 }
@@ -782,7 +793,7 @@ extension EditPlantViewController {
         }
     }
     
-    func updatePhotoOnFirebase(_ plantDoc: DocumentReference, completion: @escaping () -> Void) {
+    func uploadPhotoOnFirebase(_ plantDoc: DocumentReference, completion: @escaping () -> Void) {
         let randomID = UUID.init().uuidString
         let path = "customSavedPlantImages/\(randomID).jpg"
         let uploadRef = Storage.storage().reference(withPath: path)
@@ -790,7 +801,6 @@ extension EditPlantViewController {
         guard let imageData = customImageData() else { return }
         let uploadMetaData = StorageMetadata.init()
         uploadMetaData.contentType = "image/jpeg"
-        
         
         uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
             
@@ -808,6 +818,17 @@ extension EditPlantViewController {
             print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
             completion()
             
+        }
+    }
+    
+    func deleteOldPhotoOnFB(customPlantImageID: String?, completion: @escaping () -> Void) {
+        guard let imageToDeleteID = customPlantImageID else { return }
+        
+        let fileRef = Storage.storage().reference(withPath: imageToDeleteID)
+        fileRef.delete { error in
+            if error != nil { print("Error deleting from Firebase Storage: \(String(describing: error))") }
+            print("Successfully deleted previous image off firebase: \(imageToDeleteID)")
+            completion()
         }
     }
     

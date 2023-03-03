@@ -44,7 +44,7 @@ class MainViewController: UIViewController {
     
     // MARK: - UIViews added
     let opaqueView = UIView()
-    let loadingSpinnerView: UIActivityIndicatorView = {
+    private let loadingSpinnerView: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
         spinner.translatesAutoresizingMaskIntoConstraints = false
         spinner.hidesWhenStopped = true
@@ -55,6 +55,10 @@ class MainViewController: UIViewController {
     let disableLoadingSpinnerView = false
     
     let dispatchGroup = DispatchGroup()
+    
+    deinit {
+        print("MainVC has been deinitialized")
+    }
     
 // MARK: - Views load state
     override func viewDidLoad() {
@@ -69,6 +73,7 @@ class MainViewController: UIViewController {
         plantsTableView.delegate = self
         plantsTableView.dataSource = self
         plantsTableView.layer.cornerRadius = 10
+        
         
         // Register: PlantTableViewCell
         plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
@@ -88,9 +93,11 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name("triggerLoadPlants"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadPlantsNotification), name: NSNotification.Name("triggerLoadPlants"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadPlantsTableViewNotification), name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
         
     }
     
@@ -105,10 +112,9 @@ class MainViewController: UIViewController {
                     print("updateUserSettings completed")
                     self.updateUnpresentedNotification()
                     self.refreshUserNotification()
+                    self.defaults.set(false, forKey: "fbUserFirstLoggedIn")
                 }
             }
-
-            defaults.set(false, forKey: "fbUserFirstLoggedIn")
         }
         
         // Load plants from Core Data
@@ -118,9 +124,11 @@ class MainViewController: UIViewController {
                 self.refreshUserNotification()
                 self.updateUnpresentedNotification()
                 self.removeLoadingView()
+                print("PlantsTableview reloaded")
             }
         }
         
+        // Load plants if user discarded app.
         if defaults.bool(forKey: "userDiscardedApp") {
             addLoadingSpinner()
             print("Reloading from userDiscardedApp")
@@ -131,19 +139,24 @@ class MainViewController: UIViewController {
                 self.removeLoadingView()
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
-           
         }
-       
         
     }
     
     
-    @objc func notificationReceived() {
+    @objc func loadPlantsNotification() {
         loadPlants {
             print("Plants Loaded. Core Data count: \(self.plants.count)")
             self.updateUnpresentedNotification()
         }
-       
+    }
+    
+    @objc func reloadPlantsTableViewNotification() {
+        print("reloadPlantsTableViewNotification triggered")
+        addLoadingSpinner()
+        loadPlants {
+            self.removeLoadingView()
+        }
     }
     
     
@@ -186,7 +199,8 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func addButtonPressed(_ sender: Any) {
-        self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
+        
+//        self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
      
     }
     
@@ -457,21 +471,21 @@ extension MainViewController {
             let plantsCollection = currentUserCollection.collection("plants")
     
             // Get all documents/plants and put it in "plants_FB"
-            plantsCollection.getDocuments { (snapshot, error) in
+            plantsCollection.getDocuments { [weak self] (snapshot, error) in
                 if error == nil && snapshot != nil {
                   
                     var plants_FB = [QueryDocumentSnapshot]()
                     
                     plants_FB = snapshot!.documents
-                    self.plants_FBLoaded = plants_FB
+                    self?.plants_FBLoaded = plants_FB
                     
-                    self.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
+                    self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB) {
                         print("parseAndSaveFBintoCoreData completed")
                         
-                        self.loadPlants {
-                            print("Plants Loaded. Core Data count: \(self.plants.count)")
+                        self?.loadPlants {
+                            print("Plants Loaded. Core Data count: \(self?.plants.count)")
                             completion()
-                            self.removeLoadingView()
+                            self?.removeLoadingView()
                         }
                         
                     }
@@ -483,10 +497,10 @@ extension MainViewController {
             }
             
             // Get user settings
-            currentUserCollection.getDocument { (snapshot, error) in
+            currentUserCollection.getDocument { [weak self] (snapshot, error) in
                 if error == nil && snapshot != nil {
                     let settingsSnapshot = snapshot!.data()
-                    self.userSettings = settingsSnapshot!
+                    self?.userSettings = settingsSnapshot!
                 } else {
                     print("Error getting user Settings: \(String(describing: error))")
                 }
@@ -566,7 +580,7 @@ extension MainViewController {
             print("notificationPending_FB: \(notificationPending_FB)")
             
             // MARK: - Below will save parse'd data from Firebase into Core Data.
-            let loadedPlant_FB = Plant(context: self.context)
+            let loadedPlant_FB = Plant(context: context)
             loadedPlant_FB.id = plantUUID_FBCasted
             loadedPlant_FB.plant = plantName_FB
             loadedPlant_FB.waterHabit = Int16(waterHabit_FB)
@@ -583,25 +597,25 @@ extension MainViewController {
        
           
             if customPlantImageUUID_FB != nil {
-                self.dispatchGroup.enter()
+                dispatchGroup.enter()
                     print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
                     
                     let fileRef = Storage.storage().reference(withPath: customPlantImageUUID_FB!)
-                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                    fileRef.getData(maxSize: 5 * 1024 * 1024)  { [weak self] data, error in
                       
                         print("DDD inner 1 - Enter")
                         if error == nil && data != nil {
                             loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
                             loadedPlant_FB.imageData = data!
                             print("FB Storage imageData has been retrieved successfully: \(data!)")
-                            self.plants.append(loadedPlant_FB)
-                            self.savePlants()
-                            self.dispatchGroup.leave()
+                            self?.plants.append(loadedPlant_FB)
+                            self?.savePlants()
+                            self?.dispatchGroup.leave()
                             print("DDD inner 1 - Leave")
 //                            completion()
                         } else {
                             print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
-                            self.dispatchGroup.leave()
+                            self?.dispatchGroup.leave()
 //                            completion()
                             print("DDD inner 1 - Leave")
                         }
@@ -612,9 +626,9 @@ extension MainViewController {
                 dispatchGroup.enter()
                 print("DDD inner 2 - Enter")
                 print("customPlantImage_FB is nil.")
-                self.plants.append(loadedPlant_FB)
-                self.savePlants()
-                self.dispatchGroup.leave()
+                plants.append(loadedPlant_FB)
+                savePlants()
+                dispatchGroup.leave()
                 print("DDD inner 2 - Leave")
 //                completion()
             }
@@ -818,77 +832,79 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                         
                         if plant.notificationPresented == false {
                             
-                            print("Plant notification set: \(String(describing: plant.plant))")
-                            
-                            // 2: Create the notification content
-                            let content = UNMutableNotificationContent()
-                            content.title = "Notification alert!"
-                            content.body = "Make sure to water your plant: \(plant.plant!)"
-                            
-                            // NEW METHOD FOR SETTING BADGE COUNT:
-                            content.badge = (plant.notificationBadgeCount) as NSNumber
-                            content.sound = .default
-                            content.categoryIdentifier = "categoryIdentifier"
-                            
-                            // 3: Create the notification trigger
-                            // "5 seconds" added
-                            var nextWaterDate: Date {
-                                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
-                                return calculatedDate!
-                            }
-                            
-                            var selectedNotificationTime = Date()
-                            switch defaults.integer(forKey: "selectedAlertOption") {
-                            case 0: // day of event
-                                // For debug purpose: Notification time - 10 seconds
-                                //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                            if let plantUUIDUnwrapped = plant.id {
                                 
-                                // Uncomment below when not debugging:
-                                selectedNotificationTime = nextWaterDate.advanced(by: 100)
-                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                            case 1: // 1 day before
-                                selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
-                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                            case 2: // 2 days before
-                                selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                            default: // 3 days before
-                                selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                            }
-                            
-                            
-                            let notificationDate = selectedNotificationTime
-                            let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
-                            let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
-                            
-                            // 4: Create the request
-                            let uuidString = UUID()
-                            plant.notificationRequestID = uuidString.uuidString
-                            plant.notificationPending = true
-                            print("notificationRequestID: \(uuidString)")
-                            let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
-                            
-                            // 5: Register the request
-                            center.add(notificationRequest) { (error) in
-                                // check the error parameter or handle any errors
-                                guard error == nil else {
-                                    print("NotificationRequest error: \(error.debugDescription)")
-                                    return
+                                print("Plant notification set: \(String(describing: plant.plant))")
+                                
+                                // 2: Create the notification content
+                                let content = UNMutableNotificationContent()
+                                content.title = "Notification alert!"
+                                content.body = "Make sure to water your plant: \(plant.plant!)"
+                                
+                                // NEW METHOD FOR SETTING BADGE COUNT:
+                                content.badge = (plant.notificationBadgeCount) as NSNumber
+                                content.sound = .default
+                                content.categoryIdentifier = "categoryIdentifier"
+                                
+                                // 3: Create the notification trigger
+                                // "5 seconds" added
+                                var nextWaterDate: Date {
+                                    let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
+                                    return calculatedDate ?? Date.now
                                 }
                                 
-                                self.savePlants()
-                                self.editPlant_FB(plant.id!, plantEditedData: [
-                                    "notificationPending": true,
-                                    "notificationRequestID": uuidString.uuidString as Any,
-                                    "notificationBadgeCount": plant.notificationBadgeCount
-                                ])
+                                var selectedNotificationTime = Date()
+                                switch defaults.integer(forKey: "selectedAlertOption") {
+                                case 0: // day of event
+                                    // For debug purpose: Notification time - 10 seconds
+                                    //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                                    
+                                    // Uncomment below when not debugging:
+                                    selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                                case 1: // 1 day before
+                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                                case 2: // 2 days before
+                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                                default: // 3 days before
+                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                                }
                                 
-                                print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
+                                
+                                let notificationDate = selectedNotificationTime
+                                let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+                                let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
+                                
+                                // 4: Create the request
+                                let uuidString = UUID()
+                                plant.notificationRequestID = uuidString.uuidString
+                                plant.notificationPending = true
+                                print("notificationRequestID: \(uuidString)")
+                                let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
+                                
+                                // 5: Register the request
+                                center.add(notificationRequest) { [self] (error) in
+                                    // check the error parameter or handle any errors
+                                    guard error == nil else {
+                                        print("NotificationRequest error: \(error.debugDescription)")
+                                        return
+                                    }
+                                    
+                                    savePlants()
+                                    editPlant_FB(plantUUIDUnwrapped, plantEditedData: [
+                                        "notificationPending": true,
+                                        "notificationRequestID": uuidString.uuidString as Any,
+                                        "notificationBadgeCount": plant.notificationBadgeCount
+                                    ])
+                                    
+                                    print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
+                                }
+                                
                             }
-                            
                         }
-                        
                     }
                     
                     // Set UNNotificationActions
@@ -905,7 +921,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
             } else if settings.authorizationStatus == .notDetermined {
 
                 center.delegate = self
-                center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                center.requestAuthorization(options: [.alert, .sound, .badge]) { [self] (granted, error) in
                     if granted {
                         // Access granted
                         print("UserNotifcation Granted")
@@ -930,8 +946,8 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 alert.addAction(ok)
                 alert.addAction(cancel)
                 
-                DispatchQueue.main.async {
-                    self.activeVC()?.present(alert, animated: true)
+                DispatchQueue.main.async { [self] in
+                    activeVC()?.present(alert, animated: true)
                 }
             }
             
@@ -978,44 +994,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
         
     }
     
-//    func getDeliveredNotifications() {
-//
-//        loadPlants {
-//
-//        }
-//
-//        center.getDeliveredNotifications { [self] unNotification in
-//            print("unNotification Count: \(unNotification.count)")
-//            var deliveredNotifications = [String]()
-//            for deliveredNoti in unNotification {
-//
-//                deliveredNotifications.append(deliveredNoti.request.identifier)
-//                print("Delivered Notifications list: \(deliveredNoti.request.identifier)")
-//
-//                if !deliveredNotifications.isEmpty {
-//                    defaults.set(deliveredNotifications, forKey: "deliveredNotificationsStored")
-//                    print("deliveredNotificationsStored: \(defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? [])")
-//                }
-//
-//                let deliveredNotifications = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
-//
-//                if !deliveredNotifications.isEmpty {
-//                    print("deliveredNotificationsStored: \(deliveredNotifications)")
-//
-//                    for p in plants {
-//                        guard let notificationID = p.notificationRequestID else { return }
-//                        if deliveredNotifications.contains(notificationID) {
-//                            p.notificationPresented = true
-//                            savePlants()
-//                        }
-//                    }
-//                }
-//
-//            }
-//
-//        }
-//
-//    }
     
     func updateUnpresentedNotification() {
         
@@ -1064,21 +1042,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     UIApplication.shared.applicationIconBadgeNumber = count
                 }
             }
-           
-            
-//            loadPlants {
-//                var count = 0
-//                for p in self.plants {
-//                    if p.notificationPresented == true {
-//                        count += 1
-//                    }
-//                }
-//                DispatchQueue.main.async {
-//                    UIApplication.shared.applicationIconBadgeNumber = count
-//                }
-//            }
-            
-        
         
     }
     

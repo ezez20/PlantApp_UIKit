@@ -60,8 +60,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-        
         print("DID BECOME ACTIVE")
+        
+        // If user updates app while app is still opened/in foreground, reload when user re-enters app.
+        defaults.set(true, forKey: "userDiscardedApp")
 
     }
 
@@ -74,7 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         print("Scene did enter foreground")
-
+        
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -83,6 +85,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
+        print("sceneDidEnterBackground")
+        NotificationCenter.default.post(name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
 
     }

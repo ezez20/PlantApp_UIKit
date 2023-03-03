@@ -59,6 +59,10 @@ class PlantViewController: UIViewController {
     let defaults = UserDefaults.standard
     let center = UNUserNotificationCenter.current()
     
+    deinit {
+        print("PlantVC has been deinitialized")
+    }
+    
 // MARK: - VARIABLES: happinessLevelFormatted, nextWaterDate, waterStatus, dateFormatter
     var happinessLevelFormatted: Int {
         var happiness = 80.0
@@ -77,8 +81,11 @@ class PlantViewController: UIViewController {
     }
     
     var nextWaterDate: Date {
-        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn)
-        return calculatedDate!
+        var date = Date()
+        if let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn) {
+            date = calculatedDate
+        }
+        return date
     }
     
     var waterStatus: String {
@@ -135,6 +142,10 @@ class PlantViewController: UIViewController {
         print("notificationPending: \(currentPlant.notificationPending)")
         print("notificationPresented: \(currentPlant.notificationPresented)")
         print("Badge count: \(String(describing: defaults.value(forKey: "NotificationBadgeCount")))")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.post(name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
     }
     
 

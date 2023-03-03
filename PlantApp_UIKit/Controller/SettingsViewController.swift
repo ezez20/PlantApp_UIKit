@@ -54,6 +54,10 @@ class SettingsViewController: UIViewController {
     
     let dispatchGroup = DispatchGroup()
     
+    deinit {
+        print("SettingsVC has been deinitialized")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.tintColor = UIColor(named: K.customGreen2)
@@ -197,8 +201,20 @@ class SettingsViewController: UIViewController {
     
 }
 
+
+// MARK: - Local User Notification
 extension SettingsViewController {
     
+    // Core Data: Save context
+    func updatePlant() {
+        do {
+            try context.save()
+        } catch {
+            print("Error updating plant. Error: \(error)")
+        }
+    }
+    
+    // Authenticate FB user
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {
             return true
@@ -206,12 +222,6 @@ extension SettingsViewController {
             return false
         }
     }
-    
-}
-
-
-// MARK: - Local User Notification
-extension SettingsViewController: UNUserNotificationCenterDelegate {
     
     @objc func switchStateDidChange(_ sender: UISwitch!) {
         if sender.isOn == true {
@@ -228,7 +238,9 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     }
     
     @objc func logoutButtonPressed(_ sender: UISwitch!) {
+        
         print("LogoutButtonPressed")
+        resetUserNotification()
         
         if defaults.bool(forKey: "useWithoutFBAccount") {
             
@@ -252,8 +264,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             defaults.set(false, forKey: "useWithoutFBAccount")
             dismiss(animated: true)
         }
-        
-        resetUserNotification()
         
         if authenticateFBUser() {
             
@@ -302,7 +312,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
             
             dismiss(animated: true)
             
-            
         }
         
     }
@@ -313,14 +322,6 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         accountVC.context = context
         accountVC.plants = plants
         self.navigationController?.pushViewController(accountVC, animated: true)
-    }
-
-    func updatePlant() {
-        do {
-            try context.save()
-        } catch {
-            print("Error updating plant. Error: \(error)")
-        }
     }
     
     
@@ -356,7 +357,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         
     }
     
-    
+    // FB: updates last user settings to FB
     func updateUserSettings_FB() {
         
         if authenticateFBUser() {
@@ -384,20 +385,25 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
         
     }
     
-    
+    // Resets: UserNotification/UserDefaults/applicationIconBadgeNumber/notificationPending for plants
     func resetUserNotification() {
+        // 1: Resets UserNotification/
         center.removeAllPendingNotificationRequests()
         center.removeAllDeliveredNotifications()
+        
+        // 2: Resets UserDefaults to 0 for "NotificationBadgeCount"
         defaults.set(0, forKey: "NotificationBadgeCount")
-        UIApplication.shared.applicationIconBadgeNumber = 0
         
+        // Reset applicationIconBadgeNumber to 0
+        DispatchQueue.main.async {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+      
         // Reset plant's notificationDelivered status, so plants that were scheduled for notification that has not been delievered yet may be re-scheduled once user logs back in next time.
-        
         for p in plants {
             p.notificationPending = false
             updatePlant()
         }
-        
     }
     
     func resetUndeliveredNotifications_FB() {
@@ -439,6 +445,7 @@ extension SettingsViewController: UNUserNotificationCenterDelegate {
     
 }
 
+// MARK: - Passing data delegate pattern: Between - SettingsVC & AletTimeVC
 extension SettingsViewController: PassAlertDelegate {
     
     func passAlert(Alert: Int) {

@@ -48,7 +48,10 @@ class LoginViewController: UIViewController {
     
     // MARK: - UserDefaults for saving small data/settings
     private let defaults = UserDefaults.standard
-
+    
+    deinit {
+        print("LoginVC has been deinitialized")
+    }
 
     override func viewDidLoad() {
         

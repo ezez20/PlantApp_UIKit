@@ -41,6 +41,10 @@ class AccountFilloutViewController: UIViewController {
     }()
 
     var delegate: AccountFilloutVCButtonDelegate!
+    
+    deinit {
+        print("AccountFilloutVC has been deinitialized")
+    }
 
     init(vcTitle: String?, label1Text: String?, instructionTitleText: String?, textfield1PlaceholderText: String?, textfield2PlaceholderText: String?, textfield3PlaceholderText: String?, button1TitleText: String?) {
         self.vcTitle = vcTitle

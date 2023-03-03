@@ -55,7 +55,9 @@ class AddPlantViewController: UIViewController {
     private var sourceType: UIImagePickerController.SourceType = .camera
     let imagePicker = UIImagePickerController()
     
-    
+    deinit {
+        print("AddPlantVC has been deinitialized")
+    }
     
     // MARK: - Views load state
     override func viewDidLoad() {
@@ -76,6 +78,7 @@ class AddPlantViewController: UIViewController {
         self.enableDismissKeyboardOnTapOutside()
         
         datePicker.maximumDate = Date.now
+        plantName.autocorrectionType = .no
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -517,7 +520,7 @@ extension AddPlantViewController {
         let plantsCollection = currentUserCollection.collection("plants")
         
         // Get all documents/plants and put it in "plants_FB"
-        plantsCollection.getDocuments { (snapshot, error) in
+        plantsCollection.getDocuments { [weak self] (snapshot, error) in
             
             if error == nil && snapshot != nil {
                 
@@ -530,11 +533,11 @@ extension AddPlantViewController {
                     plantDocIDsArray.append(d.documentID)
                 }
                 
-                self.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
+                self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
                     print("Data has been parsed to Core Data")
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-                    self.dismiss(animated: true)
+                    self?.dismiss(animated: true)
                 }
                 
             } else {

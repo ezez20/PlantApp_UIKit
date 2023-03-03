@@ -32,6 +32,10 @@ class ChangeEmailViewController: UIViewController {
         spinner.hidesWhenStopped = true
         return spinner
     }()
+    
+    deinit {
+        print("ChangeEmailVC has been deinitialized")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
