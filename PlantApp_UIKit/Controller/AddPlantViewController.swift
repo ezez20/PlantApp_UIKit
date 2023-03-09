@@ -533,15 +533,21 @@ extension AddPlantViewController {
                     plantDocIDsArray.append(d.documentID)
                 }
                 
-                self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
-                    print("Data has been parsed to Core Data")
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-                    self?.dismiss(animated: true)
+                DispatchQueue.global(qos: .background).async {
+                    
+                    self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, newPlantUUID: newPlantUUID) {
+                        print("Data has been parsed to Core Data")
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+                        //                    self?.dismiss(animated: true)
+                    }
+                    
                 }
+                self?.dismiss(animated: true)
                 
             } else {
                 print("Error getting documents from plant collection from firebase")
+                self?.dismiss(animated: true)
             }
             
         }

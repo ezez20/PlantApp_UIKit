@@ -54,7 +54,8 @@ class PlantViewController: UIViewController {
     // MARK: - Core Data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var currentPlant: Plant!
+//    var currentPlant: Plant!
+    var currentPlant = Plant()
     
     let defaults = UserDefaults.standard
     let center = UNUserNotificationCenter.current()
@@ -211,7 +212,7 @@ class PlantViewController: UIViewController {
             weatherTemp.text = "loading.."
             weatherCity.text = "loading.."
         } else {
-            weatherLogo.image = UIImage(systemName: inputLogoIn)
+            weatherLogo.image = UIImage(systemName: inputLogoIn) ?? UIImage(systemName: "")
             weatherTemp.text = inputTempIn
             weatherCity.text = inputCityIn
         }
@@ -312,17 +313,16 @@ extension PlantViewController {
             // 6: Edited data for "Plant entity input"
             plantDoc.updateData(plantEditedData) { error in
                 if error != nil {
-                    K.presentAlert(self, error!)
+                    print("FB Update Data error. Error: \(String(describing: error))")
                 }
             }
             
             // 7: Add edited doc date on FB
             plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
                 if error != nil {
-                    K.presentAlert(self, error!)
+                    print("FB error setting data. Error: \(String(describing: error))")
                 }
             }
-            
             
             print("Plant successfully edited on Firebase")
         }

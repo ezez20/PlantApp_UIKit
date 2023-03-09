@@ -13,6 +13,10 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 
+protocol SegueSelectionDelegate: AnyObject {
+    func didSelect(index: Int) // Can also change the parameter to IndexPath if you want but not necessary
+}
+
 
 class MainViewController: UIViewController {
     
@@ -32,7 +36,8 @@ class MainViewController: UIViewController {
     let center = UNUserNotificationCenter.current()
     
     @IBOutlet weak var editButton: UIBarButtonItem!
-    @IBOutlet weak var plantsTableView: UITableView!
+    @IBOutlet var plantsTableView: UITableView!
+    @IBOutlet weak var viewChangeButton: UIBarButtonItem!
     
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
@@ -56,6 +61,9 @@ class MainViewController: UIViewController {
     
     let dispatchGroup = DispatchGroup()
     
+    var collectionViewBool = false
+    var collectionView: UICollectionView?
+    
     deinit {
         print("MainVC has been deinitialized")
     }
@@ -67,16 +75,19 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
     
         title = K.title
-        self.plantsTableView.contentInsetAdjustmentBehavior = .never
-        navigationController?.navigationBar.prefersLargeTitles = true
+        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "square.grid.3x2") : UIImage(systemName: "list.bullet")
         
-        plantsTableView.delegate = self
-        plantsTableView.dataSource = self
-        plantsTableView.layer.cornerRadius = 10
-        
-        
-        // Register: PlantTableViewCell
-        plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
+            self.plantsTableView.contentInsetAdjustmentBehavior = .never
+            navigationController?.navigationBar.prefersLargeTitles = true
+            
+            plantsTableView.delegate = self
+            plantsTableView.dataSource = self
+            plantsTableView.layer.cornerRadius = 10
+            
+            
+            // Register: PlantTableViewCell
+            plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
+       
         
         weatherManager.delegate = self
         locationManager.delegate = self
@@ -98,6 +109,7 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(logoutNotificationReceived), name: NSNotification.Name("logoutTriggered"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadPlantsTableViewNotification), name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
+        
         
     }
     
@@ -200,9 +212,28 @@ class MainViewController: UIViewController {
     
     @IBAction func addButtonPressed(_ sender: Any) {
         
-//        self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
-     
+        self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
+        
+//        let collectionVC = CollectionViewController()
+//        collectionVC.plants = plants
+//        self.navigationController?.pushViewController(collectionVC, animated: true)
     }
+    
+  
+    @IBAction func viewChangeButtonPressed(_ sender: Any) {
+        
+        collectionViewBool.toggle()
+        
+        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "square.grid.3x2") : UIImage(systemName: "list.bullet")
+        
+        if collectionViewBool == true {
+            addCollectionView()
+        } else {
+            removeCollectionView()
+        }
+        
+    }
+    
     
     
     //MARK: - Data Manipulation Methods
@@ -325,20 +356,41 @@ extension MainViewController: UITableViewDelegate {
     
     
   
+    // PREPARE SEGUE for "K.mainToPlantID" used in storyboard for both:
+        // 1: TABLEVIEW
+        // 2: COLLECTIONVIEW
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.destination is PlantViewController {
-            if let indexPath = plantsTableView.indexPathForSelectedRow {
-                let vc = segue.destination as? PlantViewController
-                vc?.inputLogoIn = weatherLogo
-                vc?.inputTempIn = weatherTemp
-                vc?.inputCityIn = weatherCity
-                
-                // pass selected Plant's data from tableView into PlantViewController
-                let plant = plants[indexPath.row]
-                vc?.currentPlant = plant
-                
+        // TABLEVIEW
+        if collectionViewBool == false {
+            if segue.destination is PlantViewController {
+                if let indexPath = plantsTableView.indexPathForSelectedRow {
+                    let vc = segue.destination as? PlantViewController
+                    vc?.inputLogoIn = weatherLogo
+                    vc?.inputTempIn = weatherTemp
+                    vc?.inputCityIn = weatherCity
+                    
+                    // pass selected Plant's data from tableView into PlantViewController
+                    let plant = plants[indexPath.row]
+                    vc?.currentPlant = plant
+                    
+                }
             }
+            
+        // COLLECTIONVIEW
+        } else {
+            if segue.identifier == K.mainToPlantID {
+                let cell = sender as! CollectionViewCell
+                if let collectionView = collectionView {
+                    let indexPath = collectionView.indexPath(for: cell)!
+                    let vc = segue.destination as! PlantViewController
+                    vc.inputLogoIn = weatherLogo
+                    vc.inputTempIn = weatherTemp
+                    vc.inputCityIn = weatherCity
+                    vc.currentPlant = plants[indexPath.row]
+                }
+            }
+            
         }
         
     }
@@ -766,17 +818,11 @@ extension MainViewController {
             
             // 6: Edited data for "Plant entity input"
             plantDoc.updateData(plantEditedData) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
-                }
                 print("plantDoc edited uuid: \(currentPlantID.uuidString)")
             }
             
             // 7: Add edited doc date on FB
             plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
-                }
                 print("Plant successfully updated on Firebase")
             }
             
@@ -1082,4 +1128,75 @@ extension MainViewController {
         return presentedVC
     }
     
+    
 }
+
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, CollectionViewCellDelegate  {
+    
+    func addCollectionView() {
+        
+        plantsTableView.removeFromSuperview()
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 1
+        layout.minimumInteritemSpacing = 1
+        layout.itemSize = CGSize(width: (view.frame.size.width / 3) - 4, height: 150)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        guard let collectionView = collectionView else { return }
+        
+        view.addSubview(collectionView)
+        collectionView.frame = CGRect(x: 5, y: 150, width: view.frame.size.width - 10, height: view.frame.size.height - 150 - 60)
+        collectionView.backgroundColor = .secondarySystemBackground
+        
+        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.identifier)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+    }
+    
+    
+    func removeCollectionView() {
+        
+        collectionView?.removeFromSuperview()
+        
+        view.addSubview(plantsTableView)
+        plantsTableView.translatesAutoresizingMaskIntoConstraints = false
+        plantsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        plantsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        plantsTableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+        plantsTableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        collectionView.deselectItem(at: indexPath, animated: true)
+        print("User tapped collection view cell")
+        let cell = collectionView.cellForItem(at: indexPath)
+        collectionView.deselectItem(at: indexPath, animated: true)
+        performSegue(withIdentifier: K.mainToPlantID, sender: cell)
+//        didSelectDelegate?.didSelect(index: indexPath.row)
+//        performSegue(withIdentifier: K.mainToPlantID, sender: self)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return plants.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
+        
+        cell.plant = plants[indexPath.row]
+        cell.delegate = self
+      
+        return cell
+    }
+    
+    
+    
+    func insidCellDidSelect() {
+        print("insidCellDidSelect")
+        performSegue(withIdentifier: K.mainToPlantID, sender: self)
+    }
+    
+    
+}
+

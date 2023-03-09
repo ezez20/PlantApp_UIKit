@@ -428,14 +428,14 @@ extension SettingsViewController {
             // 5: Edited data for "Plant entity input"
             plantDoc.updateData(plantEditedData) { error in
                 if error != nil {
-                    K.presentAlert(self, error!)
+                    print("FB Error updating data: \(String(describing: error))")
                 }
             }
             
             // 6: Add edited doc date on FB
             plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
                 if error != nil {
-                    K.presentAlert(self, error!)
+                    print("FB Error updating data: \(String(describing: error))")
                 }
             }
         }
