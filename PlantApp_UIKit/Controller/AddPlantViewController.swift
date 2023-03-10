@@ -539,7 +539,7 @@ extension AddPlantViewController {
                         print("Data has been parsed to Core Data")
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
-                        //                    self?.dismiss(animated: true)
+                     
                     }
                     
                 }

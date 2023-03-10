@@ -13,10 +13,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 
-protocol SegueSelectionDelegate: AnyObject {
-    func didSelect(index: Int) // Can also change the parameter to IndexPath if you want but not necessary
-}
-
 
 class MainViewController: UIViewController {
     
@@ -188,11 +184,15 @@ class MainViewController: UIViewController {
         // Future feature: Edit button to allow re-order tableView.
         self.plantsTableView.isEditing.toggle()
         updateOrderNumber_FB()
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "toggleDeleteViewNoti"), object: nil)
 
         if self.plantsTableView.isEditing == true {
             editButton.title = "Done"
+            viewChangeButton.isEnabled = false
         } else {
             editButton.title = "Edit"
+            viewChangeButton.isEnabled = true
         }
         
     }
@@ -243,7 +243,6 @@ class MainViewController: UIViewController {
         } catch {
             print("Error saving category \(error)")
         }
-        
     }
     
     func loadPlants(_ completion: @escaping () -> Void) {
@@ -258,14 +257,18 @@ class MainViewController: UIViewController {
             print("Error loading categories \(error)")
         }
         
-
         DispatchQueue.main.async {
-            print("plantsTableView reload")
+            print("plants reloaded")
+            
             self.plantsTableView.reloadData()
+            
+            if self.collectionViewBool {
+                self.collectionView?.reloadData()
+            }
+            
             completion()
         }
     
-        
     }
     
     func deletePlant(indexPath: IndexPath) {
@@ -380,17 +383,19 @@ extension MainViewController: UITableViewDelegate {
         // COLLECTIONVIEW
         } else {
             if segue.identifier == K.mainToPlantID {
-                let cell = sender as! CollectionViewCell
-                if let collectionView = collectionView {
-                    let indexPath = collectionView.indexPath(for: cell)!
-                    let vc = segue.destination as! PlantViewController
-                    vc.inputLogoIn = weatherLogo
-                    vc.inputTempIn = weatherTemp
-                    vc.inputCityIn = weatherCity
-                    vc.currentPlant = plants[indexPath.row]
+                if let cell = sender as? CollectionViewCell {
+                    if let collectionView = collectionView {
+                        if let indexPath = collectionView.indexPath(for: cell){
+                            let vc = segue.destination as! PlantViewController
+                            vc.inputLogoIn = weatherLogo
+                            vc.inputTempIn = weatherTemp
+                            vc.inputCityIn = weatherCity
+                            vc.currentPlant = plants[indexPath.row]
+                            
+                        }
+                    }
                 }
             }
-            
         }
         
     }
@@ -1131,7 +1136,7 @@ extension MainViewController {
     
 }
 
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, CollectionViewCellDelegate  {
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func addCollectionView() {
         
@@ -1152,6 +1157,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        collectionView.reloadData()
     }
     
     
@@ -1168,13 +1175,11 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        collectionView.deselectItem(at: indexPath, animated: true)
         print("User tapped collection view cell")
         let cell = collectionView.cellForItem(at: indexPath)
         collectionView.deselectItem(at: indexPath, animated: true)
         performSegue(withIdentifier: K.mainToPlantID, sender: cell)
-//        didSelectDelegate?.didSelect(index: indexPath.row)
-//        performSegue(withIdentifier: K.mainToPlantID, sender: self)
+
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -1185,17 +1190,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         
         cell.plant = plants[indexPath.row]
-        cell.delegate = self
       
         return cell
     }
     
-    
-    
-    func insidCellDidSelect() {
-        print("insidCellDidSelect")
-        performSegue(withIdentifier: K.mainToPlantID, sender: self)
-    }
     
     
 }

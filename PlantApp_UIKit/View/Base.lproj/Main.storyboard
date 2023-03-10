@@ -59,24 +59,22 @@
                                     <action selector="editButtonPressed:" destination="BYZ-38-t0r" id="ojF-Q5-NYz"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem title="Item" id="LLe-9I-uxa">
+                                <connections>
+                                    <action selector="viewChangeButtonPressed:" destination="BYZ-38-t0r" id="MtY-4H-Of4"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem title="Item" image="gear" catalog="system" style="plain" id="2hb-aT-UZB">
                                 <connections>
                                     <action selector="settingButtonPressed:" destination="BYZ-38-t0r" id="xs5-WE-Z3H"/>
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
-                        <rightBarButtonItems>
-                            <barButtonItem style="done" systemItem="add" id="RxJ-jo-2Yv">
-                                <connections>
-                                    <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Item" id="LLe-9I-uxa">
-                                <connections>
-                                    <action selector="viewChangeButtonPressed:" destination="BYZ-38-t0r" id="MtY-4H-Of4"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="RxJ-jo-2Yv">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="editButton" destination="qgj-3U-jyd" id="dAj-jr-isn"/>
@@ -218,7 +216,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                                <rect key="frame" x="82.000000000000014" y="102.66666666666663" width="224.33333333333337" height="77.333333333333314"/>
+                                                <rect key="frame" x="80.666666666666671" y="102.66666666666663" width="226.66666666666663" height="77.333333333333314"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="KUl-8S-SLv">
                                                         <rect key="frame" x="0.0" y="0.0" width="103" height="77.333333333333329"/>
@@ -228,11 +226,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" id="gHH-X1-3wl">
-                                                        <rect key="frame" x="110" y="0.0" width="114.33333333333331" height="77.333333333333329"/>
+                                                        <rect key="frame" x="109.99999999999997" y="0.0" width="116.66666666666666" height="77.333333333333329"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="114.33333333333333" height="77.333333333333329"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="116.66666666666667" height="77.333333333333329"/>
                                                             </datePicker>
                                                         </subviews>
                                                     </stackView>

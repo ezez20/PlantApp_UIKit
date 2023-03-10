@@ -7,17 +7,9 @@
 
 import UIKit
 
-protocol CollectionViewCellDelegate {
-    func insidCellDidSelect()
-}
-
-
 class CollectionViewCell: UICollectionViewCell {
     
-    
     static let identifier = "collectionCellID"
-    
-    var delegate : CollectionViewCellDelegate?
     
     var plant: Plant? {
         didSet {
@@ -77,10 +69,15 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let button: UIButton = {
-       let button = UIButton()
-        return button
+    let trashCanView: UIImageView = {
+        let x = UIImageView()
+        x.image = UIImage(systemName: "minus.circle.fill")?.withRenderingMode(.alwaysOriginal)
+        x.tintColor = .systemRed
+        x.contentMode = .scaleAspectFit
+        return x
     }()
+    
+    var deleteView = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -89,12 +86,10 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(cellImageView)
         contentView.addSubview(labelName)
         contentView.addSubview(waterStatusView)
-        contentView.addSubview(button)
-        button.bounds = contentView.bounds
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+
 //        contentView.addSubview(labelWaterDays)
 //        contentView.addSubview(dropletImage)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(toggleDeleteView), name: NSNotification.Name("toggleDeleteViewNoti"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -152,17 +147,13 @@ class CollectionViewCell: UICollectionViewCell {
                                  height: 20
         )
         
-        
+    
     }
     
     override func prepareForReuse() {
         cellImageView.image = nil
     }
     
-    @objc func buttonPressed() {
-        print("Button pressed")
-        delegate?.insidCellDidSelect()
-    }
     
 }
 
@@ -207,5 +198,19 @@ extension CollectionViewCell {
     
         return waterStatus
     }
+    
+    @objc func toggleDeleteView() {
+    
+        deleteView.toggle()
+        if deleteView {
+            print("addingview")
+            trashCanView.frame = CGRect(origin: cellImageView.center, size: CGSize(width: 30, height: 30))
+            trashCanView.center = cellImageView.center
+            contentView.addSubview(trashCanView)
+        } else {
+            trashCanView.removeFromSuperview()
+        }
+    }
+    
     
 }

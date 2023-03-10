@@ -591,6 +591,7 @@ extension EditPlantViewController {
     }
     
     func editPlant_FB(_ currentPlantID: UUID) {
+        
         addLoadingView()
         
         if authenticateFBUser() {
@@ -623,6 +624,7 @@ extension EditPlantViewController {
             plantDoc.updateData(plantEditedData) { error in
                 if error != nil {
                     K.presentAlert(self, error!)
+                    print("Error updating data on FB: \(String(describing: error))")
                 }
             }
             
@@ -630,11 +632,12 @@ extension EditPlantViewController {
             plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
                 if error != nil {
                     K.presentAlert(self, error!)
+                    print("Error updating data on FB: \(String(describing: error))")
                 }
             }
             
             // FIREBASE STORAGE: if customImage is used, update photo on cloud storage as well.
-            if customImageData() != nil {
+            if customImageData() != nil && currentPlant.customPlantImageID != nil {
                 
                 // Delete old photo from FB
                 deleteOldPhotoOnFB(customPlantImageID: currentPlant.customPlantImageID) {
@@ -643,6 +646,13 @@ extension EditPlantViewController {
                         print("Update photo on Firebase/Storage completed.")
                         self.loadPlantsFB(currentPlantUUID: currentPlantID)
                     }
+                }
+                
+            } else if customImageData() != nil {
+                
+                self.uploadPhotoOnFirebase(plantDoc) {
+                    print("Update photo on Firebase/Storage completed.")
+                    self.loadPlantsFB(currentPlantUUID: currentPlantID)
                 }
                 
             } else {
@@ -676,18 +686,22 @@ extension EditPlantViewController {
                     plantDocIDsArray.append(d.documentID)
                 }
                 
-                self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
+                
                     
-//                    self?.savePlant()
+                    self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
+                        
+                        print("Data has been parsed to Core Data")
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
+                        
+                        self?.dismiss(animated: true)
+                        
+                    }
                     
-                    print("Data has been parsed to Core Data")
-                    
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-                    
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
-                    
-                    self?.dismiss(animated: true)
-                }
+                
+
                 
             } else {
                 print("Error getting documents from plant collection from firebase")
