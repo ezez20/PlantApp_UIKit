@@ -73,16 +73,16 @@ class MainViewController: UIViewController {
         title = K.title
         viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "square.grid.3x2") : UIImage(systemName: "list.bullet")
         
-            self.plantsTableView.contentInsetAdjustmentBehavior = .never
-            navigationController?.navigationBar.prefersLargeTitles = true
-            
-            plantsTableView.delegate = self
-            plantsTableView.dataSource = self
-            plantsTableView.layer.cornerRadius = 10
-            
-            
-            // Register: PlantTableViewCell
-            plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
+        self.plantsTableView.contentInsetAdjustmentBehavior = .never
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        plantsTableView.delegate = self
+        plantsTableView.dataSource = self
+        plantsTableView.layer.cornerRadius = 10
+        
+        
+        // Register: PlantTableViewCell
+        plantsTableView.register(UINib(nibName: K.plantTableViewCellID, bundle: nil), forCellReuseIdentifier: K.plantTableViewCellID)
        
         
         weatherManager.delegate = self
@@ -146,6 +146,16 @@ class MainViewController: UIViewController {
                 self.updateUnpresentedNotification()
                 self.removeLoadingView()
                 self.defaults.set(false, forKey: "userDiscardedApp")
+            }
+        }
+        
+        
+        // Reload FB images if internet connection was interupted.
+        if !plants.isEmpty {
+            reloadImageDataFB {
+                self.loadPlants {
+                    print("Reloading plants after reloadImageDataFB.")
+                }
             }
         }
         
@@ -214,9 +224,6 @@ class MainViewController: UIViewController {
         
         self.performSegue(withIdentifier: K.mainToAddPlantID, sender: self)
         
-//        let collectionVC = CollectionViewController()
-//        collectionVC.plants = plants
-//        self.navigationController?.pushViewController(collectionVC, animated: true)
     }
     
   
@@ -230,6 +237,10 @@ class MainViewController: UIViewController {
             addCollectionView()
         } else {
             removeCollectionView()
+        }
+        
+        loadPlants {
+            
         }
         
     }
@@ -279,11 +290,17 @@ class MainViewController: UIViewController {
         
         context.delete(plants[indexPathConst.row])
         self.plants.remove(at: indexPathConst.row)
-        self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
+      
         self.savePlants()
         
         loadPlants {
             print("Plants Loaded. Core Data count: \(self.plants.count)")
+        }
+        
+        if collectionViewBool {
+            collectionView?.deleteItems(at: [indexPath])
+        } else {
+            self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
         }
         
         refreshUserNotification()
@@ -531,7 +548,7 @@ extension MainViewController {
             plantsCollection.getDocuments { [weak self] (snapshot, error) in
                 if error == nil && snapshot != nil {
                   
-                    var plants_FB = [QueryDocumentSnapshot]()
+                    var plants_FB: [QueryDocumentSnapshot]
                     
                     plants_FB = snapshot!.documents
                     self?.plants_FBLoaded = plants_FB
@@ -540,7 +557,7 @@ extension MainViewController {
                         print("parseAndSaveFBintoCoreData completed")
                         
                         self?.loadPlants {
-                            print("Plants Loaded. Core Data count: \(self?.plants.count)")
+                            print("Plants Loaded. Core Data count: \(String(describing: self?.plants.count))")
                             completion()
                             self?.removeLoadingView()
                         }
@@ -550,6 +567,7 @@ extension MainViewController {
                 } else {
                     print("Error getting documents from plant collection from firebase")
                     completion()
+                    self?.removeLoadingView()
                 }
             }
             
@@ -651,9 +669,9 @@ extension MainViewController {
             
             let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
             
-       
           
             if customPlantImageUUID_FB != nil {
+                
                 dispatchGroup.enter()
                     print("customPlantImageUUID_FB path: \(customPlantImageUUID_FB!)")
                     
@@ -669,17 +687,20 @@ extension MainViewController {
                             self?.savePlants()
                             self?.dispatchGroup.leave()
                             print("DDD inner 1 - Leave")
-//                            completion()
+
                         } else {
                             print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
+                            loadedPlant_FB.customPlantImageID = customPlantImageUUID_FB!
+                            loadedPlant_FB.imageData = nil
+                            self?.savePlants()
                             self?.dispatchGroup.leave()
-//                            completion()
                             print("DDD inner 1 - Leave")
                         }
                     }
                 
                 
             } else {
+                
                 dispatchGroup.enter()
                 print("DDD inner 2 - Enter")
                 print("customPlantImage_FB is nil.")
@@ -687,7 +708,7 @@ extension MainViewController {
                 savePlants()
                 dispatchGroup.leave()
                 print("DDD inner 2 - Leave")
-//                completion()
+
             }
             
             dispatchGroup.leave()
@@ -695,8 +716,9 @@ extension MainViewController {
     
         }
         
+        // Notify dispatchGroup when all work is done.
         dispatchGroup.notify(queue: .main) {
-            print("work done")
+            print("DispatchGroup work done")
             completion()
         }
         
@@ -785,24 +807,6 @@ extension MainViewController {
         
     }
     
-    func resetContext(completion: @escaping () -> Void) {
-        if authenticateFBUser() {
-
-            if plants.count != 0 {
-                for i in 0...plants.endIndex - 1 {
-                    context.delete(plants[i])
-                    savePlants()
-                }
-            }
-            
-            if plants.count == 0 {
-                savePlants()
-                completion()
-            }
-            
-        }
-    }
-    
     func editPlant_FB(_ currentPlantID: UUID, plantEditedData: [String: Any] ) {
         if authenticateFBUser() {
             let db = Firestore.firestore()
@@ -832,6 +836,44 @@ extension MainViewController {
             }
             
         }
+    }
+    
+    func reloadImageDataFB(_ completion: @escaping () -> Void) {
+        
+        for p in plants {
+            if p.customPlantImageID != nil && p.imageData == nil {
+                //Get data from Firestore
+                dispatchGroup.enter()
+                
+                guard let customPlantImageIDUnwrapped = p.customPlantImageID else { return }
+                
+                
+                let fileRef = Storage.storage().reference(withPath: customPlantImageIDUnwrapped)
+                fileRef.getData(maxSize: 5 * 1024 * 1024)  { [weak self] data, error in
+                    
+                    print("DDD inner 1 - Enter")
+                    if error == nil && data != nil {
+                        
+                        p.imageData = data!
+                        print("FB Storage imageData has been retrieved successfully: \(data!)")
+                        self?.savePlants()
+                        self?.dispatchGroup.leave()
+                        print("DDD inner 1 - Leave")
+                        
+                    } else {
+                        print("Error retrieving data from cloud storage. Error: \(String(describing: error))")
+                        self?.dispatchGroup.leave()
+                        print("DDD inner 1 - Leave")
+                    }
+                }
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            print("DispatchGroup work done")
+            completion()
+        }
+        
     }
     
     
@@ -1136,7 +1178,7 @@ extension MainViewController {
     
 }
 
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func addCollectionView() {
         
@@ -1159,6 +1201,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         collectionView.dataSource = self
         
         collectionView.reloadData()
+        
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        collectionView.addGestureRecognizer(gesture)
     }
     
     
@@ -1176,10 +1221,16 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("User tapped collection view cell")
-        let cell = collectionView.cellForItem(at: indexPath)
-        collectionView.deselectItem(at: indexPath, animated: true)
-        performSegue(withIdentifier: K.mainToPlantID, sender: cell)
-
+        
+        // In edit mode, if user taps, alert will be presented to user if they want to delete their cell.
+        if editButton.title == "Done" {
+            presentDeleteCellConfirmation(self, indexPath: indexPath)
+        } else {
+            let cell = collectionView.cellForItem(at: indexPath)
+            collectionView.deselectItem(at: indexPath, animated: true)
+            performSegue(withIdentifier: K.mainToPlantID, sender: cell)
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -1194,7 +1245,62 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return cell
     }
     
+    func presentDeleteCellConfirmation(_ viewController: UIViewController, indexPath: IndexPath) {
+        
+        if let plant = plants[indexPath.row].plant {
+            
+            let alert = UIAlertController(title: "You are about to delete: \(plant)", message: "Are you sure you want to continue?", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel action"), style: .default, handler: { _ in
+                NSLog("The \"Delete\" alert occured.")
+            }))
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Delete", comment: "Default action"), style: .destructive, handler: { [self] _ in
+                NSLog("The \"OK\" alert occured.")
+                deletePlant(indexPath: indexPath)
+                updateOrderNumber_FB()
+            }))
+           
+            viewController.present(alert, animated: true, completion: nil)
+        }
+        
+    }
     
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        guard let collectionView = collectionView else { return }
+        
+        switch gesture.state {
+        case .began:
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (view.frame.size.width / 3) - 4, height: 150)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = self.plants[sourceIndexPath.row]
+        plants.remove(at: sourceIndexPath.row)
+        plants.insert(movedObject, at: destinationIndexPath.row)
+        
+        for (index, item) in plants.enumerated() {
+            item.order = Int32(index)
+        }
+        
+        savePlants()
+    }
     
 }
 

@@ -10,6 +10,7 @@ import CoreData
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
+import Network
 
 class AddPlantViewController: UIViewController {
     
@@ -37,9 +38,16 @@ class AddPlantViewController: UIViewController {
     // MARK: - UIViews added
     let suggestionScrollView = UIScrollView()
     let suggestionTableView = UITableView()
+    let networkMonitor = NWPathMonitor()
     
     let opaqueView = UIView()
-    let loadingSpinnerView = UIActivityIndicatorView(style: .large)
+    private let loadingSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        spinner.color = .white
+        return spinner
+    }()
     
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
@@ -377,23 +385,31 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     }
     
     func addLoadingView() {
-        view.addSubview(opaqueView)
-        opaqueView.backgroundColor = UIColor(white: 0, alpha: 0.4)
-        opaqueView.translatesAutoresizingMaskIntoConstraints = false
-        opaqueView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        opaqueView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        opaqueView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        opaqueView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        
-        opaqueView.addSubview(loadingSpinnerView)
-        loadingSpinnerView.color = .white
-        loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        loadingSpinnerView.centerXAnchor.constraint(equalTo: opaqueView.centerXAnchor).isActive = true
-        loadingSpinnerView.centerYAnchor.constraint(equalTo: opaqueView.centerYAnchor).isActive = true
-        
-        loadingSpinnerView.startAnimating()
-        
+        DispatchQueue.main.async { [self] in
+            view.addSubview(opaqueView)
+            opaqueView.backgroundColor = UIColor(white: 0, alpha: 0.4)
+            opaqueView.translatesAutoresizingMaskIntoConstraints = false
+            opaqueView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            opaqueView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            opaqueView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            opaqueView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            opaqueView.addSubview(loadingSpinnerView)
+            loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
+            
+            loadingSpinnerView.centerXAnchor.constraint(equalTo: opaqueView.centerXAnchor).isActive = true
+            loadingSpinnerView.centerYAnchor.constraint(equalTo: opaqueView.centerYAnchor).isActive = true
+            loadingSpinnerView.startAnimating()
+            print("addLoadingView")
+        }
+    }
+    
+    func removeLoadingView() {
+        DispatchQueue.main.async {
+            self.loadingSpinnerView.stopAnimating()
+            self.loadingSpinnerView.removeFromSuperview()
+            self.opaqueView.removeFromSuperview()
+            print("removedLoadingView")
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -444,70 +460,110 @@ extension AddPlantViewController {
     
     func addPlant_FB(_ newPlantID: UUID) {
         
-        addLoadingView()
-        
-        let db = Firestore.firestore()
-        
-        //2: FIREBASE: Get currentUser UID to use as document's ID.
-        guard let currentUser = Auth.auth().currentUser?.uid else {return}
-        
-        let userFireBase = db.collection("users").document(currentUser)
-        
-        //3: FIREBASE: Declare collection("plants)
-        let plantCollection =  userFireBase.collection("plants")
-        
-        var wateredBool: Bool
-        if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
-            wateredBool = false
-        } else {
-            wateredBool = false
-        }
-        
-        
-        let plantAddedData = PlantDataModel_FB(
-            dateAdded: Date.now,
-            plantUUID: newPlantID.uuidString,
-            plantName: self.plantName.text!,
-            waterHabit: Int16(selectedHabitDay),
-            plantOrder: Int32(plants.endIndex),
-            lastWatered: datePicker.date,
-            plantImageString: K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
-            wateredBool: wateredBool,
-            notificationPending: false
-        )
-        
-        // 5: FIREBASE: Set doucment name(use index# to later use in core data)
-        let plantDoc = plantCollection.document("\(newPlantID.uuidString)")
-        print("plantDoc added uuid: \(newPlantID.uuidString)")
-        
-        // 6: Set data for "Plant entity input"
-        plantDoc.setData(plantAddedData) { error in
-            if error != nil {
-                K.presentAlert(self, error!)
+        networkConnectionBool { [self] bool in
+            
+            // If there is a network connection, proceed to adding plant to FB.
+            if bool {
+                
+                addLoadingView()
+                
+                DispatchQueue.main.async { [self] in
+                    
+                    print("networkConnectionBool: true")
+                    
+                    let db = Firestore.firestore()
+                    
+                    //2: FIREBASE: Get currentUser UID to use as document's ID.
+                    guard let currentUser = Auth.auth().currentUser?.uid else {return}
+                    
+                    let userFireBase = db.collection("users").document(currentUser)
+                    
+                    //3: FIREBASE: Declare collection("plants)
+                    let plantCollection =  userFireBase.collection("plants")
+                    
+                    var wateredBool: Bool
+                    if Date(timeInterval: TimeInterval(selectedHabitDay*86400), since: datePicker.date) < Date.now {
+                        wateredBool = false
+                    } else {
+                        wateredBool = false
+                    }
+                    
+                    
+                    let plantAddedData = PlantDataModel_FB(
+                        dateAdded: Date.now,
+                        plantUUID: newPlantID.uuidString,
+                        plantName: self.plantName.text!,
+                        waterHabit: Int16(selectedHabitDay),
+                        plantOrder: Int32(plants.endIndex),
+                        lastWatered: datePicker.date,
+                        plantImageString: K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+                        wateredBool: wateredBool,
+                        notificationPending: false
+                    )
+                    
+                    // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+                    let plantDoc = plantCollection.document("\(newPlantID.uuidString)")
+                    print("plantDoc added uuid: \(newPlantID.uuidString)")
+                    
+                    // 6: Set data for "Plant entity input"
+                    plantDoc.setData(plantAddedData) { error in
+                        if error != nil {
+                            print("Firenbase Error setting: plantAddedData. ")
+                        }
+                    }
+                    
+                    // 6: FIREBASE: Set data in Plant/plantAddedDoc - documentID
+                    plantDoc.setData(["plantDocId": plantDoc.documentID], merge: true) { error in
+                        if error != nil {
+                            print("Firenbase Error setting: plantAddedData. ")
+                        }
+                    }
+                    
+                    // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
+                    if customImageData() != nil {
+                        print("customImageData not nil")
+                        // Handle Firebase Storage upload
+                        uploadPhotoToFirebase(plantDoc) { stringIn in
+                            print("Upload image to FB complete")
+                           
+                            
+                            if stringIn == "success" {
+                                print("uploadPhotoToFirebase success")
+                                self.loadPlantsFB(newPlantUUID: newPlantID)
+                            } else {
+                                print("uploadPhotoToFirebase error")
+                                self.loadPlantsFB(newPlantUUID: newPlantID)
+                            }
+                            
+                        }
+                        
+                    } else {
+                        print("customImageData is nil")
+                        self.loadPlantsFB(newPlantUUID: newPlantID)
+                    }
+                    
+                    print("Plant successfully added on Firebase")
+                    
+                }
+                
+                // If there is no network connection, present alert.
+            } else {
+                print("networkConnectionBool: false")
+                
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error uploading plant:", message: "Please try again or check your network.", preferredStyle: .alert)
+                    
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                    NSLog("The \"OK\" alert occured.")
+                    }))
+                    
+                    self.present(alert, animated: true, completion: nil)
+                }
+               
             }
         }
         
-        // 6: FIREBASE: Set data in Plant/plantAddedDoc - documentID
-        plantDoc.setData(["plantDocId": plantDoc.documentID], merge: true) { error in
-            if error != nil {
-                K.presentAlert(self, error!)
-            }
-        }
-        
-        // FIREBASE STORAGE: if customImage is used, upload to cloud storage as well.
-        if customImageData() != nil {
-            print("customImageData not nil")
-            // Handle Firebase Storage upload
-            uploadPhotoToFirebase(plantDoc) {
-                print("Upload image to FB complete")
-                self.loadPlantsFB(newPlantUUID: newPlantID)
-            }
-        } else {
-            print("customImageData is nil")
-            self.loadPlantsFB(newPlantUUID: newPlantID)
-        }
-        
-        print("Plant successfully added on Firebase")
+      
     }
     
     func loadPlantsFB(newPlantUUID: UUID) {
@@ -543,10 +599,12 @@ extension AddPlantViewController {
                     }
                     
                 }
+                self?.removeLoadingView()
                 self?.dismiss(animated: true)
                 
             } else {
                 print("Error getting documents from plant collection from firebase")
+                self?.removeLoadingView()
                 self?.dismiss(animated: true)
             }
             
@@ -640,7 +698,6 @@ extension AddPlantViewController {
                                 loadedPlant_FB.imageData = data!
                                 print("FB Storage imageData has been retrieved successfully: \(data!)")
                                 
-                                
                                 self.plants.append(loadedPlant_FB)
                                 self.savePlant()
                                 completion()
@@ -664,7 +721,7 @@ extension AddPlantViewController {
     }
     
     
-    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference, completion: @escaping () -> Void) {
+    func uploadPhotoToFirebase(_ plantAddedDoc: DocumentReference, completion: @escaping (String) -> Void) {
         let randomID = UUID.init().uuidString
         let path = "customSavedPlantImages/\(randomID).jpg"
         let uploadRef = Storage.storage().reference(withPath: path)
@@ -677,20 +734,46 @@ extension AddPlantViewController {
         uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
             
             if error != nil {
-                K.presentAlert(self, error!)
-            }
-            
-            // customPlantImageUUID: for identifying on cloud storage/Firestore
-            plantAddedDoc.setData(["customPlantImageUUID": path], merge: true) { error in
-                if error != nil {
-                    print("Firebase Error setting data for - customPlantImageUUID. Error: \(String(describing: error))")
+                print("Firebase Error uploading photo: Error: \(String(describing: error))")
+                completion("error")
+            } else {
+                
+                // customPlantImageUUID: for identifying on cloud storage/Firestore
+                plantAddedDoc.setData(["customPlantImageUUID": path], merge: true) { error in
+                    if error != nil {
+                        print("Firebase Error setting data for - customPlantImageUUID. Error: \(String(describing: error))")
+                        completion("error")
+                    } else {
+                        
+                        print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+                        
+                        completion("success")
+                    }
                 }
             }
-            
-            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
-            completion()
-            
+        
         }
+    }
+    
+    func networkConnectionBool(completion: @escaping (Bool) -> Void) {
+        
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        networkMonitor.start(queue: queue)
+        
+        networkMonitor.pathUpdateHandler = { path in
+           if path.status == .satisfied {
+              print("Network Connected")
+               self.networkMonitor.cancel()
+               completion(true)
+           } else {
+              print("Network Disconnected")
+               self.networkMonitor.cancel()
+               completion(false)
+           }
+            print("path.isExpensive: \(path.isExpensive)"
+            )
+        }
+      
     }
     
 }

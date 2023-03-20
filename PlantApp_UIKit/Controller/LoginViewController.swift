@@ -29,22 +29,6 @@ class LoginViewController: UIViewController {
 
     private let loginButton = UIButton()
     private let forgotPasswordButton = UIButton()
-
-//    let titleLogo = UIImageView()
-//    let appName = UILabel()
-//
-//    let signUpButton = UIButton()
-//    let useWithoutAccountButton = UIButton()
-//
-//    let emailTextfieldView = UIView()
-//    let emailTextfield = UITextField()
-//    let passwordTextfieldView = UIView()
-//    let passwordTextfield = UITextField()
-//    let revealPasswordButton = UIButton()
-//    let passwordReveal = true
-//
-//    let loginButton = UIButton()
-//    let forgotPasswordButton = UIButton()
     
     // MARK: - UserDefaults for saving small data/settings
     private let defaults = UserDefaults.standard
@@ -173,14 +157,10 @@ class LoginViewController: UIViewController {
         forgotPasswordButton.leftAnchor.constraint(equalTo: loginButton.leftAnchor, constant: 40).isActive = true
         forgotPasswordButton.rightAnchor.constraint(equalTo: loginButton.rightAnchor, constant: -40).isActive = true
         forgotPasswordButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        
         forgotPasswordButton.frame = CGRect(x: 100, y: 100, width: 200, height: 40)
         forgotPasswordButton.setTitle("Forgot password?", for: .normal)
         forgotPasswordButton.setTitleColor(.brown, for: .normal)
         forgotPasswordButton.setTitleColor(.placeholderText, for: .highlighted)
-        forgotPasswordButton.layer.borderWidth = 1.0
-        forgotPasswordButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
-        forgotPasswordButton.layer.cornerRadius = 5.0
         forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordButtonClicked(sender:)), for: .touchUpInside)
         
         // useWithoutAccountButton: UIButton
