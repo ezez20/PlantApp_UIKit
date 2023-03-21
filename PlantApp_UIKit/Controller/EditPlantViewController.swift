@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
-
+import Network
 
 class EditPlantViewController: UIViewController {
     
@@ -38,7 +38,7 @@ class EditPlantViewController: UIViewController {
     let plantImageButton = UIButton()
     let imageSetNames = K.imageSetNames
     var filteredSuggestion = [String]()
-  
+    
     // MARK: - Variables
     var inputImage: UIImage?
     let imagePicker = UIImagePickerController()
@@ -67,7 +67,7 @@ class EditPlantViewController: UIViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
-    
+        
         print("View will appear")
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraButtonPressed))
@@ -201,8 +201,8 @@ class EditPlantViewController: UIViewController {
         
         // Temporary Soluton: to add padding for button.
         //NOTE: 'contentEdgeInsets' was deprecated in iOS 15.0: This property is ignored when using UIButtonConfiguration
-//        waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-   
+        //        waterHabitButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        
         waterHabitButton.configuration?.imagePlacement = .trailing
         waterHabitButton.setTitleColor(.placeholderText, for: .normal)
         waterHabitButton.contentHorizontalAlignment = .trailing
@@ -543,6 +543,15 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
     }
     
+    func removeLoadingView() {
+        DispatchQueue.main.async {
+            self.loadingSpinnerView.stopAnimating()
+            self.loadingSpinnerView.removeFromSuperview()
+            self.opaqueView.removeFromSuperview()
+            print("removedLoadingView")
+        }
+    }
+    
     
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -594,73 +603,112 @@ extension EditPlantViewController {
         
         addLoadingView()
         
-        if authenticateFBUser() {
-            let db = Firestore.firestore()
-            
-            //2: FIREBASE: Get currentUser UID to use as document's ID.
-            guard let currentUser = Auth.auth().currentUser?.uid else { return }
-            
-            let userFireBase = db.collection("users").document(currentUser)
-            
-            //3: FIREBASE: Declare collection("plants)
-            let plantCollection =  userFireBase.collection("plants")
-            
-            //4: FIREBASE: Plant entity input
-            let plantEditedData: [String: Any] = [
-                "dateAdded": Date.now,
-                "plantUUID": currentPlantID.uuidString,
-                "plantName": plantTextField.text!,
-                "waterHabit": Int16(selectedHabitDay),
-                "lastWatered": datePicker.date,
-                "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
-                "notificationPending": true
-            ]
-            
-            // 5: FIREBASE: Set doucment name(use index# to later use in core data)
-            let plantDoc = plantCollection.document("\(currentPlant.id!.uuidString)")
-            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
-            
-            // 6: Edited data for "Plant entity input"
-            plantDoc.updateData(plantEditedData) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
-                    print("Error updating data on FB: \(String(describing: error))")
-                }
-            }
-            
-            // 7: Add edited doc date on FB
-            plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
-                    print("Error updating data on FB: \(String(describing: error))")
-                }
-            }
-            
-            // FIREBASE STORAGE: if customImage is used, update photo on cloud storage as well.
-            if customImageData() != nil && currentPlant.customPlantImageID != nil {
+        networkConnectionBool { [self] boolIn in
+            if boolIn {
+                print("boolIn: true")
                 
-                // Delete old photo from FB
-                deleteOldPhotoOnFB(customPlantImageID: currentPlant.customPlantImageID) {
-                    // Handle Firebase Storage upload/update
-                    self.uploadPhotoOnFirebase(plantDoc) {
-                        print("Update photo on Firebase/Storage completed.")
+                DispatchQueue.main.async { [self] in
+                    
+                    
+                    let db = Firestore.firestore()
+                    
+                    //2: FIREBASE: Get currentUser UID to use as document's ID.
+                    guard let currentUser = Auth.auth().currentUser?.uid else { return }
+                    
+                    let userFireBase = db.collection("users").document(currentUser)
+                    
+                    //3: FIREBASE: Declare collection("plants)
+                    let plantCollection =  userFireBase.collection("plants")
+                    
+                    //4: FIREBASE: Plant entity input
+                    let plantEditedData: [String: Any] = [
+                        "dateAdded": Date.now,
+                        "plantUUID": currentPlantID.uuidString,
+                        "plantName": plantTextField.text!,
+                        "waterHabit": Int16(selectedHabitDay),
+                        "lastWatered": datePicker.date,
+                        "plantImageString": K.plantImageStringReturn_FB(K.imageSetNames, plantImageString: plantImageString, inputImage: inputImage),
+                        "notificationPending": true
+                    ]
+                    
+                    // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+                    let plantDoc = plantCollection.document("\(currentPlant.id!.uuidString)")
+                    print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+                    
+                    // 6: Edited data for "Plant entity input"
+                    plantDoc.updateData(plantEditedData) { error in
+                        if error != nil {
+                            K.presentAlert(self, error!)
+                            print("Error updating data on FB: \(String(describing: error))")
+                        }
+                    }
+                    
+                    // 7: Add edited doc date on FB
+                    plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                        if error != nil {
+                            K.presentAlert(self, error!)
+                            print("Error updating data on FB: \(String(describing: error))")
+                        }
+                    }
+                    
+                    // FIREBASE STORAGE: if customImage is used, update photo on cloud storage as well.
+                    if customImageData() != nil && currentPlant.customPlantImageID != nil {
+                        
+                        // Delete old photo from FB
+                        deleteOldPhotoOnFB(customPlantImageID: currentPlant.customPlantImageID) {
+                            // Handle Firebase Storage upload/update
+                            self.uploadPhotoToFirebase(plantDoc) { stringIn in
+                                
+                                print("Update photo on Firebase/Storage completed.")
+                                
+                                if stringIn == "success" {
+                                    print("uploadPhotoToFirebase success")
+                                    self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                                } else {
+                                    print("uploadPhotoToFirebase error")
+                                    self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                                }
+                            }
+                        }
+                        // If there was no previous customImage and user uploaded a new image, upload photo to Firebase.
+                    } else if customImageData() != nil {
+                        
+                        self.uploadPhotoToFirebase(plantDoc) { stringIn in
+                            print("Update photo on Firebase/Storage completed.")
+                            
+                            if stringIn == "success" {
+                                print("uploadPhotoToFirebase success")
+                                self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                            } else {
+                                print("uploadPhotoToFirebase error")
+                                self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                            }
+                        }
+                        // If there is no customimage uploaded or edited, just load plants.
+                    } else {
                         self.loadPlantsFB(currentPlantUUID: currentPlantID)
                     }
-                }
-                
-            } else if customImageData() != nil {
-                
-                self.uploadPhotoOnFirebase(plantDoc) {
-                    print("Update photo on Firebase/Storage completed.")
-                    self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                    
+                    print("Plant successfully edited on Firebase")
+                    
                 }
                 
             } else {
-                self.loadPlantsFB(currentPlantUUID: currentPlantID)
+                print("boolIn: false")
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error uploading plant:", message: "Please try again or check your network.", preferredStyle: .alert)
+                    
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                        NSLog("The \"OK\" alert occured.")
+                        self.removeLoadingView()
+                    }))
+                    
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
-            
-            print("Plant successfully edited on Firebase")
         }
+        
+        
     }
     
     func loadPlantsFB(currentPlantUUID: UUID) {
@@ -687,21 +735,21 @@ extension EditPlantViewController {
                 }
                 
                 
-                    
-                    self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
-                        
-                        print("Data has been parsed to Core Data")
-                        
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
-                        
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
-                        
-                        self?.dismiss(animated: true)
-                        
-                    }
-                    
                 
-
+                self?.parseAndSaveFBintoCoreData(plants_FB: plants_FB, currentPlantUUID: currentPlantUUID) {
+                    
+                    print("Data has been parsed to Core Data")
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshBadgeAndNotification"), object: nil)
+                    
+                    self?.dismiss(animated: true)
+                    
+                }
+                
+                
+                
                 
             } else {
                 print("Error getting documents from plant collection from firebase")
@@ -807,7 +855,7 @@ extension EditPlantViewController {
         }
     }
     
-    func uploadPhotoOnFirebase(_ plantDoc: DocumentReference, completion: @escaping () -> Void) {
+    func uploadPhotoToFirebase(_ plantDoc: DocumentReference, completion: @escaping (String) -> Void) {
         let randomID = UUID.init().uuidString
         let path = "customSavedPlantImages/\(randomID).jpg"
         let uploadRef = Storage.storage().reference(withPath: path)
@@ -819,19 +867,23 @@ extension EditPlantViewController {
         uploadRef.putData(imageData, metadata: uploadMetaData) { (downloadMetadata, error) in
             
             if error != nil {
-                K.presentAlert(self, error!)
-            }
-            
-            // customPlantImageUUID: for identifying on cloud storage/Firestore
-            plantDoc.updateData(["customPlantImageUUID": path]) { error in
-                if error != nil {
-                    K.presentAlert(self, error!)
+                print("Firebase Error uploading photo: Error: \(String(describing: error))")
+                completion("error")
+            } else {
+                
+                // customPlantImageUUID: for identifying on cloud storage/Firestore
+                plantDoc.updateData(["customPlantImageUUID": path]) { error in
+                    if error != nil {
+                        print("Firebase Error setting data for - customPlantImageUUID. Error: \(String(describing: error))")
+                        completion("error")
+                    } else {
+                        
+                        print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+                        
+                        completion("success")
+                    }
                 }
             }
-            
-            print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
-            completion()
-            
         }
     }
     
@@ -840,10 +892,36 @@ extension EditPlantViewController {
         
         let fileRef = Storage.storage().reference(withPath: imageToDeleteID)
         fileRef.delete { error in
-            if error != nil { print("Error deleting from Firebase Storage: \(String(describing: error))") }
-            print("Successfully deleted previous image off firebase: \(imageToDeleteID)")
-            completion()
+            if error != nil {
+                print("Error deleting from Firebase Storage: \(String(describing: error))")
+                completion()
+            } else {
+                print("Successfully deleted previous image off firebase: \(imageToDeleteID)")
+                completion()
+            }
         }
+    }
+    
+    func networkConnectionBool(completion: @escaping (Bool) -> Void) {
+        
+        let networkMonitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        networkMonitor.start(queue: queue)
+        
+        networkMonitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                print("Network Connected")
+                networkMonitor.cancel()
+                completion(true)
+            } else {
+                print("Network Disconnected")
+                networkMonitor.cancel()
+                completion(false)
+            }
+            print("path.isExpensive: \(path.isExpensive)"
+            )
+        }
+        
     }
     
 }

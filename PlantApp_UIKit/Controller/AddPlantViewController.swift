@@ -460,10 +460,10 @@ extension AddPlantViewController {
     
     func addPlant_FB(_ newPlantID: UUID) {
         
-        networkConnectionBool { [self] bool in
+        networkConnectionBool { [self] boolIn in
             
             // If there is a network connection, proceed to adding plant to FB.
-            if bool {
+            if boolIn {
                 
                 addLoadingView()
                 

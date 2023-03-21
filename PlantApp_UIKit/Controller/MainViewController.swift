@@ -45,15 +45,14 @@ class MainViewController: UIViewController {
     
     // MARK: - UIViews added
     let opaqueView = UIView()
-    private let loadingSpinnerView: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView()
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        spinner.hidesWhenStopped = true
-        spinner.color = .gray
-        return spinner
-    }()
-    
-    let disableLoadingSpinnerView = false
+//    private let loadingSpinnerView: UIActivityIndicatorView = {
+//        let spinner = UIActivityIndicatorView()
+//        spinner.translatesAutoresizingMaskIntoConstraints = false
+//        spinner.hidesWhenStopped = true
+//        spinner.color = .white
+//        return spinner
+//    }()
+    let loadingSpinnerView = UIActivityIndicatorView()
     
     let dispatchGroup = DispatchGroup()
     
@@ -94,8 +93,8 @@ class MainViewController: UIViewController {
         loadFirebaseUser()
         
         view.addSubview(loadingSpinnerView)
-        loadingSpinnerView.centerXAnchor.constraint(equalTo: plantsTableView.centerXAnchor).isActive = true
-        loadingSpinnerView.centerYAnchor.constraint(equalTo: plantsTableView.centerYAnchor).isActive = true
+        loadingSpinnerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loadingSpinnerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUserNotification), name: NSNotification.Name("refreshUserNotification"), object: nil)
@@ -111,7 +110,7 @@ class MainViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         print("viewDidAppear")
-        
+       
         // Load plants if FB user is logged in.
         if defaults.bool(forKey: "fbUserFirstLoggedIn") {
             addLoadingSpinner()
@@ -121,6 +120,7 @@ class MainViewController: UIViewController {
                     self.updateUnpresentedNotification()
                     self.refreshUserNotification()
                     self.defaults.set(false, forKey: "fbUserFirstLoggedIn")
+                    self.removeLoadingView()
                 }
             }
         }
@@ -559,7 +559,6 @@ extension MainViewController {
                         self?.loadPlants {
                             print("Plants Loaded. Core Data count: \(String(describing: self?.plants.count))")
                             completion()
-                            self?.removeLoadingView()
                         }
                         
                     }
@@ -567,7 +566,6 @@ extension MainViewController {
                 } else {
                     print("Error getting documents from plant collection from firebase")
                     completion()
-                    self?.removeLoadingView()
                 }
             }
             
@@ -1145,7 +1143,12 @@ extension MainViewController {
     
     func addLoadingSpinner() {
         DispatchQueue.main.async { [self] in
-            loadingSpinnerView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.midX, y: CGFloat(0), width: view.safeAreaLayoutGuide.layoutFrame.midY, height: CGFloat(44))
+            view.addSubview(loadingSpinnerView)
+            loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
+            loadingSpinnerView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            loadingSpinnerView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            loadingSpinnerView.style = .large
+            loadingSpinnerView.hidesWhenStopped = true
             loadingSpinnerView.startAnimating()
             print("addLoadingView")
         }
