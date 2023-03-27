@@ -30,6 +30,8 @@ class LoginViewController: UIViewController {
     private let loginButton = UIButton()
     private let forgotPasswordButton = UIButton()
     
+    private let loadingSpinnerView = UIActivityIndicatorView()
+    
     // MARK: - UserDefaults for saving small data/settings
     private let defaults = UserDefaults.standard
     
@@ -42,11 +44,13 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
        
         // Do any additional setup after loading the view.
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .tertiarySystemGroupedBackground
         
         self.enableDismissKeyboardOnTapOutside()
         
         NotificationCenter.default.addObserver(self, selector: #selector(presentMainVC), name: NSNotification.Name("navigateToMainVC"), object: nil)
+        
+        print("Defaults: \(defaults.object(forKey: "plantIDuuidString") as? [String] ?? [])")
         
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
@@ -66,21 +70,22 @@ class LoginViewController: UIViewController {
         appName.centerXAnchor.constraint(equalTo: titleLogo.centerXAnchor).isActive = true
         let appNameFrameConstant = view.frame.height / 10
         appName.heightAnchor.constraint(equalToConstant: appNameFrameConstant).isActive = true
-        
         appName.text = "PlantApp"
         appName.font = UIFont.boldSystemFont(ofSize: 50)
         appName.textColor = UIColor(named: K.customGreen2)
         appName.textAlignment = .center
         
+        
         // Email textfieldView: UITextfieldView
         view.addSubview(emailTextfieldView)
         emailTextfieldView.translatesAutoresizingMaskIntoConstraints = false
-        emailTextfieldView.topAnchor.constraint(equalTo: appName.bottomAnchor, constant: 20).isActive = true
+        emailTextfieldView.topAnchor.constraint(equalTo: appName.bottomAnchor, constant: 10).isActive = true
         emailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         emailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         emailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        emailTextfieldView.backgroundColor = .white
         emailTextfieldView.layer.cornerRadius = 5.0
+        emailTextfieldView.backgroundColor = UIColor(named: "customWhite")
+
         
       
         emailTextfieldView.addSubview(emailTextfield)
@@ -89,7 +94,7 @@ class LoginViewController: UIViewController {
         emailTextfield.leftAnchor.constraint(equalTo: emailTextfieldView.leftAnchor, constant: 20).isActive = true
         emailTextfield.rightAnchor.constraint(equalTo: emailTextfieldView.rightAnchor, constant: -20).isActive = true
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        emailTextfield.backgroundColor = .white
+        emailTextfield.backgroundColor = .clear
         emailTextfield.placeholder = "Email address"
         emailTextfield.autocapitalizationType = .none
         emailTextfield.keyboardType = .emailAddress
@@ -98,12 +103,12 @@ class LoginViewController: UIViewController {
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
         passwordTextfieldView.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextfieldView.topAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: 20).isActive = true
+        passwordTextfieldView.topAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: 10).isActive = true
         passwordTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         passwordTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        passwordTextfieldView.backgroundColor = .white
         passwordTextfieldView.layer.cornerRadius = 5.0
+        passwordTextfieldView.backgroundColor = UIColor(named: "customWhite")
         
         // Reveal Password Button: UIButton
         passwordTextfieldView.addSubview(revealPasswordButton)
@@ -142,7 +147,8 @@ class LoginViewController: UIViewController {
         loginButton.frame = CGRect(x: 100, y: 100, width: 200, height: 40)
         loginButton.setTitle("Log In", for: .normal)
         loginButton.setTitleColor(.white, for: .normal)
-        loginButton.setTitleColor(.placeholderText, for: .highlighted)
+        loginButton.setTitleColor(.systemGray, for: .disabled)
+        loginButton.setTitleColor(.systemGray, for: .highlighted)
         loginButton.backgroundColor = UIColor(named: "customYellow1")
         loginButton.isEnabled = false
         loginButton.layer.borderWidth = 1.0
@@ -200,12 +206,6 @@ class LoginViewController: UIViewController {
             K.navigateToMainVC(self)
         }
         
-        // If user is logging in without a FB account, this will navigate to MainVC
-//        if defaults.bool(forKey: "useWithoutFBAccount") {
-//            K.navigateToMainVC(self)
-//        }
-        
-        
     }
     
     
@@ -213,6 +213,20 @@ class LoginViewController: UIViewController {
         // Reset/Clear textfields when leaving login screen
         emailTextfield.text = ""
         passwordTextfield.text = ""
+        revealPasswordButton.setImage(UIImage(systemName: ""), for: .normal)
+    }
+    
+    // If user toggles betweren Light/Dark appearance
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        
+        if traitCollection.userInterfaceStyle == .light {
+            loginButton.setTitleColor(.white, for: .normal)
+            loginButton.setTitleColor(.systemGray, for: .disabled)
+        } else {
+            loginButton.setTitleColor(.white, for: .normal)
+            loginButton.setTitleColor(.systemGray, for: .disabled)
+        }
+        
     }
 
     
@@ -221,6 +235,10 @@ class LoginViewController: UIViewController {
         // Add segue to MainViewController with Firebase loaded.
         print("Login button clicked")
         
+        view.endEditing(true)
+        
+        addLoadingSpinner()
+        
         // Signing in Firebase
         Auth.auth().signIn(withEmail: (emailTextfield.text!.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)), password: passwordTextfield.text!.trimmingCharacters(in: .whitespacesAndNewlines)) {
             [unowned self] (authResult, error) in
@@ -228,6 +246,9 @@ class LoginViewController: UIViewController {
             // Check for error signing in
             if error != nil {
                 if error?.localizedDescription == K.tempLockMessageFB {
+                    
+                    removeLoadingView()
+                    
                     print("Sign in error with Firebase: \(error!.localizedDescription)")
                     let alert = UIAlertController(title: "Oops!", message: error?.localizedDescription, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
@@ -236,6 +257,9 @@ class LoginViewController: UIViewController {
                     
                     self.present(alert, animated: true, completion: nil)
                 } else {
+                    
+                    removeLoadingView()
+                    
                     print("Sign in error with Firebase: \(error!.localizedDescription)")
                     let alert = UIAlertController(title: "Oops!", message: "You've entered either the wrong email or password. Please try again.", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
@@ -248,12 +272,16 @@ class LoginViewController: UIViewController {
             // If no error signing in, navigate to MainViewController.
             } else {
                 if self.authenticateFBUser() {
+                    
+                    removeLoadingView()
+                    
                     self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
                     K.navigateToMainVC(self)
                 }
             }
             
         }
+        
     }
     
     @objc func forgotPasswordButtonClicked(sender: UIButton) {
@@ -290,13 +318,15 @@ class LoginViewController: UIViewController {
     }
     
     @objc func revealPasswordButtonClicked(sender: UIButton) {
-        print("dd")
+        
         passwordTextfield.isSecureTextEntry.toggle()
+        
         if passwordTextfield.isSecureTextEntry == false {
             revealPasswordButton.tintColor = .darkGray
         } else {
             revealPasswordButton.tintColor = .lightGray
         }
+        
     }
     
 }
@@ -372,6 +402,33 @@ extension LoginViewController {
         }
     }
     
-
+    func addLoadingSpinner() {
+        DispatchQueue.main.async { [self] in
+            loginButton.setTitle("", for: .disabled)
+            loginButton.isEnabled = false
+            loginButton.addSubview(loadingSpinnerView)
+            loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
+            loadingSpinnerView.centerXAnchor.constraint(equalTo: loginButton.centerXAnchor).isActive = true
+            loadingSpinnerView.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor).isActive = true
+            loadingSpinnerView.style = .medium
+            loadingSpinnerView.color = .systemGray
+            loadingSpinnerView.hidesWhenStopped = true
+            loadingSpinnerView.startAnimating()
+            print("addLoadingView")
+        }
+    }
+    
+    func removeLoadingView() {
+        DispatchQueue.main.async { [self] in
+            loadingSpinnerView.stopAnimating()
+            loginButton.setTitle("Log In", for: .disabled)
+            loginButton.setTitleColor(.white, for: .normal)
+            
+           validateEntry()
+//            loginButton.backgroundColor = UIColor(named: "customYellow1")
+            print("removedLoadingView")
+        }
+    }
+    
 
 }

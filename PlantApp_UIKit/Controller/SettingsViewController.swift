@@ -83,7 +83,7 @@ class SettingsViewController: UIViewController {
         sectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         sectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         
-        sectionView.backgroundColor = .white
+        sectionView.backgroundColor = UIColor(named: "customWhite")
         sectionView.layer.cornerRadius = 10
     }
     
@@ -167,7 +167,7 @@ class SettingsViewController: UIViewController {
         logoutButton.setTitleColor(.placeholderText, for: .highlighted)
         logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
         
-        if authenticateFBUser() {
+        authenticateFBUser() { [self] db in
             containerView.addSubview(accountSettingsButton)
             accountSettingsButton.translatesAutoresizingMaskIntoConstraints = false
             accountSettingsButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
@@ -215,11 +215,10 @@ extension SettingsViewController {
     }
     
     // Authenticate FB user
-    func authenticateFBUser() -> Bool {
+    func authenticateFBUser(completion: @escaping (Firestore) -> Void) {
         if Auth.auth().currentUser?.uid != nil {
-            return true
-        } else {
-            return false
+            let db = Firestore.firestore()
+            completion(db)
         }
     }
     
@@ -265,10 +264,16 @@ extension SettingsViewController {
             dismiss(animated: true)
         }
         
-        if authenticateFBUser() {
+        authenticateFBUser() { [self] db in
             
             resetUndeliveredNotifications_FB()
             updateUserSettings_FB()
+            
+            dispatchGroup.enter()
+            deleteUnsuccessfulUploadedPlant(db) {
+                print("DEEZ")
+                self.dispatchGroup.leave()
+            }
             
             
             let firebaseAuth = Auth.auth()
@@ -360,9 +365,8 @@ extension SettingsViewController {
     // FB: updates last user settings to FB
     func updateUserSettings_FB() {
         
-        if authenticateFBUser() {
+        authenticateFBUser() { [self] db in
             
-            let db = Firestore.firestore()
             guard let currentUser = Auth.auth().currentUser?.uid else {return}
             let userFireBase = db.collection("users").document(currentUser)
             
@@ -441,6 +445,45 @@ extension SettingsViewController {
         }
 
         print("Plant successfully updated on Firebase")
+    }
+    
+    func deleteUnsuccessfulUploadedPlant(_ db: Firestore, completion: @escaping () -> Void) {
+        
+        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
+            print("deleteUnsuccessfulUploadedPlant returned")
+            completion()
+            return
+            
+        }
+        
+        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
+
+        let userID_FB = Auth.auth().currentUser!.uid
+
+        let currentUserCollection = db.collection("users").document(userID_FB)
+        let plantsCollection = currentUserCollection.collection("plants")
+
+        for plantUUID in plantIDuuidStringArray {
+            dispatchGroup.enter()
+            plantsCollection.document("\(plantUUID)").delete() { [self] err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                    dispatchGroup.leave()
+                } else {
+                    print("Document successfully removed!")
+                    print("FB deleted plant: \(plantUUID)")
+                    dispatchGroup.leave()
+                }
+            }
+        }
+        
+        // Notify dispatchGroup when all work is done.
+        dispatchGroup.notify(queue: .main) {
+            self.defaults.removeObject(forKey: "plantIDuuidString")
+            print("DispatchGroup work done")
+            completion()
+        }
+        
     }
     
 }

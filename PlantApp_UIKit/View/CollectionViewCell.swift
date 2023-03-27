@@ -55,8 +55,7 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "drop")
-        imageView.tintColor = .black
-//        imageView.backgroundColor = .secondarySystemBackground
+        imageView.tintColor = .label
         return imageView
     }()
     
@@ -65,7 +64,6 @@ class CollectionViewCell: UICollectionViewCell {
         label.textAlignment = .left
         label.clipsToBounds = true
         label.adjustsFontSizeToFitWidth = true
-//        label.backgroundColor = .secondarySystemBackground
         return label
     }()
     
@@ -81,16 +79,31 @@ class CollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .secondarySystemBackground
+        
+        // Sets collectionViewCell color based on Light/Dark Appearance
+        if traitCollection.userInterfaceStyle == .light {
+            contentView.backgroundColor = .white
+        } else {
+            contentView.backgroundColor = .secondarySystemBackground
+        }
+        
         contentView.clipsToBounds = true
         contentView.addSubview(cellImageView)
         contentView.addSubview(labelName)
         contentView.addSubview(waterStatusView)
 
-//        contentView.addSubview(labelWaterDays)
-//        contentView.addSubview(dropletImage)
         NotificationCenter.default.addObserver(self, selector: #selector(toggleDeleteView), name: NSNotification.Name("toggleDeleteViewNoti"), object: nil)
     }
+    
+    // Sets collectionViewCell color based on Light/Dark Appearance switch.
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .light {
+            contentView.backgroundColor = .white
+        } else {
+            contentView.backgroundColor = .secondarySystemBackground
+        }
+    }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -104,35 +117,23 @@ class CollectionViewCell: UICollectionViewCell {
                                      width: contentView.frame.size.width,
                                      height: contentView.frame.size.height / CGFloat(1.5)
         )
+        cellImageView.backgroundColor = .clear
         
         labelName.frame = CGRect(x: 0,
                                  y: cellImageView.bounds.maxY,
                                  width: contentView.frame.size.width,
                                  height: 20
         )
-        
-//        labelWaterDays.frame = CGRect(x: contentView.center.x - 20,
-//                                 y:  cellImageView.bounds.maxY + CGFloat(20),
-//                                 width: contentView.frame.size.width / 2,
-//                                 height: 20
-//        )
-        
-//        labelWaterDays.backgroundColor = .red
-        
-//        dropletImage.frame = CGRect(x: 20,
-//                                 y:  cellImageView.bounds.maxY + CGFloat(20),
-//                                    width: (dropletImage.image?.size.width)!,
-//                                 height: 20
-//        )
-        
-        
+        labelName.backgroundColor = .clear
+        labelName.tintColor = .label
        
         waterStatusView.frame = CGRect(x: cellImageView.bounds.midX - 30,
                                    y:  cellImageView.bounds.maxY + CGFloat(20),
                                    width: contentView.frame.size.width,
                                    height: 20
         )
-        
+        waterStatusView.backgroundColor = .clear
+        waterStatusView.tintColor = .label
         waterStatusView.addSubview(dropletImage)
         dropletImage.frame = CGRect(x: 0,
                                     y:  0,

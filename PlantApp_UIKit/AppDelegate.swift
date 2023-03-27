@@ -13,13 +13,14 @@ import FirebaseAuth
 import FirebaseAnalytics
 
 
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
     var plants = [Plant]()
     let defaults = UserDefaults.standard
     let center = UNUserNotificationCenter.current()
+ 
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -29,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         // Use Firebase library to configure APIs
         FirebaseApp.configure()
-        
 
         return true
     }

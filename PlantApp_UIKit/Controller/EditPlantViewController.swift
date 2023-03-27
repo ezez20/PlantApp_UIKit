@@ -110,14 +110,12 @@ class EditPlantViewController: UIViewController {
         plantTextFieldView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         plantTextFieldView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         plantTextFieldView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
-        plantTextFieldView.backgroundColor = .white
-        
+        plantTextFieldView.backgroundColor = UIColor(named: "customWhite")
         
         // plantTextField
         addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 20, right: plantTextFieldView.rightAnchor, rightConst: -20)
         
-        plantTextField.backgroundColor = .white
+        plantTextField.backgroundColor = .clear
         plantTextField.placeholder = "Type of plant"
         
         
@@ -141,7 +139,7 @@ class EditPlantViewController: UIViewController {
         wateringSectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         wateringSectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        wateringSectionView.backgroundColor = .white
+        wateringSectionView.backgroundColor = UIColor(named: "customWhite")
         wateringSectionView.clipsToBounds = true
         
         
@@ -157,7 +155,7 @@ class EditPlantViewController: UIViewController {
         updatePlantButton.setTitle("Update Plant", for: .normal)
         updatePlantButton.setTitleColor(.systemBlue, for: .normal)
         updatePlantButton.setTitleColor(.placeholderText, for: .disabled)
-        updatePlantButton.backgroundColor = .white
+        updatePlantButton.backgroundColor = UIColor(named: "customWhite")
         
         
         // inputImageButton
@@ -167,7 +165,7 @@ class EditPlantViewController: UIViewController {
         plantImageButton.heightAnchor.constraint(equalToConstant: 350).isActive = true
         plantImageButton.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         plantImageButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
-        plantImageButton.backgroundColor = .white
+        plantImageButton.backgroundColor = UIColor(named: "customWhite")
         plantImageButton.clipsToBounds = true
         
         
@@ -206,14 +204,14 @@ class EditPlantViewController: UIViewController {
         waterHabitButton.configuration?.imagePlacement = .trailing
         waterHabitButton.setTitleColor(.placeholderText, for: .normal)
         waterHabitButton.contentHorizontalAlignment = .trailing
-        waterHabitButton.backgroundColor = .white
+        waterHabitButton.backgroundColor = UIColor(named: "customWhite")
         waterHabitButton.addTarget(self, action: #selector(waterHabitButtonClicked(sender:)), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "chevron.right")
         config.contentInsets = NSDirectionalEdgeInsets(top: 10.0, leading: 10.0, bottom: 10.0, trailing: 10.0)
         config.imagePlacement = .trailing
         waterHabitButton.configuration = config
-        waterHabitButton.tintColor = .placeholderText
+        waterHabitButton.tintColor = .lightGray
         updateWaterButtonSelectionUI()
         
         // waterHabit label
@@ -222,7 +220,6 @@ class EditPlantViewController: UIViewController {
         waterHabitLabel.topAnchor.constraint(equalTo: waterHabitButton.topAnchor, constant: 0).isActive = true
         waterHabitLabel.bottomAnchor.constraint(equalTo: waterHabitButton.bottomAnchor, constant: 0).isActive = true
         waterHabitLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 20).isActive = true
-        
         waterHabitLabel.text = "Water Habit:"
         
         
@@ -246,7 +243,7 @@ class EditPlantViewController: UIViewController {
         lastWateredLabel.bottomAnchor.constraint(equalTo: wateringSectionView.bottomAnchor, constant: 0).isActive = true
         lastWateredLabel.leftAnchor.constraint(equalTo: wateringSectionView.leftAnchor, constant: 20).isActive = true
         
-        lastWateredLabel.backgroundColor = .white
+        lastWateredLabel.backgroundColor = UIColor(named: "customWhite")
         lastWateredLabel.text = "Last watered:"
         
         // datePicker
@@ -259,6 +256,8 @@ class EditPlantViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.maximumDate = Date.now
+        
+        
         
         print("View did layout subviews")
     }
@@ -468,26 +467,36 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         func filterText(_ query: String) {
+            
             filteredSuggestion.removeAll()
+            
             for plant in imageSetNames {
+                
                 if plant.lowercased().starts(with: query.lowercased()) {
                     filteredSuggestion.append(plant)
-                    showSuggestionScrollView()
                 }
+                
             }
+            
             suggestionTableView.reloadData()
             print(filteredSuggestion)
         }
         
         if let text = textField.text {
+            
             filterText(text + string)
+            
+            if !filteredSuggestion.isEmpty {
+                showSuggestionScrollView(filteredSuggestion.count)
+            }
+            
         }
         
         return true
     }
     
-    func showSuggestionScrollView() {
-        suggestionScrollView.backgroundColor = UIColor.white
+    func showSuggestionScrollView(_ itemsCount: Int) {
+  
         containerView.addSubview(suggestionScrollView)
         addSuggestionTableView()
         
@@ -496,9 +505,9 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
         let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
-        let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringSectionView, attribute: .top, multiplier: 1.0, constant: 10)
+        let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: plantTextField, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
-        containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, bottomConstraint])
+        containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, heightConstraint])
         containerView.updateConstraints()
         
         print("showSuggestionScrollView ran")

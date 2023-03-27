@@ -45,13 +45,6 @@ class MainViewController: UIViewController {
     
     // MARK: - UIViews added
     let opaqueView = UIView()
-//    private let loadingSpinnerView: UIActivityIndicatorView = {
-//        let spinner = UIActivityIndicatorView()
-//        spinner.translatesAutoresizingMaskIntoConstraints = false
-//        spinner.hidesWhenStopped = true
-//        spinner.color = .white
-//        return spinner
-//    }()
     let loadingSpinnerView = UIActivityIndicatorView()
     
     let dispatchGroup = DispatchGroup()
@@ -70,7 +63,7 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
     
         title = K.title
-        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "square.grid.3x2") : UIImage(systemName: "list.bullet")
+        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "list.bullet") : UIImage(systemName: "square.grid.3x2")
         
         self.plantsTableView.contentInsetAdjustmentBehavior = .never
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -105,6 +98,17 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadPlantsTableViewNotification), name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
         
+        
+    }
+    
+    
+    override func viewDidLayoutSubviews() {
+        
+        if traitCollection.userInterfaceStyle == .light {
+            collectionView?.backgroundColor = .secondarySystemBackground
+        } else {
+            collectionView?.backgroundColor = .black
+        }
         
     }
     
@@ -157,6 +161,17 @@ class MainViewController: UIViewController {
                     print("Reloading plants after reloadImageDataFB.")
                 }
             }
+        }
+        
+    }
+    
+    
+    // MARK: - Sets color based on Light/Dark Appearance switch.
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .light {
+            collectionView?.backgroundColor = .secondarySystemBackground
+        } else {
+            collectionView?.backgroundColor = .black
         }
         
     }
@@ -231,7 +246,7 @@ class MainViewController: UIViewController {
         
         collectionViewBool.toggle()
         
-        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "square.grid.3x2") : UIImage(systemName: "list.bullet")
+        viewChangeButton.image = collectionViewBool == true ? UIImage(systemName: "list.bullet") : UIImage(systemName: "square.grid.3x2")
         
         if collectionViewBool == true {
             addCollectionView()
@@ -1197,7 +1212,11 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         view.addSubview(collectionView)
         collectionView.frame = CGRect(x: 5, y: 150, width: view.frame.size.width - 10, height: view.frame.size.height - 150 - 60)
-        collectionView.backgroundColor = .secondarySystemBackground
+        if traitCollection.userInterfaceStyle == .light {
+            collectionView.backgroundColor = .secondarySystemBackground
+        } else {
+            collectionView.backgroundColor = .black
+        }
         
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         collectionView.delegate = self

@@ -18,6 +18,8 @@
 		510ACD0E28F609DC0011EACD /* AlertTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */; };
 		510ECD0828F8825F0060FBDF /* PlantApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510ECD0628F8825F0060FBDF /* PlantApp.xcdatamodeld */; };
 		510F5BDC299E844B00D8A593 /* AccountFilloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */; };
+		51133B7E29CDE80A00EF0D74 /* PlantApp_UIKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51133B7D29CDE80A00EF0D74 /* PlantApp_UIKitUITests.swift */; };
+		51133B8029CDE80A00EF0D74 /* PlantApp_UIKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51133B7F29CDE80A00EF0D74 /* PlantApp_UIKitUITestsLaunchTests.swift */; };
 		51180ABA28CA80080072BC8E /* WaterHabitDaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */; };
 		512515B0292C2873003FB226 /* PlantDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512515AF292C2873003FB226 /* PlantDataModel.swift */; };
 		513CBC4F28C7A6D200CBC760 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC4B28C7A6D100CBC760 /* WeatherData.swift */; };
@@ -40,6 +42,16 @@
 		51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */; };
 		95A24EAD7D38C32067B3547B /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		51133B8129CDE80A00EF0D74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5102E01928AFFDC6006AF2AA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5102E02028AFFDC6006AF2AA;
+			remoteInfo = PlantApp_UIKit;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		5118E6F52979B05400CA2736 /* Embed Foundation Extensions */ = {
@@ -70,6 +82,9 @@
 		510ACD0D28F609DC0011EACD /* AlertTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTimeViewController.swift; sourceTree = "<group>"; };
 		510ECD0728F8825F0060FBDF /* PlantApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlantApp.xcdatamodel; sourceTree = "<group>"; };
 		510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountFilloutViewController.swift; sourceTree = "<group>"; };
+		51133B7B29CDE80A00EF0D74 /* PlantApp_UIKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlantApp_UIKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		51133B7D29CDE80A00EF0D74 /* PlantApp_UIKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantApp_UIKitUITests.swift; sourceTree = "<group>"; };
+		51133B7F29CDE80A00EF0D74 /* PlantApp_UIKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantApp_UIKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		51180AB928CA80080072BC8E /* WaterHabitDaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterHabitDaysViewController.swift; sourceTree = "<group>"; };
 		5118E6F92979B1DC00CA2736 /* PlantApp_UIKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlantApp_UIKit.entitlements; sourceTree = "<group>"; };
 		512515AF292C2873003FB226 /* PlantDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantDataModel.swift; sourceTree = "<group>"; };
@@ -103,6 +118,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		51133B7829CDE80A00EF0D74 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -119,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				5102E02328AFFDC6006AF2AA /* PlantApp_UIKit */,
+				51133B7C29CDE80A00EF0D74 /* PlantApp_UIKitUITests */,
 				5102E02228AFFDC6006AF2AA /* Products */,
 				0C524263EEB24A1EC24B1BF8 /* Pods */,
 				D223E4371495AFB5A40E862B /* Frameworks */,
@@ -129,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				5102E02128AFFDC6006AF2AA /* PlantApp_UIKit.app */,
+				51133B7B29CDE80A00EF0D74 /* PlantApp_UIKitUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,6 +173,15 @@
 				51E6D9D928CBB4770053E4EE /* Supporting Files */,
 			);
 			path = PlantApp_UIKit;
+			sourceTree = "<group>";
+		};
+		51133B7C29CDE80A00EF0D74 /* PlantApp_UIKitUITests */ = {
+			isa = PBXGroup;
+			children = (
+				51133B7D29CDE80A00EF0D74 /* PlantApp_UIKitUITests.swift */,
+				51133B7F29CDE80A00EF0D74 /* PlantApp_UIKitUITestsLaunchTests.swift */,
+			);
+			path = PlantApp_UIKitUITests;
 			sourceTree = "<group>";
 		};
 		51C78B9128B18AF400CD728F /* View */ = {
@@ -236,6 +269,24 @@
 			productReference = 5102E02128AFFDC6006AF2AA /* PlantApp_UIKit.app */;
 			productType = "com.apple.product-type.application";
 		};
+		51133B7A29CDE80A00EF0D74 /* PlantApp_UIKitUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51133B8529CDE80A00EF0D74 /* Build configuration list for PBXNativeTarget "PlantApp_UIKitUITests" */;
+			buildPhases = (
+				51133B7729CDE80A00EF0D74 /* Sources */,
+				51133B7829CDE80A00EF0D74 /* Frameworks */,
+				51133B7929CDE80A00EF0D74 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				51133B8229CDE80A00EF0D74 /* PBXTargetDependency */,
+			);
+			name = PlantApp_UIKitUITests;
+			productName = PlantApp_UIKitUITests;
+			productReference = 51133B7B29CDE80A00EF0D74 /* PlantApp_UIKitUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -248,6 +299,10 @@
 				TargetAttributes = {
 					5102E02028AFFDC6006AF2AA = {
 						CreatedOnToolsVersion = 13.3;
+					};
+					51133B7A29CDE80A00EF0D74 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 5102E02028AFFDC6006AF2AA;
 					};
 				};
 			};
@@ -265,6 +320,7 @@
 			projectRoot = "";
 			targets = (
 				5102E02028AFFDC6006AF2AA /* PlantApp_UIKit */,
+				51133B7A29CDE80A00EF0D74 /* PlantApp_UIKitUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -279,6 +335,13 @@
 				5188CA77291AB63200443D93 /* GoogleService-Info.plist in Resources */,
 				5102E03128AFFDC7006AF2AA /* Assets.xcassets in Resources */,
 				5102E02C28AFFDC6006AF2AA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51133B7929CDE80A00EF0D74 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,7 +423,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		51133B7729CDE80A00EF0D74 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51133B7E29CDE80A00EF0D74 /* PlantApp_UIKitUITests.swift in Sources */,
+				51133B8029CDE80A00EF0D74 /* PlantApp_UIKitUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		51133B8229CDE80A00EF0D74 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5102E02028AFFDC6006AF2AA /* PlantApp_UIKit */;
+			targetProxy = 51133B8129CDE80A00EF0D74 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		5102E02A28AFFDC6006AF2AA /* Main.storyboard */ = {
@@ -688,6 +768,44 @@
 			};
 			name = Release;
 		};
+		51133B8329CDE80A00EF0D74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUZG54S76B;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.PlantApp-UIKitUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PlantApp_UIKit;
+			};
+			name = Debug;
+		};
+		51133B8429CDE80A00EF0D74 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUZG54S76B;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.PlantApp-UIKitUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PlantApp_UIKit;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -705,6 +823,15 @@
 			buildConfigurations = (
 				5102E03928AFFDC7006AF2AA /* Debug */,
 				5102E03A28AFFDC7006AF2AA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		51133B8529CDE80A00EF0D74 /* Build configuration list for PBXNativeTarget "PlantApp_UIKitUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51133B8329CDE80A00EF0D74 /* Debug */,
+				51133B8429CDE80A00EF0D74 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

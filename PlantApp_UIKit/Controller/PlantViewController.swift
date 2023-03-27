@@ -133,10 +133,19 @@ class PlantViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         // update the layers frame based on the frame of the view.
+        
         // MARK: - UI: Shadow around Watering Habit StackView
-        updateGradientContainerView()
         addShadow(wateringHabitStackView)
-
+        
+        // Update GradientContainerView between light/dark appearance.
+        if traitCollection.userInterfaceStyle == .light {
+            removeGradientContainerView()
+            updateGradientContainerView(lightMode: true)
+        } else {
+            removeGradientContainerView()
+            updateGradientContainerView(lightMode: false)
+        }
+      
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -188,14 +197,28 @@ class PlantViewController: UIViewController {
     
     
     // MARK: - functions
-    func updateGradientContainerView() {
-        let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.colors = [UIColor.white.cgColor, UIColor(named: K.customGreenColor)?.cgColor ?? UIColor.green.cgColor]
-        gradient.locations = [0.5 , 1.0]
-        gradient.frame = containerView.frame
-        gradient.cornerRadius = 40
-        containerView.layer.insertSublayer(gradient, at: 0)
-        containerView.layer.cornerRadius = 40
+    func updateGradientContainerView(lightMode: Bool) {
+        if lightMode == true {
+            let gradient: CAGradientLayer = CAGradientLayer()
+            gradient.colors = [UIColor(named: "customSkyBlue")?.cgColor, UIColor.white.cgColor, UIColor.white.cgColor, UIColor(named: K.customGreenColor)?.cgColor ?? UIColor.green.cgColor]
+            gradient.locations = [0.0 ,0.3, 0.5 , 1.0]
+            gradient.frame = containerView.frame
+            gradient.cornerRadius = 40
+            containerView.layer.insertSublayer(gradient, at: 0)
+            containerView.layer.cornerRadius = 40
+        } else {
+            let gradient: CAGradientLayer = CAGradientLayer()
+            gradient.colors = [UIColor(named: "customSkyBlue")?.cgColor, UIColor.black.cgColor, UIColor(named: "customSkylight")?.cgColor ,UIColor(named: K.customGreen2)?.cgColor ?? UIColor.green.cgColor]
+            gradient.locations = [0.0, 0.3, 0.5, 1.0]
+            gradient.frame = containerView.frame
+            gradient.cornerRadius = 40
+            containerView.layer.insertSublayer(gradient, at: 0)
+            containerView.layer.cornerRadius = 40
+        }
+    }
+    
+    func removeGradientContainerView() {
+        containerView.layer.sublayers?.removeFirst()
     }
     
     func addShadow(_ appliedView: UIStackView) {

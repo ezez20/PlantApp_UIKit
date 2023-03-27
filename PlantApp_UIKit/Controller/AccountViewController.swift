@@ -71,7 +71,7 @@ class AccountViewController: UIViewController {
         sectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         sectionView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
-        sectionView.backgroundColor = .white
+        sectionView.backgroundColor = UIColor(named: "customWhite")
         sectionView.layer.cornerRadius = 10
     }
     

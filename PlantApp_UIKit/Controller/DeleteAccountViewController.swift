@@ -57,7 +57,7 @@ class DeleteAccountViewController: UIViewController {
         emailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         emailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         emailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        emailTextfieldView.backgroundColor = .white
+        emailTextfieldView.backgroundColor = UIColor(named: "customWhite")
         
         emailTextfieldView.addSubview(emailTextfield)
         emailTextfield.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +65,7 @@ class DeleteAccountViewController: UIViewController {
         emailTextfield.leftAnchor.constraint(equalTo: emailTextfieldView.leftAnchor, constant: 20).isActive = true
         emailTextfield.rightAnchor.constraint(equalTo: emailTextfieldView.rightAnchor, constant: -20).isActive = true
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        emailTextfield.backgroundColor = .white
+        emailTextfield.backgroundColor = .clear
         emailTextfield.placeholder = "Email address"
         emailTextfield.keyboardType = .emailAddress
         emailTextfield.autocorrectionType = .no
@@ -79,7 +79,7 @@ class DeleteAccountViewController: UIViewController {
         passwordTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         passwordTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        passwordTextfieldView.backgroundColor = .white
+        passwordTextfieldView.backgroundColor = UIColor(named: "customWhite")
         
         passwordTextfieldView.addSubview(revealPasswordButton)
         revealPasswordButton.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +97,7 @@ class DeleteAccountViewController: UIViewController {
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
         passwordTextfield.rightAnchor.constraint(equalTo: revealPasswordButton.leftAnchor).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
-        passwordTextfield.backgroundColor = .white
+        passwordTextfield.backgroundColor = .clear
         passwordTextfield.placeholder = "Password"
         passwordTextfield.keyboardType = .emailAddress
         passwordTextfield.keyboardType = .default

@@ -98,7 +98,7 @@ class AccountFilloutViewController: UIViewController {
         textfieldView1.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         textfieldView1.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         textfieldView1.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textfieldView1.backgroundColor = .white
+        textfieldView1.backgroundColor = UIColor(named: "customWhite")
         // Do any additional setup after loading the view.
         
         textfieldView1.addSubview(textfield1)
@@ -107,10 +107,11 @@ class AccountFilloutViewController: UIViewController {
         textfield1.leftAnchor.constraint(equalTo: textfieldView1.leftAnchor, constant: 20).isActive = true
         textfield1.rightAnchor.constraint(equalTo: textfieldView1.rightAnchor, constant: -20).isActive = true
         textfield1.bottomAnchor.constraint(equalTo: textfieldView1.bottomAnchor, constant: -5).isActive = true
-        textfield1.backgroundColor = .white
+        textfield1.backgroundColor = .clear
         textfield1.placeholder = textfield1PlaceholderText
         textfield1.keyboardType = .emailAddress
         textfield1.autocapitalizationType = .none
+        textfield1.textContentType = .oneTimeCode
         textfield1.delegate = self
         
         view.addSubview(textfieldView2)
@@ -120,7 +121,7 @@ class AccountFilloutViewController: UIViewController {
         textfieldView2.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         textfieldView2.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         textfieldView2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textfieldView2.backgroundColor = .white
+        textfieldView2.backgroundColor = UIColor(named: "customWhite")
         // Do any additional setup after loading the view.
         
         textfieldView2.addSubview(revealTextfield2Button)
@@ -139,7 +140,7 @@ class AccountFilloutViewController: UIViewController {
         textfield2.leftAnchor.constraint(equalTo: textfieldView2.leftAnchor, constant: 20).isActive = true
         textfield2.rightAnchor.constraint(equalTo: revealTextfield2Button.leftAnchor).isActive = true
         textfield2.bottomAnchor.constraint(equalTo: textfieldView2.bottomAnchor, constant: -5).isActive = true
-        textfield2.backgroundColor = .white
+        textfield2.backgroundColor = .clear
         textfield2.placeholder = textfield2PlaceholderText
         textfield2.keyboardType = .emailAddress
         textfield2.autocapitalizationType = .none
@@ -153,7 +154,7 @@ class AccountFilloutViewController: UIViewController {
         textfieldView3.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         textfieldView3.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         textfieldView3.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textfieldView3.backgroundColor = .white
+        textfieldView3.backgroundColor = UIColor(named: "customWhite")
         
         
         textfieldView3.addSubview(revealTextfield3Button)
@@ -172,7 +173,7 @@ class AccountFilloutViewController: UIViewController {
         textfield3.leftAnchor.constraint(equalTo: textfieldView3.leftAnchor, constant: 20).isActive = true
         textfield3.rightAnchor.constraint(equalTo: revealTextfield3Button.leftAnchor).isActive = true
         textfield3.bottomAnchor.constraint(equalTo: textfieldView3.bottomAnchor, constant: -5).isActive = true
-        textfield3.backgroundColor = .white
+        textfield3.backgroundColor = .clear
         textfield3.placeholder = textfield3PlaceholderText
         textfield3.keyboardType = .emailAddress
         textfield3.autocapitalizationType = .none
@@ -188,6 +189,9 @@ class AccountFilloutViewController: UIViewController {
         button1.backgroundColor = .systemYellow
         button1.layer.cornerRadius = 15
         button1.setTitle(button1TitleText, for: .normal)
+        button1.setTitleColor(.white, for: .normal)
+        button1.setTitleColor(.systemGray, for: .disabled)
+        button1.setTitleColor(.white, for: .normal)
         button1.addTarget(self, action: #selector(button1Pressed), for: .touchUpInside)
         button1.backgroundColor = UIColor(named: "customYellow1")
         button1.isEnabled = false

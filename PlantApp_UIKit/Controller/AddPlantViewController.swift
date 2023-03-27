@@ -39,7 +39,6 @@ class AddPlantViewController: UIViewController {
     let suggestionScrollView = UIScrollView()
     let suggestionTableView = UITableView()
     let networkMonitor = NWPathMonitor()
-    
     let opaqueView = UIView()
     private let loadingSpinnerView: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -53,6 +52,7 @@ class AddPlantViewController: UIViewController {
     var plants = [Plant]()
     var filteredSuggestion = [String]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let defaults = UserDefaults.standard
     
     private var selectedHabitDay = 7
     
@@ -91,6 +91,7 @@ class AddPlantViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         updateUI()
+        
     }
     
     
@@ -333,7 +334,6 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
                 
                 if plant.lowercased().starts(with: query.lowercased()) {
                     filteredSuggestion.append(plant)
-                    showSuggestionScrollView()
                 }
                 
             }
@@ -344,24 +344,31 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         
         if let text = textField.text {
             filterText(text + string)
+            
+            if !filteredSuggestion.isEmpty {
+                showSuggestionScrollView(filteredSuggestion.count)
+            }
+            
         }
         
         return true
     }
     
-    func showSuggestionScrollView() {
+    func showSuggestionScrollView(_ itemsCount: Int) {
         suggestionScrollView.backgroundColor = UIColor.white
         containerView.addSubview(suggestionScrollView)
         addSuggestionTableView()
+        
         
         suggestionScrollView.translatesAutoresizingMaskIntoConstraints = false
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
         let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
-        let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringSectionView, attribute: .top, multiplier: 1.0, constant: 10)
+//        let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringSectionView, attribute: .top, multiplier: 1.0, constant: 10)
+        let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: textFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
-        containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, bottomConstraint])
+        containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, heightConstraint])
         containerView.updateConstraints()
     }
     
@@ -372,7 +379,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     
     func addSuggestionTableView() {
         // Setup tableview
-        suggestionTableView.backgroundColor = UIColor.white
+    
         containerView.addSubview(suggestionTableView)
         
         suggestionTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -419,7 +426,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     }
     
     func enableDismissKeyboardOnTapOutside() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action:    #selector(dismissKeyboardTouchOutside))
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action: #selector(dismissKeyboardTouchOutside))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
@@ -467,6 +474,19 @@ extension AddPlantViewController {
                 
                 addLoadingView()
                 
+                // Save UUID to UserDefaults to reference later for deletion if user cancels/discards app during upload.
+                var plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] ?? []
+                if !plantIDuuidStringArray.isEmpty {
+                    plantIDuuidStringArray.append(newPlantID.uuidString)
+                    defaults.set(plantIDuuidStringArray, forKey: "plantIDuuidString")
+                    print("DDD - 1: \(plantIDuuidStringArray)")
+                } else {
+                    var array = [String]()
+                    array.append(newPlantID.uuidString)
+                    defaults.set(array, forKey: "plantIDuuidString")
+                    print("DDD - 2: \(plantIDuuidStringArray)")
+                }
+                
                 DispatchQueue.main.async { [self] in
                     
                     print("networkConnectionBool: true")
@@ -508,14 +528,14 @@ extension AddPlantViewController {
                     // 6: Set data for "Plant entity input"
                     plantDoc.setData(plantAddedData) { error in
                         if error != nil {
-                            print("Firenbase Error setting: plantAddedData. ")
+                            print("Firebase Error setting: plantAddedData. ")
                         }
                     }
                     
                     // 6: FIREBASE: Set data in Plant/plantAddedDoc - documentID
                     plantDoc.setData(["plantDocId": plantDoc.documentID], merge: true) { error in
                         if error != nil {
-                            print("Firenbase Error setting: plantAddedData. ")
+                            print("Firebase Error setting: plantAddedData. ")
                         }
                     }
                     

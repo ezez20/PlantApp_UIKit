@@ -14,6 +14,7 @@ class SignUpViewController: UIViewController {
     
     let titleLogo = UIImageView()
     let appName = UILabel()
+    let introPageLabel = UILabel()
     
     let userNameTextfieldView = UIView()
     let userNameTextfield = UITextField()
@@ -46,8 +47,8 @@ class SignUpViewController: UIViewController {
         titleLogo.translatesAutoresizingMaskIntoConstraints = false
         titleLogo.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
         titleLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        titleLogo.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        titleLogo.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        titleLogo.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        titleLogo.widthAnchor.constraint(equalToConstant: 70).isActive = true
         
         titleLogo.image = UIImage(named: K.leaf)
         
@@ -57,20 +58,38 @@ class SignUpViewController: UIViewController {
         appName.topAnchor.constraint(equalTo: titleLogo.bottomAnchor, constant: 0).isActive = true
         appName.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         appName.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        appName.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        appName.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
         appName.text = "PlantApp"
         appName.font = UIFont.boldSystemFont(ofSize: 50)
+        appName.adjustsFontForContentSizeCategory = true
+        appName.adjustsFontSizeToFitWidth = true
         appName.textColor = UIColor(named: K.customGreen2)
         appName.textAlignment = .center
         
+        // Intro to Sign Up Page: UILabel
+        view.addSubview(introPageLabel)
+        introPageLabel.translatesAutoresizingMaskIntoConstraints = false
+        introPageLabel.topAnchor.constraint(equalTo: appName.bottomAnchor, constant: 0).isActive = true
+        introPageLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        introPageLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        introPageLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        introPageLabel.text = "Sign up for an account to save your plants in the cloud"
+        introPageLabel.font = UIFont.boldSystemFont(ofSize: 50)
+        introPageLabel.adjustsFontForContentSizeCategory = true
+        introPageLabel.adjustsFontSizeToFitWidth = true
+        introPageLabel.textColor = .systemGray
+        introPageLabel.textAlignment = .center
+        
         view.addSubview(userNameTextfieldView)
         userNameTextfieldView.translatesAutoresizingMaskIntoConstraints = false
-        userNameTextfieldView.topAnchor.constraint(equalTo: appName.bottomAnchor, constant: 20).isActive = true
+        userNameTextfieldView.topAnchor.constraint(equalTo: introPageLabel.bottomAnchor, constant: 10
+        ).isActive = true
         userNameTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         userNameTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         userNameTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        userNameTextfieldView.backgroundColor = .white
+        userNameTextfieldView.backgroundColor = UIColor(named: "customWhite")
         userNameTextfieldView.layer.cornerRadius = 5.0
         
         userNameTextfieldView.addSubview(userNameTextfield)
@@ -79,19 +98,21 @@ class SignUpViewController: UIViewController {
         userNameTextfield.leftAnchor.constraint(equalTo: userNameTextfieldView.leftAnchor, constant: 20).isActive = true
         userNameTextfield.rightAnchor.constraint(equalTo: userNameTextfieldView.rightAnchor, constant: -20).isActive = true
         userNameTextfield.bottomAnchor.constraint(equalTo: userNameTextfieldView.bottomAnchor, constant: -5).isActive = true
-        userNameTextfield.backgroundColor = .white
+        userNameTextfield.backgroundColor = .clear
         userNameTextfield.placeholder = "Full Name or Username"
         userNameTextfield.autocapitalizationType = .none
+        userNameTextfield.autocorrectionType = .no
+        userNameTextfield.spellCheckingType = .no
         
         
         // Email textfieldView: UITextfieldView
         view.addSubview(emailTextfieldView)
         emailTextfieldView.translatesAutoresizingMaskIntoConstraints = false
-        emailTextfieldView.topAnchor.constraint(equalTo: userNameTextfieldView.bottomAnchor, constant: 20).isActive = true
+        emailTextfieldView.topAnchor.constraint(equalTo: userNameTextfieldView.bottomAnchor, constant: 10).isActive = true
         emailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         emailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         emailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        emailTextfieldView.backgroundColor = .white
+        emailTextfieldView.backgroundColor = UIColor(named: "customWhite")
         emailTextfieldView.layer.cornerRadius = 5.0
         
       
@@ -101,20 +122,22 @@ class SignUpViewController: UIViewController {
         emailTextfield.leftAnchor.constraint(equalTo: emailTextfieldView.leftAnchor, constant: 20).isActive = true
         emailTextfield.rightAnchor.constraint(equalTo: emailTextfieldView.rightAnchor, constant: -20).isActive = true
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        emailTextfield.backgroundColor = .white
+        emailTextfield.backgroundColor = .clear
         emailTextfield.placeholder = "Email"
+        emailTextfield.autocorrectionType = .no
         emailTextfield.autocapitalizationType = .none
+        emailTextfield.spellCheckingType = .no
         
         
         
         // Password textfieldView: UITextfieldView
         view.addSubview(passwordTextfieldView)
         passwordTextfieldView.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextfieldView.topAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: 20).isActive = true
+        passwordTextfieldView.topAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: 10).isActive = true
         passwordTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         passwordTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        passwordTextfieldView.backgroundColor = .white
+        passwordTextfieldView.backgroundColor = UIColor(named: "customWhite")
         passwordTextfieldView.layer.cornerRadius = 5.0
         
       
@@ -124,14 +147,16 @@ class SignUpViewController: UIViewController {
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
         passwordTextfield.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor, constant: -20).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
-        passwordTextfield.backgroundColor = .white
+        passwordTextfield.backgroundColor = .clear
         passwordTextfield.placeholder = "Password"
         passwordTextfield.autocapitalizationType = .none
+        passwordTextfield.autocorrectionType = .no
+        passwordTextfield.spellCheckingType = .no
         
         
         view.addSubview(createAnAccountButton)
         createAnAccountButton.translatesAutoresizingMaskIntoConstraints = false
-        createAnAccountButton.topAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: 20).isActive = true
+        createAnAccountButton.topAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: 10).isActive = true
         createAnAccountButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         createAnAccountButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         createAnAccountButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -139,8 +164,6 @@ class SignUpViewController: UIViewController {
         createAnAccountButton.frame = CGRect(x: 100, y: 100, width: 200, height: 40)
         createAnAccountButton.setTitle("Create an account", for: .normal)
         createAnAccountButton.backgroundColor = .opaqueSeparator
-        createAnAccountButton.setTitleColor(.white, for: .normal)
-        createAnAccountButton.setTitleColor(.placeholderText, for: .highlighted)
         createAnAccountButton.layer.borderWidth = 1.0
         createAnAccountButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.7).cgColor
         createAnAccountButton.layer.cornerRadius = 5.0
@@ -148,6 +171,7 @@ class SignUpViewController: UIViewController {
         
         
     }
+    
     
     @objc func createAnAccountButtonClicked(sender: UIButton) {
         // Add segue to MainViewController with Firebase loaded.
@@ -211,7 +235,7 @@ class SignUpViewController: UIViewController {
             createAnAccountButton.backgroundColor = .opaqueSeparator
         } else {
             createAnAccountButton.isEnabled = true
-            createAnAccountButton.backgroundColor = .systemGreen
+            createAnAccountButton.backgroundColor = UIColor(named: K.customGreen2)
         }
     }
 

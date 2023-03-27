@@ -71,7 +71,7 @@ class ChangeEmailViewController: UIViewController {
         currentEmailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         currentEmailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         currentEmailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        currentEmailTextfieldView.backgroundColor = .white
+        currentEmailTextfieldView.backgroundColor = UIColor(named: "customWhite")
         // Do any additional setup after loading the view.
         
         currentEmailTextfieldView.addSubview(currentEmailTextfield)
@@ -80,7 +80,7 @@ class ChangeEmailViewController: UIViewController {
         currentEmailTextfield.leftAnchor.constraint(equalTo: currentEmailTextfieldView.leftAnchor, constant: 20).isActive = true
         currentEmailTextfield.rightAnchor.constraint(equalTo: currentEmailTextfieldView.rightAnchor, constant: -20).isActive = true
         currentEmailTextfield.bottomAnchor.constraint(equalTo: currentEmailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        currentEmailTextfield.backgroundColor = .white
+        currentEmailTextfield.backgroundColor = UIColor(named: "customWhite")
         currentEmailTextfield.placeholder = "Current email address"
         currentEmailTextfield.keyboardType = .emailAddress
         currentEmailTextfield.autocapitalizationType = .none
@@ -93,7 +93,7 @@ class ChangeEmailViewController: UIViewController {
         newEmailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         newEmailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         newEmailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        newEmailTextfieldView.backgroundColor = .white
+        newEmailTextfieldView.backgroundColor = UIColor(named: "customWhite")
         // Do any additional setup after loading the view.
         
         newEmailTextfieldView.addSubview(newEmailTextfield)
@@ -102,7 +102,7 @@ class ChangeEmailViewController: UIViewController {
         newEmailTextfield.leftAnchor.constraint(equalTo: newEmailTextfieldView.leftAnchor, constant: 20).isActive = true
         newEmailTextfield.rightAnchor.constraint(equalTo: newEmailTextfieldView.rightAnchor, constant: -20).isActive = true
         newEmailTextfield.bottomAnchor.constraint(equalTo: newEmailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        newEmailTextfield.backgroundColor = .white
+        newEmailTextfield.backgroundColor = UIColor(named: "customWhite")
         newEmailTextfield.placeholder = "New email address"
         newEmailTextfield.keyboardType = .emailAddress
         newEmailTextfield.autocapitalizationType = .none
@@ -115,7 +115,7 @@ class ChangeEmailViewController: UIViewController {
         passwordTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         passwordTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        passwordTextfieldView.backgroundColor = .white
+        passwordTextfieldView.backgroundColor = UIColor(named: "customWhite")
         passwordTextfield.isSecureTextEntry = true
         
         
@@ -136,7 +136,7 @@ class ChangeEmailViewController: UIViewController {
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
         passwordTextfield.rightAnchor.constraint(equalTo: revealPasswordButton.leftAnchor).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
-        passwordTextfield.backgroundColor = .white
+        passwordTextfield.backgroundColor = UIColor(named: "customWhite")
         passwordTextfield.placeholder = "Current password"
         passwordTextfield.keyboardType = .emailAddress
         passwordTextfield.keyboardType = .default
@@ -154,6 +154,8 @@ class ChangeEmailViewController: UIViewController {
         updateEmailButton.backgroundColor = UIColor(named: "customYellow1")
         updateEmailButton.layer.cornerRadius = 15
         updateEmailButton.setTitle("Update", for: .normal)
+        updateEmailButton.setTitleColor(.white, for: .normal)
+        updateEmailButton.setTitleColor(.systemGray, for: .disabled)
         updateEmailButton.isEnabled = false
         updateEmailButton.addTarget(self, action: #selector(updateEmailButtonPressed), for: .touchUpInside)
 
