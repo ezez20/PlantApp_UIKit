@@ -98,6 +98,46 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadPlantsTableViewNotification), name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
         
+        // Load plants from Core Data
+        if authenticateFBUser() == false {
+            addLoadingSpinner()
+            loadPlants {
+                self.refreshUserNotification()
+                self.updateUnpresentedNotification()
+                self.removeLoadingView()
+                print("PlantsTableview reloaded")
+            }
+        }
+        
+        // Load plants if user discarded app.
+        if defaults.bool(forKey: "userDiscardedApp") {
+            addLoadingSpinner()
+            print("Reloading from userDiscardedApp")
+            if let defaultsArrayUnwrapped = defaults.array(forKey: "plantIDuuidString") {
+                if !defaultsArrayUnwrapped.isEmpty {
+                    deleteUnsuccessfulUploadedPlant {
+                        print("deleteUnsuccessfulUploadedPlant done")
+                        self.loadPlants {
+                            print("Plants Loaded. Core Data count: \(self.plants.count)")
+                            self.refreshUserNotification()
+                            self.updateUnpresentedNotification()
+                            self.removeLoadingView()
+                            self.defaults.set(false, forKey: "userDiscardedApp")
+                        }
+                    }
+                }
+                
+            } else {
+                self.loadPlants {
+                    print("Plants Loaded. Core Data count: \(self.plants.count)")
+                    self.refreshUserNotification()
+                    self.updateUnpresentedNotification()
+                    self.removeLoadingView()
+                    self.defaults.set(false, forKey: "userDiscardedApp")
+                }
+            }
+        }
+        
         
     }
     
@@ -129,29 +169,44 @@ class MainViewController: UIViewController {
             }
         }
         
-        // Load plants from Core Data
-        if authenticateFBUser() == false {
-            addLoadingSpinner()
-            loadPlants {
-                self.refreshUserNotification()
-                self.updateUnpresentedNotification()
-                self.removeLoadingView()
-                print("PlantsTableview reloaded")
-            }
-        }
-        
-        // Load plants if user discarded app.
-        if defaults.bool(forKey: "userDiscardedApp") {
-            addLoadingSpinner()
-            print("Reloading from userDiscardedApp")
-            self.loadPlants {
-                print("Plants Loaded. Core Data count: \(self.plants.count)")
-                self.refreshUserNotification()
-                self.updateUnpresentedNotification()
-                self.removeLoadingView()
-                self.defaults.set(false, forKey: "userDiscardedApp")
-            }
-        }
+//        // Load plants from Core Data
+//        if authenticateFBUser() == false {
+//            addLoadingSpinner()
+//            loadPlants {
+//                self.refreshUserNotification()
+//                self.updateUnpresentedNotification()
+//                self.removeLoadingView()
+//                print("PlantsTableview reloaded")
+//            }
+//        }
+//
+//        // Load plants if user discarded app.
+//        if defaults.bool(forKey: "userDiscardedApp") {
+//            addLoadingSpinner()
+//            print("Reloading from userDiscardedApp")
+//            if !defaults.array(forKey: "plantIDuuidString")!.isEmpty {
+//
+//                deleteUnsuccessfulUploadedPlant {
+//                    print("deleteUnsuccessfulUploadedPlant done")
+//                    self.loadPlants {
+//                        print("Plants Loaded. Core Data count: \(self.plants.count)")
+//                        self.refreshUserNotification()
+//                        self.updateUnpresentedNotification()
+//                        self.removeLoadingView()
+//                        self.defaults.set(false, forKey: "userDiscardedApp")
+//                    }
+//                }
+//
+//            } else {
+//                self.loadPlants {
+//                    print("Plants Loaded. Core Data count: \(self.plants.count)")
+//                    self.refreshUserNotification()
+//                    self.updateUnpresentedNotification()
+//                    self.removeLoadingView()
+//                    self.defaults.set(false, forKey: "userDiscardedApp")
+//                }
+//            }
+//        }
         
         
         // Reload FB images if internet connection was interupted.
@@ -430,6 +485,11 @@ extension MainViewController: UITableViewDelegate {
             }
         }
         
+//        if segue.identifier == K.mainToAddPlantID {
+//            let vc = segue.destination as? AddPlantViewController
+//            vc?.plants = plants
+//        }
+        
     }
     
 }
@@ -537,8 +597,8 @@ extension MainViewController {
     func loadFirebaseUser() {
         if authenticateFBUser() {
             let currentUser = Auth.auth().currentUser?.email
+            userID_FB = Auth.auth().currentUser!.uid
             // Add some kind of function to grab user's ID/Name to display in MainVC
-            
             print("Current user logged in: \(String(describing: currentUser))")
         } else {
             print("No Firebase user logged in")
@@ -548,13 +608,12 @@ extension MainViewController {
     func loadPlantsFB(completion: @escaping () -> Void) {
      
         if authenticateFBUser() {
-            let currentUser = Auth.auth().currentUser?.email
+            
+            guard let currentUser = Auth.auth().currentUser?.email else { return }
             // Add some kind of function to grab user's ID/Name to display in MainVC
 
             //Get currentUser UID to use as document's ID.
             let db = Firestore.firestore()
-            userID_FB = Auth.auth().currentUser!.uid
-            print("userID_FB: \(userID_FB)")
 
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
@@ -597,6 +656,7 @@ extension MainViewController {
             print("Current user logged in: \(String(describing: currentUser))")
         } else {
             print("No Firebase user logged in")
+            completion()
         }
 
     }
@@ -604,8 +664,7 @@ extension MainViewController {
     func parseAndSaveFBintoCoreData(plants_FB: [QueryDocumentSnapshot], completion: @escaping () -> Void) {
         
         // MARK: - Parse plants from Firebase to Core Data
-        
-        
+    
         for doc in plants_FB {
             
             dispatchGroup.enter()
@@ -682,7 +741,6 @@ extension MainViewController {
             
             let customPlantImageUUID_FB = data["customPlantImageUUID"] as? String
             
-          
             if customPlantImageUUID_FB != nil {
                 
                 dispatchGroup.enter()
@@ -744,7 +802,6 @@ extension MainViewController {
         if authenticateFBUser() {
             
             let db = Firestore.firestore()
-            userID_FB = Auth.auth().currentUser!.uid
             
             let currentUserCollection = db.collection("users").document(userID_FB)
             let plantsCollection = currentUserCollection.collection("plants")
@@ -821,7 +878,9 @@ extension MainViewController {
     }
     
     func editPlant_FB(_ currentPlantID: UUID, plantEditedData: [String: Any] ) {
+        
         if authenticateFBUser() {
+            
             let db = Firestore.firestore()
             
             //2: FIREBASE: Get currentUser UID to use as document's ID.
@@ -887,6 +946,52 @@ extension MainViewController {
             completion()
         }
         
+    }
+    
+    func deleteUnsuccessfulUploadedPlant(completion: @escaping () -> Void) {
+        
+        let db = Firestore.firestore()
+        
+        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
+            print("deleteUnsuccessfulUploadedPlant returned")
+            completion()
+            return
+
+        }
+
+        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
+
+        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
+
+        let currentUserCollection = db.collection("users").document(userID_FB)
+        let plantsCollection = currentUserCollection.collection("plants")
+
+        for plantUUID in plantIDuuidStringArray {
+            dispatchGroup.enter()
+            print("deleteUnsuccessfulUploadedPlant dispatch - enter")
+            plantsCollection.document("\(plantUUID)").delete() { [self] err in
+                if let err = err {
+                    print("Error removing document: \(err)")
+                    dispatchGroup.leave()
+                    print("deleteUnsuccessfulUploadedPlant dispatch - leave error")
+                } else {
+                    print("Document successfully removed!")
+                    print("FB deleted plant: \(plantUUID)")
+                    print("DEEZ 1: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
+                    dispatchGroup.leave()
+                    print("deleteUnsuccessfulUploadedPlant dispatch - leave success")
+                }
+            }
+            
+        }
+
+        // Notify dispatchGroup when all work is done.
+        dispatchGroup.notify(queue: .main) {
+            self.defaults.set(nil, forKey: "plantIDuuidString")
+            print("deleteUnsuccessfulUploadedPlant dispatch done")
+            completion()
+        }
+
     }
     
     

@@ -52,13 +52,45 @@ class PlantViewController: UIViewController {
     let imageSetNames = K.imageSetNames
     
     // MARK: - Core Data
-    var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 //    var currentPlant: Plant!
-    var currentPlant = Plant()
+    weak var currentPlant: Plant?
     
     let defaults = UserDefaults.standard
     let center = UNUserNotificationCenter.current()
+    
+//    init(plantImage: UIImageView!, plantName: UILabel!, plantHappinessLevel: UILabel!, plantNameIn: String = "", plantImageStringIn: String = "", plantImageLoadedIn: UIImage = UIImage(), weatherLogo: UIImageView!, weatherTemp: UILabel!, weatherCity: UILabel!, inputLogoIn: String = "", inputTempIn: String = "", inputCityIn: String = "", currentDateDisplayed: UILabel!, weatherDateStackView: UIStackView!, datePicker: UIDatePicker!, waterButton: UIButton!, dropCircleImage: UIImageView!, wateringHabitStackView: UIStackView!, containerView: UIView!, waterStatusView: UILabel!, waterHabitIn: Int = 7, lastWateredDateIn: Date = Date(), currentDate: Foundation.Date = Date.now, currentPlant: Plant) {
+//        self.plantImage = plantImage
+//        self.plantName = plantName
+//        self.plantHappinessLevel = plantHappinessLevel
+//        self.plantNameIn = plantNameIn
+//        self.plantImageStringIn = plantImageStringIn
+//        self.plantImageLoadedIn = plantImageLoadedIn
+//        self.weatherLogo = weatherLogo
+//        self.weatherTemp = weatherTemp
+//        self.weatherCity = weatherCity
+//        self.inputLogoIn = inputLogoIn
+//        self.inputTempIn = inputTempIn
+//        self.inputCityIn = inputCityIn
+//        self.currentDateDisplayed = currentDateDisplayed
+//        self.weatherDateStackView = weatherDateStackView
+//        self.datePicker = datePicker
+//        self.waterButton = waterButton
+//        self.dropCircleImage = dropCircleImage
+//        self.wateringHabitStackView = wateringHabitStackView
+//        self.containerView = containerView
+//        self.waterStatusView = waterStatusView
+//        self.waterHabitIn = waterHabitIn
+//        self.lastWateredDateIn = lastWateredDateIn
+//        self.currentDate = currentDate
+//        self.currentPlant = currentPlant
+//        
+//        self.currentPlant = currentPlant
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     deinit {
         print("PlantVC has been deinitialized")
@@ -149,8 +181,8 @@ class PlantViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("notificationPending: \(currentPlant.notificationPending)")
-        print("notificationPresented: \(currentPlant.notificationPresented)")
+        print("notificationPending: \(String(describing: currentPlant?.notificationPending))")
+        print("notificationPresented: \(String(describing: currentPlant?.notificationPresented))")
         print("Badge count: \(String(describing: defaults.value(forKey: "NotificationBadgeCount")))")
     }
     
@@ -178,7 +210,7 @@ class PlantViewController: UIViewController {
         refreshBadgeAndNotification()
         savePlant()
         updateUI()
-        editPlant_FB(currentPlant.id!)
+        editPlant_FB(currentPlant?.id)
         
         print("Water button pressed.")
     }
@@ -191,7 +223,7 @@ class PlantViewController: UIViewController {
         updateUI()
         refreshBadgeAndNotification()
         savePlant()
-        editPlant_FB(currentPlant.id!)
+        editPlant_FB(currentPlant?.id!)
     
     }
     
@@ -258,15 +290,15 @@ class PlantViewController: UIViewController {
     }
     
     func loadData() {
-        plantName.text = currentPlant.plant
-        waterHabitIn = Int(currentPlant.waterHabit)
-        lastWateredDateIn = currentPlant.lastWateredDate!
+        plantName.text = currentPlant?.plant
+        waterHabitIn = Int(currentPlant!.waterHabit)
+        lastWateredDateIn = (currentPlant?.lastWateredDate!)!
         
         datePicker.date = lastWateredDateIn
-        if imageSetNames.contains(currentPlant.plantImageString!) {
-            plantImage.image = UIImage(named: currentPlant.plantImageString!)
+        if imageSetNames.contains(currentPlant!.plantImageString!) {
+            plantImage.image = UIImage(named: currentPlant!.plantImageString!)
         } else {
-            plantImage.image = loadedImage(with: currentPlant.imageData)
+            plantImage.image = loadedImage(with: currentPlant?.imageData)
         }
 
         waterStatusView.text = waterStatus
@@ -274,8 +306,8 @@ class PlantViewController: UIViewController {
     
     func savePlant() {
         // update currentPlant on Core Data
-        currentPlant.lastWateredDate = lastWateredDateIn
-        print("Plant: \(String(describing: currentPlant.plant)) updated." )
+        currentPlant!.lastWateredDate = lastWateredDateIn
+        print("Plant: \(String(describing: currentPlant!.plant)) updated." )
  
         do {
             try context.save()
@@ -310,8 +342,11 @@ extension PlantViewController {
         }
     }
     
-    func editPlant_FB(_ currentPlantID: UUID) {
+    func editPlant_FB(_ currentPlantID: UUID?) {
         if authenticateFBUser() {
+            
+            guard let currentPlantIDString = currentPlantID?.uuidString else { return }
+            
             let db = Firestore.firestore()
             
             //2: FIREBASE: Get currentUser UID to use as document's ID.
@@ -330,8 +365,8 @@ extension PlantViewController {
             ]
             
             // 5: FIREBASE: Set doucment name(use index# to later use in core data)
-            let plantDoc = plantCollection.document("\(currentPlant.id!.uuidString)")
-            print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+            let plantDoc = plantCollection.document("\(currentPlantIDString)")
+            print("plantDoc edited uuid: \(currentPlantIDString)")
             
             // 6: Edited data for "Plant entity input"
             plantDoc.updateData(plantEditedData) { error in
@@ -356,12 +391,12 @@ extension PlantViewController {
         if defaults.bool(forKey: "notificationOn") {
             
             // 1: If notification is already presented for this plant
-            if currentPlant.notificationPresented == true {
+            if currentPlant!.notificationPresented == true {
                 
                 // MARK: - OPTION 1, when PLANT'S USER NOTIFICATION IS ALREADY PRESENTED
                 
                 // 2: And if notification request was made for this plant
-                if let notificationToRemoveID = currentPlant.notificationRequestID {
+                if let notificationToRemoveID = currentPlant!.notificationRequestID {
                    
                     // 3: Get the deliveredNotificationsStored from User Defaults
                     let deliveredNotifications = defaults.object(forKey: "deliveredNotificationsStored") as? [String] ?? []
@@ -394,7 +429,7 @@ extension PlantViewController {
                     }
                     
                     // 7: Lastly, update plant's notificationPresented to false, so it can be setup for notification again. Save context, then RefreshUserNotification.
-                    currentPlant.notificationPresented = false
+                    currentPlant!.notificationPresented = false
                     savePlant()
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
                 
@@ -412,7 +447,7 @@ extension PlantViewController {
                         UIApplication.shared.applicationIconBadgeNumber = safeCount
                     }
                     
-                    currentPlant.notificationPresented = false
+                    currentPlant!.notificationPresented = false
                     savePlant()
                     
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
@@ -424,7 +459,7 @@ extension PlantViewController {
             // For cases while notification was already created previously: user water plant early. user changes water date/water habit.
             var pendingNotifications = [String]()
             center.getPendingNotificationRequests { [self] unNotification in
-                guard let notificationToRemoveID = currentPlant.notificationRequestID else {
+                guard let notificationToRemoveID = currentPlant!.notificationRequestID else {
                    
                     return
                 }
@@ -438,7 +473,7 @@ extension PlantViewController {
                 if pendingNotifications.contains(notificationToRemoveID) {
                     
                     center.removePendingNotificationRequests(withIdentifiers: [notificationToRemoveID])
-                    currentPlant.notificationPresented = false
+                    currentPlant!.notificationPresented = false
                     print("Pending Notification Removed: \(notificationToRemoveID)")
                     savePlant()
         

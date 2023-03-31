@@ -724,7 +724,7 @@ extension EditPlantViewController {
         
         //Get currentUser UID to use as document's ID.
         let db = Firestore.firestore()
-        let userID_FB = Auth.auth().currentUser!.uid
+        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
         
         let currentUserCollection = db.collection("users").document(userID_FB)
         let plantsCollection = currentUserCollection.collection("plants")

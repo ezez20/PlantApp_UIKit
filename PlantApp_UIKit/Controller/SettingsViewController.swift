@@ -269,13 +269,6 @@ extension SettingsViewController {
             resetUndeliveredNotifications_FB()
             updateUserSettings_FB()
             
-            dispatchGroup.enter()
-            deleteUnsuccessfulUploadedPlant(db) {
-                print("DEEZ")
-                self.dispatchGroup.leave()
-            }
-            
-            
             let firebaseAuth = Auth.auth()
             
             dispatchGroup.enter()
@@ -447,44 +440,6 @@ extension SettingsViewController {
         print("Plant successfully updated on Firebase")
     }
     
-    func deleteUnsuccessfulUploadedPlant(_ db: Firestore, completion: @escaping () -> Void) {
-        
-        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
-            print("deleteUnsuccessfulUploadedPlant returned")
-            completion()
-            return
-            
-        }
-        
-        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
-
-        let userID_FB = Auth.auth().currentUser!.uid
-
-        let currentUserCollection = db.collection("users").document(userID_FB)
-        let plantsCollection = currentUserCollection.collection("plants")
-
-        for plantUUID in plantIDuuidStringArray {
-            dispatchGroup.enter()
-            plantsCollection.document("\(plantUUID)").delete() { [self] err in
-                if let err = err {
-                    print("Error removing document: \(err)")
-                    dispatchGroup.leave()
-                } else {
-                    print("Document successfully removed!")
-                    print("FB deleted plant: \(plantUUID)")
-                    dispatchGroup.leave()
-                }
-            }
-        }
-        
-        // Notify dispatchGroup when all work is done.
-        dispatchGroup.notify(queue: .main) {
-            self.defaults.removeObject(forKey: "plantIDuuidString")
-            print("DispatchGroup work done")
-            completion()
-        }
-        
-    }
     
 }
 

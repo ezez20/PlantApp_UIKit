@@ -25,7 +25,6 @@ class LoginViewController: UIViewController {
     private let passwordTextfieldView = UIView()
     private let passwordTextfield = UITextField()
     private let revealPasswordButton = UIButton()
-    private let passwordReveal = true
 
     private let loginButton = UIButton()
     private let forgotPasswordButton = UIButton()
@@ -50,7 +49,6 @@ class LoginViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(presentMainVC), name: NSNotification.Name("navigateToMainVC"), object: nil)
         
-        print("Defaults: \(defaults.object(forKey: "plantIDuuidString") as? [String] ?? [])")
         
         //Title Logo: UIImageView
         view.addSubview(titleLogo)
@@ -205,6 +203,8 @@ class LoginViewController: UIViewController {
             self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
             K.navigateToMainVC(self)
         }
+        
+        print("defaults: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
         
     }
     
@@ -425,7 +425,6 @@ extension LoginViewController {
             loginButton.setTitleColor(.white, for: .normal)
             
            validateEntry()
-//            loginButton.backgroundColor = UIColor(named: "customYellow1")
             print("removedLoadingView")
         }
     }

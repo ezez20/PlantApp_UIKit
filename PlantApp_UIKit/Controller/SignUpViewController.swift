@@ -23,6 +23,8 @@ class SignUpViewController: UIViewController {
     let emailTextfield = UITextField()
     let passwordTextfieldView = UIView()
     let passwordTextfield = UITextField()
+    private let revealPasswordButton = UIButton()
+    private let passwordReveal = true
     
     let createAnAccountButton = UIButton()
     
@@ -139,13 +141,27 @@ class SignUpViewController: UIViewController {
         passwordTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         passwordTextfieldView.backgroundColor = UIColor(named: "customWhite")
         passwordTextfieldView.layer.cornerRadius = 5.0
+        passwordTextfield.isSecureTextEntry = true
+        
+        // Reveal Password Button: UIButton
+        passwordTextfieldView.addSubview(revealPasswordButton)
+        revealPasswordButton.translatesAutoresizingMaskIntoConstraints = false
+        revealPasswordButton.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor).isActive = true
+        revealPasswordButton.centerYAnchor.constraint(equalTo: passwordTextfieldView.centerYAnchor).isActive = true
+        revealPasswordButton.heightAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.widthAnchor.constraint(equalTo: passwordTextfieldView.heightAnchor).isActive = true
+        revealPasswordButton.backgroundColor = .clear
+        revealPasswordButton.tintColor = .lightGray
+        revealPasswordButton.addTarget(self, action: #selector(revealPasswordButtonClicked(sender:)), for: .touchUpInside)
+        
         
       
         passwordTextfieldView.addSubview(passwordTextfield)
         passwordTextfield.translatesAutoresizingMaskIntoConstraints = false
         passwordTextfield.topAnchor.constraint(equalTo: passwordTextfieldView.topAnchor, constant: 5).isActive = true
         passwordTextfield.leftAnchor.constraint(equalTo: passwordTextfieldView.leftAnchor, constant: 20).isActive = true
-        passwordTextfield.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor, constant: -20).isActive = true
+//        passwordTextfield.rightAnchor.constraint(equalTo: passwordTextfieldView.rightAnchor, constant: -20).isActive = true
+        passwordTextfield.rightAnchor.constraint(equalTo: revealPasswordButton.leftAnchor).isActive = true
         passwordTextfield.bottomAnchor.constraint(equalTo: passwordTextfieldView.bottomAnchor, constant: -5).isActive = true
         passwordTextfield.backgroundColor = .clear
         passwordTextfield.placeholder = "Password"
@@ -170,6 +186,10 @@ class SignUpViewController: UIViewController {
         createAnAccountButton.addTarget(self, action: #selector(createAnAccountButtonClicked(sender:)), for: .touchUpInside)
         
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        revealPasswordButton.setImage(UIImage(systemName: ""), for: .normal)
     }
     
     
@@ -229,7 +249,20 @@ class SignUpViewController: UIViewController {
         
     }
     
+    @objc func revealPasswordButtonClicked(sender: UIButton) {
+        
+        passwordTextfield.isSecureTextEntry.toggle()
+        
+        if passwordTextfield.isSecureTextEntry == false {
+            revealPasswordButton.tintColor = .darkGray
+        } else {
+            revealPasswordButton.tintColor = .lightGray
+        }
+        
+    }
+    
     func validateEntry() {
+        
         if userNameTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || emailTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
             createAnAccountButton.isEnabled = false
             createAnAccountButton.backgroundColor = .opaqueSeparator
@@ -237,6 +270,13 @@ class SignUpViewController: UIViewController {
             createAnAccountButton.isEnabled = true
             createAnAccountButton.backgroundColor = UIColor(named: K.customGreen2)
         }
+        
+        if !passwordTextfield.text!.isEmpty {
+            revealPasswordButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        } else {
+            revealPasswordButton.setImage(UIImage(systemName: ""), for: .normal)
+        }
+        
     }
 
 }

@@ -64,6 +64,7 @@ class AddPlantViewController: UIViewController {
     let imagePicker = UIImagePickerController()
     
     deinit {
+        networkMonitor.cancel()
         print("AddPlantVC has been deinitialized")
     }
     
@@ -590,7 +591,7 @@ extension AddPlantViewController {
         
         //Get currentUser UID to use as document's ID.
         let db = Firestore.firestore()
-        let userID_FB = Auth.auth().currentUser!.uid
+        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
         
         let currentUserCollection = db.collection("users").document(userID_FB)
         let plantsCollection = currentUserCollection.collection("plants")
@@ -598,6 +599,7 @@ extension AddPlantViewController {
         // Get all documents/plants and put it in "plants_FB"
         plantsCollection.getDocuments { [weak self] (snapshot, error) in
             
+            // If no error, parseAndSaveFBintoCoreData.
             if error == nil && snapshot != nil {
                 
                 var plants_FB = [QueryDocumentSnapshot]()
@@ -622,6 +624,7 @@ extension AddPlantViewController {
                 self?.removeLoadingView()
                 self?.dismiss(animated: true)
                 
+            // If error, removeLoadingView/dismiss modal view.
             } else {
                 print("Error getting documents from plant collection from firebase")
                 self?.removeLoadingView()
