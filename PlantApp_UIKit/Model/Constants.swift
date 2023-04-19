@@ -28,6 +28,10 @@ struct K {
     
     static let imageSetNames = ["calathea ornata", "dracaena", "fiddle leaf fig", "monstera", "money plant", "peace lily", "pothos", "ponytail palm", "prayer plant","rubber tree", "snake plant", "spider plant","zz plant"]
     
+    static let appPrivacyPolicyURL = "https://github.com/ezez20/PlantApp_UIKit/blob/main/AppPrivacyPolicy.md"
+    
+    static let termsAndConditionsURL  = "https://github.com/ezez20/PlantApp_UIKit/blob/main/TermsAndConditions.md"
+    
     static func presentAlert(_ viewController: UIViewController ,_ error: Error) {
 
         let alert = UIAlertController(title: "Error:", message: "\(error)", preferredStyle: .alert)

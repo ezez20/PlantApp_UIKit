@@ -27,6 +27,7 @@
 		513CBC5428C7A7AC00CBC760 /* WeatherLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */; };
 		51402CB729B299DA00441DBC /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51402CB629B299DA00441DBC /* CollectionViewController.swift */; };
 		51402CB929B2A01200441DBC /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51402CB829B2A01200441DBC /* CollectionViewCell.swift */; };
+		514FA18529EF73380021FB59 /* WebKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514FA18429EF73380021FB59 /* WebKitViewController.swift */; };
 		5164153428F4B6B20053C05D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5164153328F4B6B20053C05D /* SettingsViewController.swift */; };
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
 		5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */; };
@@ -93,6 +94,7 @@
 		513CBC5328C7A7AC00CBC760 /* WeatherLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocationManager.swift; sourceTree = "<group>"; };
 		51402CB629B299DA00441DBC /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		51402CB829B2A01200441DBC /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		514FA18429EF73380021FB59 /* WebKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitViewController.swift; sourceTree = "<group>"; };
 		5164153328F4B6B20053C05D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
 		5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPlantViewController.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				510F5BDB299E844B00D8A593 /* AccountFilloutViewController.swift */,
 				518C56EB29A51E4C005A42D5 /* DeleteAccountViewController.swift */,
 				51402CB629B299DA00441DBC /* CollectionViewController.swift */,
+				514FA18429EF73380021FB59 /* WebKitViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -411,6 +414,7 @@
 				5164153428F4B6B20053C05D /* SettingsViewController.swift in Sources */,
 				5102E02528AFFDC6006AF2AA /* AppDelegate.swift in Sources */,
 				510F5BDC299E844B00D8A593 /* AccountFilloutViewController.swift in Sources */,
+				514FA18529EF73380021FB59 /* WebKitViewController.swift in Sources */,
 				51052E63299C1ECB00FE65AD /* ChangeEmailViewController.swift in Sources */,
 				518C56EC29A51E4C005A42D5 /* DeleteAccountViewController.swift in Sources */,
 				51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */,

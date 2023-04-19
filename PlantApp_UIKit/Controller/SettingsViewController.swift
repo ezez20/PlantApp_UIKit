@@ -127,8 +127,6 @@ class SettingsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         
         // MARK: - Notification Settings Section
-        
-        // notification section
         section1View.addSubview(notificationBell)
         notificationBell.translatesAutoresizingMaskIntoConstraints = false
         notificationBell.topAnchor.constraint(equalTo: section1View.topAnchor, constant: 10).isActive = true
@@ -266,7 +264,7 @@ class SettingsViewController: UIViewController {
         
         var termsButtonConfig = UIButton.Configuration.plain()
         termsButtonConfig.baseForegroundColor = .placeholderText
-        privacyPolicyButton.configuration = termsButtonConfig
+        termsButton.configuration = termsButtonConfig
         
         section2View.addSubview(termsButton)
         termsButton.translatesAutoresizingMaskIntoConstraints = false
@@ -318,9 +316,6 @@ class SettingsViewController: UIViewController {
             accountSettingsButton.addTarget(self, action: #selector(accountSettingsButtonPressed), for: .touchUpInside)
         }
         
-        
-        // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"
-//        section1View.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -378,10 +373,22 @@ extension SettingsViewController {
     
     @objc func privacyPolicyButtonPressed(_ sender: UISwitch!)  {
         print("privacyPolicyButtonPressed")
+        
+        guard let url = URL(string: K.appPrivacyPolicyURL) else { return }
+        
+        let vc = WebKitViewController(url: url, title: "Privacy Policy")
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
     }
     
     @objc func termsButtonPressed(_ sender: UISwitch!)  {
         print("termsButtonPressed")
+        
+        guard let url = URL(string: K.termsAndConditionsURL) else { return }
+        
+        let vc = WebKitViewController(url: url, title: "Terms & Conditions")
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
     }
     
     @objc func logoutButtonPressed(_ sender: UISwitch!) {
