@@ -256,6 +256,7 @@ class AddPlantViewController: UIViewController {
 
 // MARK: - Extensions
 extension AddPlantViewController: PassDataDelegate {
+    
     func passData(Data: Int) {
         selectedHabitDay = Data
         print("User selected day: \(selectedHabitDay)")
@@ -333,9 +334,10 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
             
             for plant in imageSetNames {
                 
-                if plant.lowercased().starts(with: query.lowercased()) {
+                if plant.lowercased().starts(with: query.lowercased()) || plant.hasPrefix(query.lowercased()) {
                     filteredSuggestion.append(plant)
                 }
+                
                 
             }
             
@@ -347,6 +349,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
             filterText(text + string)
             
             if !filteredSuggestion.isEmpty {
+                removeSuggestionScrollView()
                 showSuggestionScrollView(filteredSuggestion.count)
             }
             
@@ -356,17 +359,18 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     }
     
     func showSuggestionScrollView(_ itemsCount: Int) {
+    
         suggestionScrollView.backgroundColor = UIColor.white
         containerView.addSubview(suggestionScrollView)
         addSuggestionTableView()
         
-        
         suggestionScrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
-//        let bottomConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .bottomMargin, relatedBy: .equal, toItem: wateringSectionView, attribute: .top, multiplier: 1.0, constant: 10)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
+        // Below will adjust height constraint dynamically based on "itemsCount"
         let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: textFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
         containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, heightConstraint])
@@ -476,17 +480,17 @@ extension AddPlantViewController {
                 addLoadingView()
                 
                 // Save UUID to UserDefaults to reference later for deletion if user cancels/discards app during upload.
-                var plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] ?? []
-                if !plantIDuuidStringArray.isEmpty {
-                    plantIDuuidStringArray.append(newPlantID.uuidString)
-                    defaults.set(plantIDuuidStringArray, forKey: "plantIDuuidString")
-                    print("DDD - 1: \(plantIDuuidStringArray)")
-                } else {
-                    var array = [String]()
-                    array.append(newPlantID.uuidString)
-                    defaults.set(array, forKey: "plantIDuuidString")
-                    print("DDD - 2: \(plantIDuuidStringArray)")
-                }
+//                var plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] ?? []
+//                if !plantIDuuidStringArray.isEmpty {
+//                    plantIDuuidStringArray.append(newPlantID.uuidString)
+//                    defaults.set(plantIDuuidStringArray, forKey: "plantIDuuidString")
+//                    print("DDD - 1: \(plantIDuuidStringArray)")
+//                } else {
+//                    var array = [String]()
+//                    array.append(newPlantID.uuidString)
+//                    defaults.set(array, forKey: "plantIDuuidString")
+//                    print("DDD - 2: \(plantIDuuidStringArray)")
+//                }
                 
                 DispatchQueue.main.async { [self] in
                     

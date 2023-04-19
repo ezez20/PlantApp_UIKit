@@ -58,40 +58,7 @@ class PlantViewController: UIViewController {
     
     let defaults = UserDefaults.standard
     let center = UNUserNotificationCenter.current()
-    
-//    init(plantImage: UIImageView!, plantName: UILabel!, plantHappinessLevel: UILabel!, plantNameIn: String = "", plantImageStringIn: String = "", plantImageLoadedIn: UIImage = UIImage(), weatherLogo: UIImageView!, weatherTemp: UILabel!, weatherCity: UILabel!, inputLogoIn: String = "", inputTempIn: String = "", inputCityIn: String = "", currentDateDisplayed: UILabel!, weatherDateStackView: UIStackView!, datePicker: UIDatePicker!, waterButton: UIButton!, dropCircleImage: UIImageView!, wateringHabitStackView: UIStackView!, containerView: UIView!, waterStatusView: UILabel!, waterHabitIn: Int = 7, lastWateredDateIn: Date = Date(), currentDate: Foundation.Date = Date.now, currentPlant: Plant) {
-//        self.plantImage = plantImage
-//        self.plantName = plantName
-//        self.plantHappinessLevel = plantHappinessLevel
-//        self.plantNameIn = plantNameIn
-//        self.plantImageStringIn = plantImageStringIn
-//        self.plantImageLoadedIn = plantImageLoadedIn
-//        self.weatherLogo = weatherLogo
-//        self.weatherTemp = weatherTemp
-//        self.weatherCity = weatherCity
-//        self.inputLogoIn = inputLogoIn
-//        self.inputTempIn = inputTempIn
-//        self.inputCityIn = inputCityIn
-//        self.currentDateDisplayed = currentDateDisplayed
-//        self.weatherDateStackView = weatherDateStackView
-//        self.datePicker = datePicker
-//        self.waterButton = waterButton
-//        self.dropCircleImage = dropCircleImage
-//        self.wateringHabitStackView = wateringHabitStackView
-//        self.containerView = containerView
-//        self.waterStatusView = waterStatusView
-//        self.waterHabitIn = waterHabitIn
-//        self.lastWateredDateIn = lastWateredDateIn
-//        self.currentDate = currentDate
-//        self.currentPlant = currentPlant
-//        
-//        self.currentPlant = currentPlant
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-    
+
     deinit {
         print("PlantVC has been deinitialized")
     }
@@ -151,6 +118,8 @@ class PlantViewController: UIViewController {
         loadData()
         updateUI()
         
+        currentDateDisplayed.text = currentDate.formatted(date: .abbreviated, time: .omitted
+        )
         // Configure datePicker
         datePicker.maximumDate = Date.now
         datePicker.timeZone = .current
@@ -235,17 +204,18 @@ class PlantViewController: UIViewController {
             gradient.colors = [UIColor(named: "customSkyBlue")?.cgColor, UIColor.white.cgColor, UIColor.white.cgColor, UIColor(named: K.customGreenColor)?.cgColor ?? UIColor.green.cgColor]
             gradient.locations = [0.0 ,0.3, 0.5 , 1.0]
             gradient.frame = containerView.frame
-            gradient.cornerRadius = 40
+            containerView.clipsToBounds = true
             containerView.layer.insertSublayer(gradient, at: 0)
             containerView.layer.cornerRadius = 40
+            containerView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else {
             let gradient: CAGradientLayer = CAGradientLayer()
             gradient.colors = [UIColor(named: "customSkyBlue")?.cgColor, UIColor.black.cgColor, UIColor(named: "customSkylight")?.cgColor ,UIColor(named: K.customGreen2)?.cgColor ?? UIColor.green.cgColor]
             gradient.locations = [0.0, 0.3, 0.5, 1.0]
             gradient.frame = containerView.frame
-            gradient.cornerRadius = 40
             containerView.layer.insertSublayer(gradient, at: 0)
             containerView.layer.cornerRadius = 40
+            containerView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner] 
         }
     }
     
@@ -321,6 +291,7 @@ class PlantViewController: UIViewController {
 
 }
 
+
 extension PlantViewController: ModalViewControllerDelegate {
     
     func modalControllerWillDisapear(_ modal: EditPlantViewController) {
@@ -331,6 +302,7 @@ extension PlantViewController: ModalViewControllerDelegate {
         }
     
 }
+
 
 extension PlantViewController {
     

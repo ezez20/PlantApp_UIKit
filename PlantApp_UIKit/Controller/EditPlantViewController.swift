@@ -61,7 +61,10 @@ class EditPlantViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var currentPlant: Plant!
     
+    let networkMonitor = NWPathMonitor()
+    
     deinit {
+        networkMonitor.cancel()
         print("EditPlantVC has been deinitialized")
     }
     
@@ -95,13 +98,28 @@ class EditPlantViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         // scrollView
-        addView(viewIn: scrollView, addSubTo: view, top: view.topAnchor, topConst: 108, bottom: view.bottomAnchor, bottomConst: 0, left: view.leftAnchor, leftConst: 0, right: view.rightAnchor, rightConst: 0)
+//        addView(viewIn: scrollView, addSubTo: view, top: view.topAnchor, topConst: 108, bottom: view.bottomAnchor, bottomConst: 0, left: view.leftAnchor, leftConst: 0, right: view.rightAnchor, rightConst: 0)
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         scrollView.backgroundColor = .secondarySystemBackground
         scrollView.isDirectionalLockEnabled = true
+        scrollView.isScrollEnabled = true
         
         // containerView
-        addView(viewIn: containerView, addSubTo: view, top: scrollView.topAnchor, topConst: 0, bottom: scrollView.bottomAnchor, bottomConst: 500, left: scrollView.leftAnchor, leftConst: 0, right: scrollView.rightAnchor, rightConst: 0)
+//        addView(viewIn: containerView, addSubTo: scrollView, top: scrollView.topAnchor, topConst: 0, bottom: scrollView.bottomAnchor, bottomConst: 500, left: scrollView.leftAnchor, leftConst: 0, right: scrollView.rightAnchor, rightConst: 0)
+        scrollView.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        containerView.heightAnchor.constraint(equalToConstant: 700).isActive = true
+        containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
         
         // plantTextFieldView
         containerView.addSubview(plantTextFieldView)
@@ -113,7 +131,13 @@ class EditPlantViewController: UIViewController {
         plantTextFieldView.backgroundColor = UIColor(named: "customWhite")
         
         // plantTextField
-        addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 20, right: plantTextFieldView.rightAnchor, rightConst: -20)
+//        addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 20, right: plantTextFieldView.rightAnchor, rightConst: -20)
+        plantTextFieldView.addSubview(plantTextField)
+        plantTextField.translatesAutoresizingMaskIntoConstraints = false
+        plantTextField.topAnchor.constraint(equalTo: plantTextFieldView.topAnchor, constant: 5).isActive = true
+        plantTextField.leftAnchor.constraint(equalTo: plantTextFieldView.leftAnchor, constant: 5).isActive = true
+        plantTextField.rightAnchor.constraint(equalTo: plantTextFieldView.rightAnchor, constant: -5).isActive = true
+        plantTextField.bottomAnchor.constraint(equalTo: plantTextFieldView.bottomAnchor, constant: -5).isActive = true
         
         plantTextField.backgroundColor = .clear
         plantTextField.placeholder = "Type of plant"
@@ -283,9 +307,11 @@ class EditPlantViewController: UIViewController {
         print("Water Habit button clicked")
         
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
-        let resultVC = storyboard.instantiateViewController(withIdentifier: "waterHabitStoryboardID")  as! WaterHabitDaysViewController
-        resultVC.selectedHabitDays = selectedHabitDay
-        self.navigationController?.pushViewController(resultVC, animated: true)
+        if let resultVC = storyboard.instantiateViewController(withIdentifier: "waterHabitStoryboardID")  as? WaterHabitDaysViewController {
+            resultVC.selectedHabitDays = selectedHabitDay
+            self.navigationController?.pushViewController(resultVC, animated: true)
+        }
+        
     }
     
     
@@ -913,18 +939,17 @@ extension EditPlantViewController {
     
     func networkConnectionBool(completion: @escaping (Bool) -> Void) {
         
-        let networkMonitor = NWPathMonitor()
         let queue = DispatchQueue(label: "NetworkMonitor")
         networkMonitor.start(queue: queue)
         
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("Network Connected")
-                networkMonitor.cancel()
+                self.networkMonitor.cancel()
                 completion(true)
             } else {
                 print("Network Disconnected")
-                networkMonitor.cancel()
+                self.networkMonitor.cancel()
                 completion(false)
             }
             print("path.isExpensive: \(path.isExpensive)"

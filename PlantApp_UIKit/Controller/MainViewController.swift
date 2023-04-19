@@ -112,30 +112,14 @@ class MainViewController: UIViewController {
         // Load plants if user discarded app.
         if defaults.bool(forKey: "userDiscardedApp") {
             addLoadingSpinner()
-            print("Reloading from userDiscardedApp")
-            if let defaultsArrayUnwrapped = defaults.array(forKey: "plantIDuuidString") {
-                if !defaultsArrayUnwrapped.isEmpty {
-                    deleteUnsuccessfulUploadedPlant {
-                        print("deleteUnsuccessfulUploadedPlant done")
-                        self.loadPlants {
-                            print("Plants Loaded. Core Data count: \(self.plants.count)")
-                            self.refreshUserNotification()
-                            self.updateUnpresentedNotification()
-                            self.removeLoadingView()
-                            self.defaults.set(false, forKey: "userDiscardedApp")
-                        }
-                    }
-                }
-                
-            } else {
-                self.loadPlants {
-                    print("Plants Loaded. Core Data count: \(self.plants.count)")
-                    self.refreshUserNotification()
-                    self.updateUnpresentedNotification()
-                    self.removeLoadingView()
-                    self.defaults.set(false, forKey: "userDiscardedApp")
-                }
+            self.loadPlants {
+                print("Plants Loaded. Core Data count: \(self.plants.count)")
+                self.refreshUserNotification()
+                self.updateUnpresentedNotification()
+                self.removeLoadingView()
+                self.defaults.set(false, forKey: "userDiscardedApp")
             }
+            
         }
         
         
@@ -168,45 +152,6 @@ class MainViewController: UIViewController {
                 }
             }
         }
-        
-//        // Load plants from Core Data
-//        if authenticateFBUser() == false {
-//            addLoadingSpinner()
-//            loadPlants {
-//                self.refreshUserNotification()
-//                self.updateUnpresentedNotification()
-//                self.removeLoadingView()
-//                print("PlantsTableview reloaded")
-//            }
-//        }
-//
-//        // Load plants if user discarded app.
-//        if defaults.bool(forKey: "userDiscardedApp") {
-//            addLoadingSpinner()
-//            print("Reloading from userDiscardedApp")
-//            if !defaults.array(forKey: "plantIDuuidString")!.isEmpty {
-//
-//                deleteUnsuccessfulUploadedPlant {
-//                    print("deleteUnsuccessfulUploadedPlant done")
-//                    self.loadPlants {
-//                        print("Plants Loaded. Core Data count: \(self.plants.count)")
-//                        self.refreshUserNotification()
-//                        self.updateUnpresentedNotification()
-//                        self.removeLoadingView()
-//                        self.defaults.set(false, forKey: "userDiscardedApp")
-//                    }
-//                }
-//
-//            } else {
-//                self.loadPlants {
-//                    print("Plants Loaded. Core Data count: \(self.plants.count)")
-//                    self.refreshUserNotification()
-//                    self.updateUnpresentedNotification()
-//                    self.removeLoadingView()
-//                    self.defaults.set(false, forKey: "userDiscardedApp")
-//                }
-//            }
-//        }
         
         
         // Reload FB images if internet connection was interupted.
@@ -256,8 +201,6 @@ class MainViewController: UIViewController {
         })
         
     }
-
-    
     
     // MARK: - Button IBActions
     @IBAction func editButtonPressed(_ sender: Any) {
@@ -485,11 +428,7 @@ extension MainViewController: UITableViewDelegate {
             }
         }
         
-//        if segue.identifier == K.mainToAddPlantID {
-//            let vc = segue.destination as? AddPlantViewController
-//            vc?.plants = plants
-//        }
-        
+
     }
     
 }
@@ -948,51 +887,51 @@ extension MainViewController {
         
     }
     
-    func deleteUnsuccessfulUploadedPlant(completion: @escaping () -> Void) {
-        
-        let db = Firestore.firestore()
-        
-        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
-            print("deleteUnsuccessfulUploadedPlant returned")
-            completion()
-            return
-
-        }
-
-        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
-
-        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
-
-        let currentUserCollection = db.collection("users").document(userID_FB)
-        let plantsCollection = currentUserCollection.collection("plants")
-
-        for plantUUID in plantIDuuidStringArray {
-            dispatchGroup.enter()
-            print("deleteUnsuccessfulUploadedPlant dispatch - enter")
-            plantsCollection.document("\(plantUUID)").delete() { [self] err in
-                if let err = err {
-                    print("Error removing document: \(err)")
-                    dispatchGroup.leave()
-                    print("deleteUnsuccessfulUploadedPlant dispatch - leave error")
-                } else {
-                    print("Document successfully removed!")
-                    print("FB deleted plant: \(plantUUID)")
-                    print("DEEZ 1: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
-                    dispatchGroup.leave()
-                    print("deleteUnsuccessfulUploadedPlant dispatch - leave success")
-                }
-            }
-            
-        }
-
-        // Notify dispatchGroup when all work is done.
-        dispatchGroup.notify(queue: .main) {
-            self.defaults.set(nil, forKey: "plantIDuuidString")
-            print("deleteUnsuccessfulUploadedPlant dispatch done")
-            completion()
-        }
-
-    }
+//    func deleteUnsuccessfulUploadedPlant(completion: @escaping () -> Void) {
+//
+//        let db = Firestore.firestore()
+//
+//        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
+//            print("deleteUnsuccessfulUploadedPlant returned")
+//            completion()
+//            return
+//
+//        }
+//
+//        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
+//
+//        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
+//
+//        let currentUserCollection = db.collection("users").document(userID_FB)
+//        let plantsCollection = currentUserCollection.collection("plants")
+//
+//        for plantUUID in plantIDuuidStringArray {
+//            dispatchGroup.enter()
+//            print("deleteUnsuccessfulUploadedPlant dispatch - enter")
+//            plantsCollection.document("\(plantUUID)").delete() { [self] err in
+//                if let err = err {
+//                    print("Error removing document: \(err)")
+//                    dispatchGroup.leave()
+//                    print("deleteUnsuccessfulUploadedPlant dispatch - leave error")
+//                } else {
+//                    print("Document successfully removed!")
+//                    print("FB deleted plant: \(plantUUID)")
+//                    print("DEEZ 1: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
+//                    dispatchGroup.leave()
+//                    print("deleteUnsuccessfulUploadedPlant dispatch - leave success")
+//                }
+//            }
+//
+//        }
+//
+//        // Notify dispatchGroup when all work is done.
+//        dispatchGroup.notify(queue: .main) {
+//            self.defaults.set(nil, forKey: "plantIDuuidString")
+//            print("deleteUnsuccessfulUploadedPlant dispatch done")
+//            completion()
+//        }
+//
+//    }
     
     
 }
@@ -1041,81 +980,80 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                     // For each/every plant, this will create a notification
                     for plant in plants {
                         
-                        if plant.notificationPresented == false {
+                        
+                        if let plantUUIDUnwrapped = plant.id {
                             
-                            if let plantUUIDUnwrapped = plant.id {
-                                
-                                print("Plant notification set: \(String(describing: plant.plant))")
-                                
-                                // 2: Create the notification content
-                                let content = UNMutableNotificationContent()
-                                content.title = "Notification alert!"
-                                content.body = "Make sure to water your plant: \(plant.plant!)"
-                                
-                                // NEW METHOD FOR SETTING BADGE COUNT:
-                                content.badge = (plant.notificationBadgeCount) as NSNumber
-                                content.sound = .default
-                                content.categoryIdentifier = "categoryIdentifier"
-                                
-                                // 3: Create the notification trigger
-                                // "5 seconds" added
-                                var nextWaterDate: Date {
-                                    let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
-                                    return calculatedDate ?? Date.now
-                                }
-                                
-                                var selectedNotificationTime = Date()
-                                switch defaults.integer(forKey: "selectedAlertOption") {
-                                case 0: // day of event
-                                    // For debug purpose: Notification time - 10 seconds
-                                    //                            selectedNotificationTime = Date.now.advanced(by: 10)
-                                    
-                                    // Uncomment below when not debugging:
-                                    selectedNotificationTime = nextWaterDate.advanced(by: 100)
-                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                                case 1: // 1 day before
-                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
-                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                                case 2: // 2 days before
-                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                                default: // 3 days before
-                                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-                                    print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                                }
-                                
-                                
-                                let notificationDate = selectedNotificationTime
-                                let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
-                                let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
-                                
-                                // 4: Create the request
-                                let uuidString = UUID()
-                                plant.notificationRequestID = uuidString.uuidString
-                                plant.notificationPending = true
-                                print("notificationRequestID: \(uuidString)")
-                                let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
-                                
-                                // 5: Register the request
-                                center.add(notificationRequest) { [self] (error) in
-                                    // check the error parameter or handle any errors
-                                    guard error == nil else {
-                                        print("NotificationRequest error: \(error.debugDescription)")
-                                        return
-                                    }
-                                    
-                                    savePlants()
-                                    editPlant_FB(plantUUIDUnwrapped, plantEditedData: [
-                                        "notificationPending": true,
-                                        "notificationRequestID": uuidString.uuidString as Any,
-                                        "notificationBadgeCount": plant.notificationBadgeCount
-                                    ])
-                                    
-                                    print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
-                                }
-                                
+                            print("Plant notification set: \(String(describing: plant.plant))")
+                            
+                            // 2: Create the notification content
+                            let content = UNMutableNotificationContent()
+                            content.title = "Notification alert!"
+                            content.body = "Make sure to water your plant: \(plant.plant!)"
+                            
+                            // NEW METHOD FOR SETTING BADGE COUNT:
+                            content.badge = (plant.notificationBadgeCount) as NSNumber
+                            content.sound = .default
+                            content.categoryIdentifier = "categoryIdentifier"
+                            
+                            // 3: Create the notification trigger
+                            // "5 seconds" added
+                            var nextWaterDate: Date {
+                                let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(plant.waterHabit), to:  plant.lastWateredDate!)
+                                return calculatedDate ?? Date.now
                             }
+                            
+                            var selectedNotificationTime = Date()
+                            switch defaults.integer(forKey: "selectedAlertOption") {
+                            case 0: // day of event
+                                // For debug purpose: Notification time - 10 seconds
+                                //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                                
+                                // Uncomment below when not debugging:
+                                selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            case 1: // 1 day before
+                                selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            case 2: // 2 days before
+                                selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            default: // 3 days before
+                                selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                                print("Plant: \(String(describing: plant.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                            }
+                            
+                            
+                            let notificationDate = selectedNotificationTime
+                            let notificationDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationDate)
+                            let notificationTrigger = UNCalendarNotificationTrigger(dateMatching: notificationDateComponents, repeats: false)
+                            
+                            // 4: Create the request
+                            let uuidString = UUID()
+                            plant.notificationRequestID = uuidString.uuidString
+                            plant.notificationPending = true
+                            print("notificationRequestID: \(uuidString)")
+                            let notificationRequest = UNNotificationRequest(identifier: uuidString.uuidString, content: content, trigger: notificationTrigger)
+                            
+                            // 5: Register the request
+                            center.add(notificationRequest) { [self] (error) in
+                                // check the error parameter or handle any errors
+                                guard error == nil else {
+                                    print("NotificationRequest error: \(error.debugDescription)")
+                                    return
+                                }
+                                
+                                savePlants()
+                                editPlant_FB(plantUUIDUnwrapped, plantEditedData: [
+                                    "notificationPending": true,
+                                    "notificationRequestID": uuidString.uuidString as Any,
+                                    "notificationBadgeCount": plant.notificationBadgeCount
+                                ])
+                                
+                                print("Notification Request successfully added for ID: \(notificationRequest.identifier)")
+                            }
+                            
                         }
+                        
                     }
                     
                     // Set UNNotificationActions

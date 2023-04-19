@@ -10,12 +10,18 @@ import UserNotifications
 import CoreData
 import FirebaseAuth
 import FirebaseFirestore
+import WebKit
 
 class SettingsViewController: UIViewController {
     
     // Container View
     let containerView = UIView()
-    let sectionView = UIView()
+    
+    // MARK: - Notification Settings View
+    let section1View = UIView()
+    
+    // notification Settings Label View
+    let notificationSettingsLabel = UILabel()
     
     // Notification Section View
     let notificationLabel = UILabel()
@@ -30,11 +36,32 @@ class SettingsViewController: UIViewController {
     let alertLogo = UIImageView()
     let alertLabel = UILabel()
     
+    
+    // MARK: - Terms and Agreement / Privacy Policy View
+    let section2View = UIView()
+    let aboutLabel = UILabel()
+    
+    // Notification Section View
+    let privacyPolicyLabel = UILabel()
+    let privacyImage = UIImageView()
+    let privacyPolicyButton = UIButton()
+    
+    // Divider View
+    let divider2View = UIView()
+    
+    // termsButton
+    let termsButton = UIButton()
+    let termsLogo = UIImageView()
+    let termsLabel = UILabel()
+    
+    
+    // MARK: - logoutButton / accountSettingsButton
     // Login/Logout Button
     let logoutButton = UIButton()
-    
     // Account Settings Button
     let accountSettingsButton = UIButton()
+    
+    
     
     // UserNotification selected alert option
     var selectedAlertOption = 0
@@ -77,22 +104,35 @@ class SettingsViewController: UIViewController {
         
         containerView.backgroundColor = .secondarySystemBackground
         
-        containerView.addSubview(sectionView)
-        sectionView.translatesAutoresizingMaskIntoConstraints = false
-        sectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 108).isActive = true
-        sectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
-        sectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
+        containerView.addSubview(section1View)
+        section1View.translatesAutoresizingMaskIntoConstraints = false
+//        sectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 108).isActive = true
+        section1View.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        section1View.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         
-        sectionView.backgroundColor = UIColor(named: "customWhite")
-        sectionView.layer.cornerRadius = 10
+        containerView.addSubview(notificationSettingsLabel)
+        notificationSettingsLabel.translatesAutoresizingMaskIntoConstraints = false
+        notificationSettingsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        notificationSettingsLabel.bottomAnchor.constraint(equalTo: section1View.topAnchor, constant: -5).isActive = true
+        notificationSettingsLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        notificationSettingsLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
+        notificationSettingsLabel.text = "NOTIFICATION SETTINGS"
+        notificationSettingsLabel.textColor = .gray
+        notificationSettingsLabel.adjustsFontForContentSizeCategory = true
+        
+        section1View.backgroundColor = UIColor(named: "customWhite")
+        section1View.layer.cornerRadius = 10
     }
     
     override func viewDidLayoutSubviews() {
+        
+        // MARK: - Notification Settings Section
+        
         // notification section
-        sectionView.addSubview(notificationBell)
+        section1View.addSubview(notificationBell)
         notificationBell.translatesAutoresizingMaskIntoConstraints = false
-        notificationBell.topAnchor.constraint(equalTo: sectionView.topAnchor, constant: 10).isActive = true
-        notificationBell.leftAnchor.constraint(equalTo: sectionView.leftAnchor, constant: 20).isActive = true
+        notificationBell.topAnchor.constraint(equalTo: section1View.topAnchor, constant: 10).isActive = true
+        notificationBell.leftAnchor.constraint(equalTo: section1View.leftAnchor, constant: 20).isActive = true
         
         notificationBell.heightAnchor.constraint(equalToConstant: 30).isActive = true
         notificationBell.widthAnchor.constraint(equalToConstant: 30).isActive = true
@@ -100,39 +140,39 @@ class SettingsViewController: UIViewController {
         notificationBell.contentMode = .scaleAspectFit
         notificationBell.tintColor = .systemYellow
         
-        sectionView.addSubview(notificationLabel)
+        section1View.addSubview(notificationLabel)
         notificationLabel.translatesAutoresizingMaskIntoConstraints = false
         notificationLabel.centerYAnchor.constraint(equalTo: notificationBell.centerYAnchor).isActive = true
         notificationLabel.leftAnchor.constraint(equalTo: notificationBell.rightAnchor, constant: 20).isActive = true
         notificationLabel.text = "Notification Mode"
         
-        sectionView.addSubview(notificationToggleSwitch)
+        section1View.addSubview(notificationToggleSwitch)
         notificationToggleSwitch.translatesAutoresizingMaskIntoConstraints = false
         notificationToggleSwitch.centerYAnchor.constraint(equalTo: notificationBell.centerYAnchor).isActive = true
-        notificationToggleSwitch.rightAnchor.constraint(equalTo: sectionView.rightAnchor, constant: -20).isActive = true
+        notificationToggleSwitch.rightAnchor.constraint(equalTo: section1View.rightAnchor, constant: -20).isActive = true
         notificationToggleSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
         
         // dividerView
-        sectionView.addSubview(dividerView)
-        dividerView.frame = CGRect(x: 0, y: 0, width: sectionView.frame.width, height: 1.0)
+        section1View.addSubview(dividerView)
+        dividerView.frame = CGRect(x: 0, y: 0, width: section1View.frame.width, height: 1.0)
         dividerView.layer.borderWidth = 1.0
         dividerView.layer.borderColor = UIColor.placeholderText.cgColor
         dividerView.translatesAutoresizingMaskIntoConstraints = false
         dividerView.topAnchor.constraint(equalTo: notificationBell.bottomAnchor, constant: 10).isActive = true
         dividerView.bottomAnchor.constraint(equalTo: notificationBell.bottomAnchor, constant: 11).isActive = true
-        dividerView.leftAnchor.constraint(equalTo: sectionView.leftAnchor, constant: 20).isActive = true
-        dividerView.rightAnchor.constraint(equalTo: sectionView.rightAnchor, constant: 0).isActive = true
+        dividerView.leftAnchor.constraint(equalTo: section1View.leftAnchor, constant: 20).isActive = true
+        dividerView.rightAnchor.constraint(equalTo: section1View.rightAnchor, constant: 0).isActive = true
         
         // alertTimeButton
-        var config = UIButton.Configuration.plain()
-        config.title = options[selectedAlertOption]
-        config.baseForegroundColor = .placeholderText
-        alertTimeButton.configuration = config
+        var alertTimeButtonConfig = UIButton.Configuration.plain()
+        alertTimeButtonConfig.title = options[selectedAlertOption]
+        alertTimeButtonConfig.baseForegroundColor = .placeholderText
+        alertTimeButton.configuration = alertTimeButtonConfig
         
-        sectionView.addSubview(alertTimeButton)
+        section1View.addSubview(alertTimeButton)
         alertTimeButton.translatesAutoresizingMaskIntoConstraints = false
-        alertTimeButton.leftAnchor.constraint(equalTo: sectionView.leftAnchor).isActive = true
-        alertTimeButton.rightAnchor.constraint(equalTo: sectionView.rightAnchor).isActive = true
+        alertTimeButton.leftAnchor.constraint(equalTo: section1View.leftAnchor).isActive = true
+        alertTimeButton.rightAnchor.constraint(equalTo: section1View.rightAnchor).isActive = true
         alertTimeButton.topAnchor.constraint(equalTo: dividerView.bottomAnchor).isActive = true
         alertTimeButton.heightAnchor.constraint(equalTo: notificationBell.heightAnchor, constant: 20).isActive = true
         alertTimeButton.contentHorizontalAlignment = .trailing
@@ -141,10 +181,10 @@ class SettingsViewController: UIViewController {
         
         alertTimeButton.addTarget(self, action:#selector(alertButtonPressed), for: .touchUpInside)
         
-        sectionView.addSubview(alertLogo)
+        section1View.addSubview(alertLogo)
         alertLogo.translatesAutoresizingMaskIntoConstraints = false
         alertLogo.topAnchor.constraint(equalTo: alertTimeButton.topAnchor, constant: 10).isActive = true
-        alertLogo.leftAnchor.constraint(equalTo: sectionView.leftAnchor, constant: 20).isActive = true
+        alertLogo.leftAnchor.constraint(equalTo: section1View.leftAnchor, constant: 20).isActive = true
         
         alertLogo.heightAnchor.constraint(equalToConstant: 30).isActive = true
         alertLogo.widthAnchor.constraint(equalToConstant: 30).isActive = true
@@ -152,11 +192,110 @@ class SettingsViewController: UIViewController {
         alertLogo.contentMode = .scaleAspectFit
         alertLogo.tintColor = .systemRed
         
-        sectionView.addSubview(alertLabel)
+        section1View.addSubview(alertLabel)
         alertLabel.translatesAutoresizingMaskIntoConstraints = false
         alertLabel.centerYAnchor.constraint(equalTo: alertLogo.centerYAnchor).isActive = true
         alertLabel.leftAnchor.constraint(equalTo: alertLogo.rightAnchor, constant: 20).isActive = true
         alertLabel.text = "Alert"
+        
+        section1View.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
+        
+        // MARK: - About section
+        containerView.addSubview(aboutLabel)
+        aboutLabel.translatesAutoresizingMaskIntoConstraints = false
+        aboutLabel.topAnchor.constraint(equalTo: section1View.bottomAnchor, constant: 10).isActive = true
+        aboutLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        aboutLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
+        aboutLabel.text = "ABOUT"
+        aboutLabel.textColor = .gray
+        aboutLabel.adjustsFontForContentSizeCategory = true
+        
+        containerView.addSubview(section2View)
+        section2View.translatesAutoresizingMaskIntoConstraints = false
+        section2View.topAnchor.constraint(equalTo: aboutLabel.bottomAnchor, constant: 5).isActive = true
+        section2View.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
+        section2View.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
+        section2View.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        section2View.backgroundColor = UIColor(named: "customWhite")
+        section2View.layer.cornerRadius = 10
+        
+        
+        var privacyPolicyButtonConfig = UIButton.Configuration.plain()
+        privacyPolicyButtonConfig.baseForegroundColor = .placeholderText
+        privacyPolicyButton.configuration = privacyPolicyButtonConfig
+        
+        section2View.addSubview(privacyPolicyButton)
+        privacyPolicyButton.translatesAutoresizingMaskIntoConstraints = false
+        privacyPolicyButton.leftAnchor.constraint(equalTo: section2View.leftAnchor).isActive = true
+        privacyPolicyButton.rightAnchor.constraint(equalTo: section2View.rightAnchor).isActive = true
+        privacyPolicyButton.topAnchor.constraint(equalTo: section2View.topAnchor).isActive = true
+        privacyPolicyButton.heightAnchor.constraint(equalTo: notificationBell.heightAnchor, constant: 20).isActive = true
+        privacyPolicyButton.contentHorizontalAlignment = .trailing
+        privacyPolicyButton.configuration?.image = UIImage(systemName: "chevron.right")
+        privacyPolicyButton.configuration?.imagePlacement = .trailing
+        privacyPolicyButton.addTarget(self, action: #selector(privacyPolicyButtonPressed), for: .touchUpInside)
+        
+        
+        section2View.addSubview(privacyImage)
+        privacyImage.translatesAutoresizingMaskIntoConstraints = false
+        privacyImage.topAnchor.constraint(equalTo: privacyPolicyButton.topAnchor, constant: 10).isActive = true
+        privacyImage.leftAnchor.constraint(equalTo: section2View.leftAnchor, constant: 20).isActive = true
+        
+        privacyImage.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        privacyImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        privacyImage.image = UIImage(systemName: "lock.shield")
+        privacyImage.contentMode = .scaleAspectFit
+        privacyImage.tintColor = .blue
+        
+        section2View.addSubview(privacyPolicyLabel)
+        privacyPolicyLabel.translatesAutoresizingMaskIntoConstraints = false
+        privacyPolicyLabel.centerYAnchor.constraint(equalTo: privacyImage.centerYAnchor).isActive = true
+        privacyPolicyLabel.leftAnchor.constraint(equalTo: privacyImage.rightAnchor, constant: 20).isActive = true
+        privacyPolicyLabel.text = "Privacy Policy"
+        
+        // dividerView
+        section2View.addSubview(divider2View)
+        divider2View.frame = CGRect(x: 0, y: 0, width: section2View.frame.width, height: 1.0)
+        divider2View.layer.borderWidth = 1.0
+        divider2View.layer.borderColor = UIColor.placeholderText.cgColor
+        divider2View.translatesAutoresizingMaskIntoConstraints = false
+        divider2View.topAnchor.constraint(equalTo: privacyPolicyButton.bottomAnchor).isActive = true
+        divider2View.leftAnchor.constraint(equalTo: section2View.leftAnchor, constant: 20).isActive = true
+        divider2View.rightAnchor.constraint(equalTo: section2View.rightAnchor, constant: 0).isActive = true
+        divider2View.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        var termsButtonConfig = UIButton.Configuration.plain()
+        termsButtonConfig.baseForegroundColor = .placeholderText
+        privacyPolicyButton.configuration = termsButtonConfig
+        
+        section2View.addSubview(termsButton)
+        termsButton.translatesAutoresizingMaskIntoConstraints = false
+        termsButton.leftAnchor.constraint(equalTo: section2View.leftAnchor).isActive = true
+        termsButton.rightAnchor.constraint(equalTo: section2View.rightAnchor).isActive = true
+        termsButton.topAnchor.constraint(equalTo: divider2View.bottomAnchor).isActive = true
+        termsButton.heightAnchor.constraint(equalTo: notificationBell.heightAnchor, constant: 20).isActive = true
+        termsButton.contentHorizontalAlignment = .trailing
+        termsButton.configuration?.image = UIImage(systemName: "chevron.right")
+        termsButton.configuration?.imagePlacement = .trailing
+        termsButton.addTarget(self, action: #selector(termsButtonPressed), for: .touchUpInside)
+        
+        
+        section2View.addSubview(termsLogo)
+        termsLogo.translatesAutoresizingMaskIntoConstraints = false
+        termsLogo.topAnchor.constraint(equalTo: termsButton.topAnchor, constant: 10).isActive = true
+        termsLogo.leftAnchor.constraint(equalTo: section2View.leftAnchor, constant: 20).isActive = true
+        termsLogo.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        termsLogo.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        termsLogo.image = UIImage(systemName: "doc.plaintext")
+        termsLogo.contentMode = .scaleAspectFit
+        termsLogo.tintColor = .blue
+        
+        section2View.addSubview(termsLabel)
+        termsLabel.translatesAutoresizingMaskIntoConstraints = false
+        termsLabel.centerYAnchor.constraint(equalTo: termsLogo.centerYAnchor).isActive = true
+        termsLabel.leftAnchor.constraint(equalTo: termsLogo.rightAnchor, constant: 20).isActive = true
+        termsLabel.text = "Terms and Conditions"
+        
         
         containerView.addSubview(logoutButton)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
@@ -167,6 +306,7 @@ class SettingsViewController: UIViewController {
         logoutButton.setTitleColor(.placeholderText, for: .highlighted)
         logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
         
+        // MARK: - Add "accountSettingsButton" if user logged in with an email account
         authenticateFBUser() { [self] db in
             containerView.addSubview(accountSettingsButton)
             accountSettingsButton.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +320,7 @@ class SettingsViewController: UIViewController {
         
         
         // ADJUST IF NEEDED: determines the constraint for the bottom of "sectionView"
-        sectionView.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
+//        section1View.bottomAnchor.constraint(equalTo: alertTimeButton.bottomAnchor, constant: 0).isActive = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -234,6 +374,14 @@ extension SettingsViewController {
             updateUserSettings_FB()
             print("UISwitch state is now Off")
         }
+    }
+    
+    @objc func privacyPolicyButtonPressed(_ sender: UISwitch!)  {
+        print("privacyPolicyButtonPressed")
+    }
+    
+    @objc func termsButtonPressed(_ sender: UISwitch!)  {
+        print("termsButtonPressed")
     }
     
     @objc func logoutButtonPressed(_ sender: UISwitch!) {

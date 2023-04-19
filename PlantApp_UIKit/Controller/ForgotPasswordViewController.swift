@@ -44,7 +44,7 @@ class ForgotPasswordViewController: UIViewController {
         emailTextfieldView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         emailTextfieldView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         emailTextfieldView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        emailTextfieldView.backgroundColor = .white
+        emailTextfieldView.backgroundColor = UIColor(named: "customWhite")
         // Do any additional setup after loading the view.
         
         emailTextfieldView.addSubview(emailTextfield)
@@ -53,7 +53,7 @@ class ForgotPasswordViewController: UIViewController {
         emailTextfield.leftAnchor.constraint(equalTo: emailTextfieldView.leftAnchor, constant: 20).isActive = true
         emailTextfield.rightAnchor.constraint(equalTo: emailTextfieldView.rightAnchor, constant: -20).isActive = true
         emailTextfield.bottomAnchor.constraint(equalTo: emailTextfieldView.bottomAnchor, constant: -5).isActive = true
-        emailTextfield.backgroundColor = .white
+        emailTextfield.backgroundColor = .clear
         emailTextfield.placeholder = "Email address"
         emailTextfield.keyboardType = .emailAddress
         emailTextfield.autocorrectionType = .no

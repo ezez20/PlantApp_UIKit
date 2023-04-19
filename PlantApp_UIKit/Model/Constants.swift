@@ -26,7 +26,7 @@ struct K {
     
     static let AddPlantToWaterHabitID = "AddPlantToWaterHabit"
     
-    static let imageSetNames = ["monstera", "moo", "moooo", "mooooo", "mooo oooo oooo" ,"pothos", "fiddle leaf"]
+    static let imageSetNames = ["calathea ornata", "dracaena", "fiddle leaf fig", "monstera", "money plant", "peace lily", "pothos", "ponytail palm", "prayer plant","rubber tree", "snake plant", "spider plant","zz plant"]
     
     static func presentAlert(_ viewController: UIViewController ,_ error: Error) {
 

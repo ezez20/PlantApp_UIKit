@@ -7,6 +7,7 @@
 
 import UIKit
 
+@available(iOS 15, *)
 class CollectionViewCell: UICollectionViewCell {
     
     static let identifier = "collectionCellID"
@@ -109,6 +110,10 @@ class CollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("CollectionViewCell deinitialized.")
+    }
+    
    
     override func layoutSubviews() {
         
@@ -158,6 +163,7 @@ class CollectionViewCell: UICollectionViewCell {
     
 }
 
+@available(iOS 15, *)
 extension CollectionViewCell {
     
     func loadedImage(with imageData: Data?) -> UIImage {

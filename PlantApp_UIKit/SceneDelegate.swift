@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import UserNotifications
 import FirebaseAuth
 import CoreData
 
