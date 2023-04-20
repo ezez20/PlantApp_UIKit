@@ -11,6 +11,8 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import Network
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 class AddPlantViewController: UIViewController {
     
@@ -145,8 +147,10 @@ class AddPlantViewController: UIViewController {
     //MARK: - IBActions Buttons
     
     @IBAction func cameraButtonPressed(_ sender: Any) {
+        
         imagePicker.sourceType = .camera
         present(imagePicker, animated: true)
+        
     }
     
     
@@ -803,4 +807,40 @@ extension AddPlantViewController {
       
     }
     
+    func shareQRCodeButton(uuidString: String) {
+        
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = Data(uuidString.utf8)
+     
+        
+        if let outputImage = filter.outputImage {
+            
+            let ciContext = CIContext()
+            
+            if let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) {
+                
+                let cgImageIn = UIImage(cgImage: cgImage)
+                
+                let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
+                let printInfo = UIPrintInfo(dictionary:nil)
+                printInfo.outputType = UIPrintInfo.OutputType.photo
+                printInfo.jobName = "Printing Plant's QR"
+                printInfo.orientation = .portrait
+                
+                let printController = UIPrintInteractionController.shared
+                printController.printInfo = printInfo
+                printController.showsNumberOfCopies = false
+                printController.printFormatter = imgP
+                
+                printController.present(animated: true)
+            }
+            
+        }
+
+    }
+    
+    
+    
 }
+
+
