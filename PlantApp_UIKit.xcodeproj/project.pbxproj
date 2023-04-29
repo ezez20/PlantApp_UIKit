@@ -31,6 +31,7 @@
 		5164153428F4B6B20053C05D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5164153328F4B6B20053C05D /* SettingsViewController.swift */; };
 		51706C0A28C1193D00E0F4B8 /* AddPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */; };
 		5178E5AC28DE0204004C4363 /* EditPlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */; };
+		51839C1E29FD68F100D17E75 /* QRScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51839C1D29FD68F100D17E75 /* QRScannerViewController.swift */; };
 		5183A1F029140F00003E9666 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5183A1EF29140F00003E9666 /* SignUpViewController.swift */; };
 		51885F672995853D0080CC14 /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51885F662995853D0080CC14 /* ForgotPasswordViewController.swift */; };
 		5188CA77291AB63200443D93 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5188CA76291AB63200443D93 /* GoogleService-Info.plist */; };
@@ -98,6 +99,7 @@
 		5164153328F4B6B20053C05D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		51706C0828C1193D00E0F4B8 /* AddPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantViewController.swift; sourceTree = "<group>"; };
 		5178E5AB28DE0204004C4363 /* EditPlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPlantViewController.swift; sourceTree = "<group>"; };
+		51839C1D29FD68F100D17E75 /* QRScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewController.swift; sourceTree = "<group>"; };
 		5183A1EF29140F00003E9666 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		51885F662995853D0080CC14 /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
 		5188CA76291AB63200443D93 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				518C56EB29A51E4C005A42D5 /* DeleteAccountViewController.swift */,
 				51402CB629B299DA00441DBC /* CollectionViewController.swift */,
 				514FA18429EF73380021FB59 /* WebKitViewController.swift */,
+				51839C1D29FD68F100D17E75 /* QRScannerViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				514FA18529EF73380021FB59 /* WebKitViewController.swift in Sources */,
 				51052E63299C1ECB00FE65AD /* ChangeEmailViewController.swift in Sources */,
 				518C56EC29A51E4C005A42D5 /* DeleteAccountViewController.swift in Sources */,
+				51839C1E29FD68F100D17E75 /* QRScannerViewController.swift in Sources */,
 				51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */,
 				51402CB729B299DA00441DBC /* CollectionViewController.swift in Sources */,
 				51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */,

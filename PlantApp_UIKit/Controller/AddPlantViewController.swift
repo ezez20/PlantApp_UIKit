@@ -373,7 +373,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: -2)
         // Below will adjust height constraint dynamically based on "itemsCount"
         let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: textFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
@@ -807,37 +807,37 @@ extension AddPlantViewController {
       
     }
     
-    func shareQRCodeButton(uuidString: String) {
-        
-        let filter = CIFilter.qrCodeGenerator()
-        filter.message = Data(uuidString.utf8)
-     
-        
-        if let outputImage = filter.outputImage {
-            
-            let ciContext = CIContext()
-            
-            if let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) {
-                
-                let cgImageIn = UIImage(cgImage: cgImage)
-                
-                let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
-                let printInfo = UIPrintInfo(dictionary:nil)
-                printInfo.outputType = UIPrintInfo.OutputType.photo
-                printInfo.jobName = "Printing Plant's QR"
-                printInfo.orientation = .portrait
-                
-                let printController = UIPrintInteractionController.shared
-                printController.printInfo = printInfo
-                printController.showsNumberOfCopies = false
-                printController.printFormatter = imgP
-                
-                printController.present(animated: true)
-            }
-            
-        }
-
-    }
+//    func shareQRCodeButton(uuidString: String) {
+//
+//        let filter = CIFilter.qrCodeGenerator()
+//        filter.message = Data(uuidString.utf8)
+//
+//
+//        if let outputImage = filter.outputImage {
+//
+//            let ciContext = CIContext()
+//
+//            if let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) {
+//
+//                let cgImageIn = UIImage(cgImage: cgImage)
+//
+//                let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
+//                let printInfo = UIPrintInfo(dictionary:nil)
+//                printInfo.outputType = UIPrintInfo.OutputType.photo
+//                printInfo.jobName = "Printing Plant's QR"
+//                printInfo.orientation = .portrait
+//
+//                let printController = UIPrintInteractionController.shared
+//                printController.printInfo = printInfo
+//                printController.showsNumberOfCopies = false
+//                printController.printFormatter = imgP
+//
+//                printController.present(animated: true)
+//            }
+//
+//        }
+//
+//    }
     
     
     

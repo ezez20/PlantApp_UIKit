@@ -70,15 +70,29 @@
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="RxJ-jo-2Yv">
-                            <connections>
-                                <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem style="done" systemItem="add" id="RxJ-jo-2Yv">
+                                <connections>
+                                    <action selector="addButtonPressed:" destination="BYZ-38-t0r" id="WMd-MK-ymd"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem style="plain" id="Toy-d7-Bic">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="bUp-Ce-pBt">
+                                    <rect key="frame" x="291" y="4.6666666666666679" width="75" height="35"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="qrcode.viewfinder" catalog="system"/>
+                                    <connections>
+                                        <action selector="qrButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QyL-7e-WnS"/>
+                                    </connections>
+                                </button>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="editButton" destination="qgj-3U-jyd" id="dAj-jr-isn"/>
                         <outlet property="plantsTableView" destination="Gng-un-vIy" id="PJQ-f3-I2e"/>
+                        <outlet property="qrButton" destination="Toy-d7-Bic" id="AFu-b7-24e"/>
                         <outlet property="viewChangeButton" destination="LLe-9I-uxa" id="joJ-7W-v5n"/>
                         <segue destination="TFc-O7-hiw" kind="show" identifier="MainToPlant" id="Ttx-nR-qOj"/>
                         <segue destination="hkD-Hg-qKo" kind="presentation" identifier="MainToAddPlantView" id="uWb-IP-9sz"/>
@@ -216,7 +230,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                                <rect key="frame" x="78.333333333333329" y="102.66666666666663" width="231.66666666666669" height="77.333333333333314"/>
+                                                <rect key="frame" x="77.000000000000014" y="102.66666666666663" width="234.33333333333337" height="77.333333333333314"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="KUl-8S-SLv">
                                                         <rect key="frame" x="0.0" y="0.0" width="103" height="77.333333333333329"/>
@@ -226,11 +240,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" id="gHH-X1-3wl">
-                                                        <rect key="frame" x="110" y="0.0" width="121.66666666666669" height="77.333333333333329"/>
+                                                        <rect key="frame" x="110" y="0.0" width="124.33333333333331" height="77.333333333333329"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="121.66666666666667" height="77.333333333333329"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="124.33333333333333" height="77.333333333333329"/>
                                                             </datePicker>
                                                         </subviews>
                                                     </stackView>
@@ -603,6 +617,7 @@
         <image name="gear" catalog="system" width="128" height="122"/>
         <image name="leaf.circle" catalog="system" width="128" height="123"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
+        <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>
         <namedColor name="custom_blue_1">
             <color red="0.2460000067949295" green="0.76800000667572021" blue="0.77999997138977051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

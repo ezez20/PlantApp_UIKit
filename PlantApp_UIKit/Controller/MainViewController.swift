@@ -15,10 +15,8 @@ import FirebaseStorage
 import UniformTypeIdentifiers
 
 
-class MainViewController: UIViewController, UIDocumentPickerDelegate {
+class MainViewController: UIViewController {
  
-    
-    
     // MARK: - Core Data - Persisting data
     var plants = [Plant]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -37,6 +35,8 @@ class MainViewController: UIViewController, UIDocumentPickerDelegate {
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet var plantsTableView: UITableView!
     @IBOutlet weak var viewChangeButton: UIBarButtonItem!
+    @IBOutlet weak var qrButton: UIBarButtonItem!
+    
     
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
@@ -261,6 +261,12 @@ class MainViewController: UIViewController, UIDocumentPickerDelegate {
         
     }
     
+    @IBAction func qrButtonPressed(_ sender: Any) {
+        print("QR buttton pressed")
+        let qrVC = QRScannerViewController(plants: plants)
+        
+        present(qrVC, animated: true)
+    }
     
     
     //MARK: - Data Manipulation Methods

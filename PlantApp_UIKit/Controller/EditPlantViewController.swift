@@ -10,6 +10,8 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import Network
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 class EditPlantViewController: UIViewController {
     
@@ -73,8 +75,6 @@ class EditPlantViewController: UIViewController {
         
         print("View will appear")
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraButtonPressed))
-        
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
     }
@@ -86,19 +86,21 @@ class EditPlantViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        title = "Edit Plant"
         self.enableDismissKeyboardOnTapOutside()
         
         loadPlant()
         updateInputImage()
         
-        
         view.backgroundColor = .secondarySystemBackground
-        // Do any additional setup after loading the view.
+        title = "Edit Plant"
+        
+        // NavigationItems
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "qrcode"), style: .plain, target: self, action: #selector(tappedQRButton))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(cameraButtonPressed))
         
         // scrollView
-//        addView(viewIn: scrollView, addSubTo: view, top: view.topAnchor, topConst: 108, bottom: view.bottomAnchor, bottomConst: 0, left: view.leftAnchor, leftConst: 0, right: view.rightAnchor, rightConst: 0)
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -127,17 +129,17 @@ class EditPlantViewController: UIViewController {
         plantTextFieldView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
         plantTextFieldView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         plantTextFieldView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
-        plantTextFieldView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        plantTextFieldView.heightAnchor.constraint(equalToConstant: 45).isActive = true
         plantTextFieldView.backgroundColor = UIColor(named: "customWhite")
         
         // plantTextField
 //        addView(viewIn: plantTextField, addSubTo: plantTextFieldView, top: plantTextFieldView.topAnchor, topConst: 5, bottom: plantTextFieldView.bottomAnchor, bottomConst: -5, left: plantTextFieldView.leftAnchor, leftConst: 20, right: plantTextFieldView.rightAnchor, rightConst: -20)
         plantTextFieldView.addSubview(plantTextField)
         plantTextField.translatesAutoresizingMaskIntoConstraints = false
-        plantTextField.topAnchor.constraint(equalTo: plantTextFieldView.topAnchor, constant: 5).isActive = true
-        plantTextField.leftAnchor.constraint(equalTo: plantTextFieldView.leftAnchor, constant: 5).isActive = true
-        plantTextField.rightAnchor.constraint(equalTo: plantTextFieldView.rightAnchor, constant: -5).isActive = true
-        plantTextField.bottomAnchor.constraint(equalTo: plantTextFieldView.bottomAnchor, constant: -5).isActive = true
+        plantTextField.topAnchor.constraint(equalTo: plantTextFieldView.topAnchor, constant: 8).isActive = true
+        plantTextField.leftAnchor.constraint(equalTo: plantTextFieldView.leftAnchor, constant: 20).isActive = true
+        plantTextField.rightAnchor.constraint(equalTo: plantTextFieldView.rightAnchor, constant: -20).isActive = true
+        plantTextField.bottomAnchor.constraint(equalTo: plantTextFieldView.bottomAnchor, constant: -8).isActive = true
         
         plantTextField.backgroundColor = .clear
         plantTextField.placeholder = "Type of plant"
@@ -364,6 +366,11 @@ class EditPlantViewController: UIViewController {
         
     }
     
+    @objc func tappedQRButton() {
+        print("tappedQRButton")
+        shareQRCodeButton(uuidString: currentPlant.id!.uuidString)
+    }
+    
     func updateWaterButtonSelectionUI() {
         waterHabitButton.setTitle("Water every \(selectedHabitDay.formatted()) days", for: .normal)
         print("WaterButton title updated to: \(selectedHabitDay)")
@@ -512,6 +519,8 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
             
             filterText(text + string)
             
+            removeSuggestionScrollView()
+            
             if !filteredSuggestion.isEmpty {
                 showSuggestionScrollView(filteredSuggestion.count)
             }
@@ -530,8 +539,8 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .bottom, multiplier: 1.0, constant: 0)
-        let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: plantTextField, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .bottom, multiplier: 1.0, constant: -2)
+        let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: plantTextFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
         containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, heightConstraint])
         containerView.updateConstraints()
@@ -743,7 +752,6 @@ extension EditPlantViewController {
             }
         }
         
-        
     }
     
     func loadPlantsFB(currentPlantUUID: UUID) {
@@ -954,6 +962,33 @@ extension EditPlantViewController {
             }
             print("path.isExpensive: \(path.isExpensive)"
             )
+        }
+        
+    }
+    
+    func shareQRCodeButton(uuidString: String) {
+        
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = Data(uuidString.utf8)
+        
+        if let outputImage = filter.outputImage {
+            
+            let transform = CGAffineTransform(scaleX: 3, y: 3)
+            let cgImageIn = UIImage(ciImage: outputImage.transformed(by: transform))
+            
+            let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
+            let printInfo = UIPrintInfo(dictionary:nil)
+            printInfo.outputType = UIPrintInfo.OutputType.photo
+            printInfo.jobName = "Printing Plant's QR"
+            printInfo.orientation = .portrait
+            
+            let printController = UIPrintInteractionController.shared
+            printController.printInfo = printInfo
+            printController.showsNumberOfCopies = false
+            printController.printFormatter = imgP
+            
+            printController.present(animated: true)
+            
         }
         
     }
