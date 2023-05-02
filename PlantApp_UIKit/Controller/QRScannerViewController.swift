@@ -12,16 +12,38 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
     var captureSession = AVCaptureSession()
     var previewLayer: AVCaptureVideoPreviewLayer?
-    var qrCodeFrameView: UIView?
-    
     var plants: [Plant]
     
-    init(captureSession: AVCaptureSession = AVCaptureSession(), previewLayer: AVCaptureVideoPreviewLayer? = nil, qrCodeFrameView: UIView? = nil, plants: [Plant]) {
+    var qrCodeFrameView: UIView = {
+        let view = UIView()
+        view.layer.borderColor = UIColor.systemYellow.cgColor
+        view.layer.borderWidth = 2
+        return view
+    }()
+  
+    var resultLabel: UILabel = {
+        var labelView = UILabel()
+        labelView = UILabel()
+        labelView.textColor = UIColor.white
+        labelView.textAlignment = .center
+        labelView.numberOfLines = 0
+        labelView.font = UIFont.systemFont(ofSize: 20)
+        labelView.backgroundColor = .tertiaryLabel
+        labelView.clipsToBounds = true
+        labelView.layer.cornerRadius = 4
+        return labelView
+    }()
+    
+    var scannedQRMatchedPlant = false
+    var scannedPlant = ""
+    
+    init(captureSession: AVCaptureSession = AVCaptureSession(), previewLayer: AVCaptureVideoPreviewLayer? = nil, plants: [Plant]) {
         
         self.captureSession = captureSession
         self.previewLayer = previewLayer
-        self.qrCodeFrameView = qrCodeFrameView
+//        self.qrCodeFrameView = qrCodeFrameView!
         self.plants = plants
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -42,6 +64,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
             do {
                 videoInput = try AVCaptureDeviceInput(device: frontCameraDevice)
                 captureSession.addInput(videoInput)
+            
             } catch {
                 print("Error capturing videoInput from AVCaptureDeviceInput. Error: \(error) ")
             }
@@ -62,6 +85,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         previewLayer?.frame = view.layer.bounds
         view.layer.addSublayer(previewLayer!)
         
+        
         // 6: Start video capture session
         DispatchQueue.global(qos: .background).async {
             self.captureSession.startRunning()
@@ -73,26 +97,59 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         print("Metadata found")
         
-        if metadataObjects.count == 0 {
+        guard metadataObjects.count != 0 else {
             print("No QR code found")
+            qrCodeFrameView.removeFromSuperview()
+            resultLabel.layer.removeFromSuperlayer()
             return
         }
         
-        // Get the metadata object.
-        let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
+        addQRCodeFrameView()
+        addResultLabelView()
         
-        if metadataObj.type == AVMetadataObject.ObjectType.qr,
-           let result = metadataObj.stringValue {
+        // Get the metadata object.
+        let metadataObject = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
+        
+        let barCodeObject = previewLayer?.transformedMetadataObject(for: metadataObject)
+        qrCodeFrameView.frame = barCodeObject!.bounds
+        
+        if metadataObject.type == AVMetadataObject.ObjectType.qr, let result = metadataObject.stringValue {
             
-            let scanResult = result
-            print("QR Code found \(scanResult)")
+            let scannedResult = result
+            print("QR Code found \(scannedResult)")
             
             for p in plants {
-                if p.id?.uuidString == scanResult {
+                
+                // If QR Result matches
+                if p.id?.uuidString == scannedResult {
+                    
+                    scannedQRMatchedPlant = true
+                    scannedPlant = p.plant!
                     print("PLANT scanned: \(p.plant!)")
+                   
+                    showQRFrameView(scannedResult: scannedPlant)
                 }
             }
+            
         }
+    }
+    
+    func addQRCodeFrameView() {
+        view.addSubview(qrCodeFrameView)
+        view.bringSubviewToFront(qrCodeFrameView)
+    }
+    
+    func addResultLabelView() {
+        // Bring the label to the front of the preview layer
+        previewLayer?.insertSublayer(resultLabel.layer, above: previewLayer)
+    }
+    
+    func showQRFrameView(scannedResult: String) {
+        resultLabel.text = scannedResult
+        resultLabel.sizeToFit()
+        resultLabel.isHidden = false
+        resultLabel.frame.origin = CGPoint(x: qrCodeFrameView.frame.minX + ( (qrCodeFrameView.frame.width - resultLabel.frame.width) / 2), y: qrCodeFrameView.frame.maxY + 10)
+        resultLabel.frame.size.width = resultLabel.frame.width + 10
     }
     
 }
