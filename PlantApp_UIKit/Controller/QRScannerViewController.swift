@@ -19,42 +19,49 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         let view = UIView()
         view.layer.borderColor = UIColor.systemGreen.cgColor
         view.layer.borderWidth = 2
+        
+        let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
+         imageView.contentMode = .scaleToFill
+        view.addSubview(imageView)
         return view
     }()
     
     var stackView: UIStackView = {
         let view = UIStackView()
-        let UIImageViewDrop = UIImageView(image: UIImage(systemName: "drop.circle")?.withTintColor(.blue))
-        view.addArrangedSubview(UIImageViewDrop)
-        view.frame.size = CGSize(width: 200, height: 100)
-        view.backgroundColor = .tertiaryLabel
+        let uiImageViewDrop = UIImageView(image: UIImage(systemName: "drop")?.withTintColor(.blue))
+        uiImageViewDrop.contentMode = .scaleAspectFit
+        uiImageViewDrop.frame.size = CGSize(width: 20, height: 20)
+        view.addArrangedSubview(uiImageViewDrop)
+        
+        view.backgroundColor = .systemGray6
+        view.layer.opacity = 0.7
+        view.layer.cornerRadius = 10
+     
         view.axis = .vertical
+        view.distribution = .fillEqually
+        view.translatesAutoresizingMaskIntoConstraints = false
+    
         return view
     }()
     
-    var stackViewLabel: UILabel = {
+    var plantLabel: UILabel = {
         let label = UILabel()
         label.adjustsFontSizeToFitWidth = true
-        label.textColor = UIColor.white
+        label.textColor = UIColor.label
         label.textAlignment = .center
         label.numberOfLines = 0
         label.clipsToBounds = true
+        label.frame.size = CGSize(width: 100, height: 20)
         return label
     }()
     
-  
-    var resultLabel: UILabel = {
-        var labelView = UILabel()
-        labelView = UILabel()
-        labelView.textColor = UIColor.white
-        labelView.textAlignment = .center
-        labelView.numberOfLines = 0
-        labelView.font = UIFont.systemFont(ofSize: 20)
-        labelView.backgroundColor = .tertiaryLabel
-        labelView.clipsToBounds = true
-        labelView.layer.cornerRadius = 4
-        return labelView
-    }()
+//    let cameraFrame: UIImageView = {
+//       let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
+//        imageView.contentMode = .scaleToFill
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        return imageView
+//    }()
+
     
     var scannedQRMatchedPlant = false
     var scannedPlant = ""
@@ -97,9 +104,9 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         guard metadataObjects.count != 0 else {
             print("No QR code found")
             qrCodeFrameView.removeFromSuperview()
-            resultLabel.layer.removeFromSuperlayer()
             waterButton.removeFromSuperview()
             stackView.removeFromSuperview()
+          
             return
         }
         
@@ -127,9 +134,8 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                     scannedPlant = p.plant!
                     print("PLANT scanned: \(p.plant!)")
                    
-//                    showResultLabelView(scannedResult: scannedPlant)
-                    stackViewLabel.text = scannedPlant
-  
+                    plantLabel.text = scannedPlant
+                    stackView.frame.size = CGSize(width: 100, height: 50)
                 }
             }
             
@@ -191,25 +197,19 @@ extension QRScannerViewController {
     }
 
     
-    func showResultLabelView(scannedResult: String) {
-        resultLabel.text = scannedResult
-        resultLabel.sizeToFit()
-        resultLabel.isHidden = false
-        
-        // Centers label below QR Code scanned.
-        resultLabel.frame.origin = CGPoint(x: qrCodeFrameView.frame.minX + ( (qrCodeFrameView.frame.width - resultLabel.frame.width) / 2), y: qrCodeFrameView.frame.maxY + 10)
-        // Adds padding to label's frame
-        resultLabel.frame.size.width = resultLabel.frame.width + 10
-        
-        // Bring the label to the front of the preview layer
-        previewLayer?.insertSublayer(resultLabel.layer, above: previewLayer)
-    }
-    
     func addStackView(barCodeObject: AVMetadataObject) {
         view.addSubview(stackView)
-        view.bringSubviewToFront(qrCodeFrameView)
-        stackView.frame.origin = CGPoint(x: qrCodeFrameView.frame.minX + ( (qrCodeFrameView.frame.width - stackView.frame.width) / 2), y: qrCodeFrameView.frame.maxY + 10)
-        stackView.addArrangedSubview(stackViewLabel)
+        stackView.topAnchor.constraint(equalTo: qrCodeFrameView.bottomAnchor, constant: 10).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        stackView.centerXAnchor.constraint(equalTo: qrCodeFrameView.centerXAnchor).isActive = true
+        
+        // First ArrangedSubview: plantLabel
+        stackView.addArrangedSubview(plantLabel)
+        stackView.widthAnchor.constraint(equalToConstant: plantLabel.frame.width + 10).isActive = true
+        
+        // Second ArrangedSubview:
+   
+        
     }
     
     func addWaterButton() {
