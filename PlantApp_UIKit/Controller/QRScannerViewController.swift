@@ -20,39 +20,62 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         view.layer.borderColor = UIColor.systemGreen.cgColor
         view.layer.borderWidth = 2
         
-        let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
-         imageView.contentMode = .scaleToFill
-        view.addSubview(imageView)
+//        let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
+//         imageView.contentMode = .scaleToFill
+//        view.addSubview(imageView)
         return view
     }()
     
     var stackView: UIStackView = {
         let view = UIStackView()
-        let uiImageViewDrop = UIImageView(image: UIImage(systemName: "drop")?.withTintColor(.blue))
+        let uiImageViewDrop = UIImageView(image: UIImage(systemName: "drop")?.withTintColor(.label, renderingMode: .alwaysOriginal))
         uiImageViewDrop.contentMode = .scaleAspectFit
-        uiImageViewDrop.frame.size = CGSize(width: 20, height: 20)
         view.addArrangedSubview(uiImageViewDrop)
         
-        view.backgroundColor = .systemGray6
-        view.layer.opacity = 0.7
+        uiImageViewDrop.translatesAutoresizingMaskIntoConstraints = false
+        uiImageViewDrop.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.opacity = 0.9
         view.layer.cornerRadius = 10
      
         view.axis = .vertical
-        view.distribution = .fillEqually
+        view.distribution = .fillProportionally
+        view.spacing = 5
         view.translatesAutoresizingMaskIntoConstraints = false
     
         return view
     }()
     
-    var plantLabel: UILabel = {
+    var waterLabel: UILabel = {
         let label = UILabel()
-        label.adjustsFontSizeToFitWidth = true
+        label.font = .systemFont(ofSize: 15)
         label.textColor = UIColor.label
         label.textAlignment = .center
         label.numberOfLines = 0
         label.clipsToBounds = true
-        label.frame.size = CGSize(width: 100, height: 20)
         return label
+    }()
+    
+    var plantLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.textColor = UIColor.label
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.clipsToBounds = true
+//        label.frame.size = CGSize(width: 100, height: 40)
+        return label
+    }()
+    
+    var waterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "drop.circle")?.withTintColor(.blue), for: .normal)
+        let config = UIImage.SymbolConfiguration(pointSize: 100)
+        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
+//        button.contentMode = .scaleAspectFit
+        return button
     }()
     
 //    let cameraFrame: UIImageView = {
@@ -65,15 +88,38 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
     var scannedQRMatchedPlant = false
     var scannedPlant = ""
-    
-    var waterButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "drop.circle")?.withTintColor(.blue), for: .normal)
-        let config = UIImage.SymbolConfiguration(pointSize: 100)
-        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
-//        button.contentMode = .scaleAspectFit
-        return button
-    }()
+    var waterDays = 0
+    var waterHabitIn = 0
+    var lastWateredDateIn = Date()
+    let currentDate = Date.now
+    var nextWaterDate: Date {
+        var date = Date()
+        if let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: waterHabitIn, to:  lastWateredDateIn) {
+            date = calculatedDate
+        }
+        return date
+    }
+    var waterStatus: String {
+        
+        let dateIntervalFormat = DateComponentsFormatter()
+        dateIntervalFormat.allowedUnits = .day
+        dateIntervalFormat.unitsStyle = .short
+        let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
+        if formatted == "0 days" || nextWaterDate < currentDate {
+            return "):"
+        } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
+            return "in \(waterHabitIn) days"
+        } else {
+            return "in: \(formatted)"
+        }
+        
+    }
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter
+    }
+
     
     init(captureSession: AVCaptureSession = AVCaptureSession(), previewLayer: AVCaptureVideoPreviewLayer? = nil, plants: [Plant]) {
         
@@ -132,10 +178,15 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                     
                     scannedQRMatchedPlant = true
                     scannedPlant = p.plant!
+                    
+                    waterHabitIn = Int(p.waterHabit)
+                    lastWateredDateIn = p.lastWateredDate!
+                    
                     print("PLANT scanned: \(p.plant!)")
                    
                     plantLabel.text = scannedPlant
-                    stackView.frame.size = CGSize(width: 100, height: 50)
+                    waterLabel.text = "\(waterStatus)"
+                    stackView.frame.size.width = plantLabel.frame.width
                 }
             }
             
@@ -200,16 +251,19 @@ extension QRScannerViewController {
     func addStackView(barCodeObject: AVMetadataObject) {
         view.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: qrCodeFrameView.bottomAnchor, constant: 10).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         stackView.centerXAnchor.constraint(equalTo: qrCodeFrameView.centerXAnchor).isActive = true
-        
-        // First ArrangedSubview: plantLabel
-        stackView.addArrangedSubview(plantLabel)
-        stackView.widthAnchor.constraint(equalToConstant: plantLabel.frame.width + 10).isActive = true
+
+        // Second ArrangedSubview:
+        stackView.addArrangedSubview(waterLabel)
         
         // Second ArrangedSubview:
-   
+        stackView.addArrangedSubview(plantLabel)
+        plantLabel.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
+        plantLabel.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
         
+        plantLabel.sizeToFit()
+
     }
     
     func addWaterButton() {
@@ -220,5 +274,6 @@ extension QRScannerViewController {
         waterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
 
     }
+    
     
 }
