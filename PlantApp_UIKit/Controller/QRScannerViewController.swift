@@ -19,37 +19,34 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         let view = UIView()
         view.layer.borderColor = UIColor.systemGreen.cgColor
         view.layer.borderWidth = 2
-        
-//        let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
-//         imageView.contentMode = .scaleToFill
-//        view.addSubview(imageView)
+
         return view
     }()
     
     var stackView: UIStackView = {
         let view = UIStackView()
-        let uiImageViewDrop = UIImageView(image: UIImage(systemName: "drop")?.withTintColor(.label, renderingMode: .alwaysOriginal))
-        uiImageViewDrop.contentMode = .scaleAspectFit
-        view.addArrangedSubview(uiImageViewDrop)
-        
-        uiImageViewDrop.translatesAutoresizingMaskIntoConstraints = false
-        uiImageViewDrop.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        
         view.backgroundColor = .secondarySystemBackground
         view.layer.opacity = 0.9
         view.layer.cornerRadius = 10
      
         view.axis = .vertical
-        view.distribution = .fillProportionally
-        view.spacing = 5
+        view.distribution = .fill
         view.translatesAutoresizingMaskIntoConstraints = false
     
         return view
     }()
     
+    var uiImageViewDrop: UIImageView = {
+        let uiImageViewDrop = UIImageView(image: UIImage(systemName: "drop")?.withTintColor(.label, renderingMode: .alwaysOriginal))
+        uiImageViewDrop.contentMode = .scaleAspectFit
+
+        return uiImageViewDrop
+    }()
+    
     var waterLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15)
+        label.adjustsFontSizeToFitWidth = true
         label.textColor = UIColor.label
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -59,13 +56,13 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
     var plantLabel: UILabel = {
         let label = UILabel()
-        label.adjustsFontSizeToFitWidth = true
         label.font = .systemFont(ofSize: 20, weight: .semibold)
+//        label.adjustsFontSizeToFitWidth = true
         label.textColor = UIColor.label
         label.textAlignment = .center
         label.numberOfLines = 0
         label.clipsToBounds = true
-//        label.frame.size = CGSize(width: 100, height: 40)
+//        label.frame.size.height = 20
         return label
     }()
     
@@ -78,14 +75,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         return button
     }()
     
-//    let cameraFrame: UIImageView = {
-//       let imageView = UIImageView(image: UIImage(systemName: "camera.metering.center.weighted.average")?.withTintColor(.green))
-//        imageView.contentMode = .scaleToFill
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
-//        return imageView
-//    }()
-
-    
+    var qrCodeScanned = false
     var scannedQRMatchedPlant = false
     var scannedPlant = ""
     var waterDays = 0
@@ -145,27 +135,36 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
     // MARK: - AVCaptureMetadataOutputObjectsDelegate functions
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        print("Metadata found")
-        
+    
         guard metadataObjects.count != 0 else {
             print("No QR code found")
             qrCodeFrameView.removeFromSuperview()
             waterButton.removeFromSuperview()
             stackView.removeFromSuperview()
-          
+            
+            qrCodeScanned = false
+           
             return
         }
         
-        
         // Get the metadata object.
         let metadataObject = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
-        
         let barCodeObject = previewLayer?.transformedMetadataObject(for: metadataObject)
+        qrCodeFrameView.frame = barCodeObject!.bounds
         
+        // This will stop the loop for the above codes since "metadataOutput function" always runs when there is a QR code.
+        // This is to prevent "addQRCodeFrameView, addWaterButton, addStackView" from being added every time during the loop.
+        if qrCodeScanned == true {
+            return
+        }
+        
+        print("New Metadata found")
+        qrCodeScanned = true
+        
+        // If QR code is detected, add the QR code frame view.
         addQRCodeFrameView(barCodeObject: barCodeObject!)
-        addWaterButton()
-        addStackView(barCodeObject: barCodeObject!)
         
+        // If metadataObject matches user's plant, add "addWaterButton, addStackView" view.
         if metadataObject.type == AVMetadataObject.ObjectType.qr, let result = metadataObject.stringValue {
             
             let scannedResult = result
@@ -175,6 +174,9 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                 
                 // If QR Result matches
                 if p.id?.uuidString == scannedResult {
+                    
+                    addWaterButton()
+                    addStackView(barCodeObject: barCodeObject!)
                     
                     scannedQRMatchedPlant = true
                     scannedPlant = p.plant!
@@ -186,12 +188,12 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                    
                     plantLabel.text = scannedPlant
                     waterLabel.text = "\(waterStatus)"
-                    stackView.frame.size.width = plantLabel.frame.width
+//                    stackView.frame.size.width = plantLabel.frame.width + 10
+                  
                 }
             }
             
         }
-        
         
     }
     
@@ -244,25 +246,51 @@ extension QRScannerViewController {
     func addQRCodeFrameView(barCodeObject: AVMetadataObject) {
         view.addSubview(qrCodeFrameView)
         view.bringSubviewToFront(qrCodeFrameView)
-        qrCodeFrameView.frame = barCodeObject.bounds
+//        qrCodeFrameView.frame = barCodeObject.bounds
     }
 
     
     func addStackView(barCodeObject: AVMetadataObject) {
+  
         view.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: qrCodeFrameView.bottomAnchor, constant: 10).isActive = true
         stackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         stackView.centerXAnchor.constraint(equalTo: qrCodeFrameView.centerXAnchor).isActive = true
+        
+        // First ArrangedSubview:
+        stackView.addArrangedSubview(uiImageViewDrop)
+        uiImageViewDrop.translatesAutoresizingMaskIntoConstraints = false
+        uiImageViewDrop.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        uiImageViewDrop.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
+        uiImageViewDrop.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 0).isActive = true
+        uiImageViewDrop.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: 0).isActive = true
+        uiImageViewDrop.backgroundColor = .green
+        uiImageViewDrop.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
 
         // Second ArrangedSubview:
         stackView.addArrangedSubview(waterLabel)
-        
-        // Second ArrangedSubview:
+        waterLabel.translatesAutoresizingMaskIntoConstraints = false
+        waterLabel.topAnchor.constraint(equalTo: uiImageViewDrop.bottomAnchor).isActive = true
+        waterLabel.centerXAnchor.constraint(equalTo: uiImageViewDrop.centerXAnchor).isActive = true
+        waterLabel.backgroundColor = .red
+
+        // Third ArrangedSubview:
         stackView.addArrangedSubview(plantLabel)
-        plantLabel.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
-        plantLabel.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
-        
-        plantLabel.sizeToFit()
+        plantLabel.translatesAutoresizingMaskIntoConstraints = false
+        plantLabel.topAnchor.constraint(equalTo: waterLabel.bottomAnchor, constant: 5).isActive = true
+        plantLabel.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
+
+        if plantLabel.frame.width < waterLabel.frame.width {
+            waterLabel.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
+            waterLabel.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
+            uiImageViewDrop.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
+            uiImageViewDrop.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
+        } else {
+            plantLabel.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
+            plantLabel.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
+            uiImageViewDrop.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 10).isActive = true
+            uiImageViewDrop.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: -10).isActive = true
+        }
 
     }
     
