@@ -13,6 +13,7 @@ struct K {
     static let title = "Plants"
     static let customGreenColor = "customGreen"
     static let customGreen2 = "customGreen2"
+    static let custom_blue_1 = "custom_blue_1"
     static let unknownPlant = "UnknownPlant"
     static let leaf = "leaf"
     

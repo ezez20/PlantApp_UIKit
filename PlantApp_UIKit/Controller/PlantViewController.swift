@@ -17,9 +17,6 @@ class PlantViewController: UIViewController {
     @IBOutlet weak var plantImage: UIImageView!
     @IBOutlet weak var plantName: UILabel!
     @IBOutlet weak var plantHappinessLevel: UILabel!
-    var plantNameIn = ""
-    var plantImageStringIn = ""
-    var plantImageLoadedIn = UIImage()
     
     // MARK: - Weather variables
     @IBOutlet weak var weatherLogo: UIImageView!
@@ -265,6 +262,7 @@ class PlantViewController: UIViewController {
         lastWateredDateIn = (currentPlant?.lastWateredDate!)!
         
         datePicker.date = lastWateredDateIn
+        
         if imageSetNames.contains(currentPlant!.plantImageString!) {
             plantImage.image = UIImage(named: currentPlant!.plantImageString!)
         } else {
