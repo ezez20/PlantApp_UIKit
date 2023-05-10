@@ -101,6 +101,8 @@ class MainViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadPlantsTableViewNotification), name: NSNotification.Name("reloadPlantsTableViewTriggered"), object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(qrVCDismissedOpenPlantVC), name: NSNotification.Name("qrVCDismissToPlantVC"), object: nil)
+        
         // Load plants from Core Data
         if authenticateFBUser() == false {
             addLoadingSpinner()
@@ -203,6 +205,17 @@ class MainViewController: UIViewController {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadLogoView"), object: nil)
         })
         
+    }
+    
+    @objc func qrVCDismissedOpenPlantVC(_ notification: NSNotification) {
+        print("qrVCDismissedOpenPlantVC")
+        
+        if let userInfo = notification.userInfo {
+             if let value = userInfo["qrScannedPlantUUID"] as? String {
+                  print("qrScannedPlantUUID: \(value)")
+                 performSegue(withIdentifier: K.mainToPlantID, sender: value)
+              }
+          }
     }
     
     // MARK: - Button IBActions
@@ -361,7 +374,7 @@ class MainViewController: UIViewController {
             dateIntervalFormat.unitsStyle = .short
             let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
             if formatted == "0 days" || nextWaterDate < Date.now {
-                return "due"
+                return "today"
             } else if dateFormatter.string(from: lastWateredDate) == dateFormatter.string(from: Date.now) {
                 return "\(waterHabit) days"
             } else {
@@ -437,6 +450,23 @@ extension MainViewController: UITableViewDelegate {
             }
         }
         
+        // User clicks on scanned plant from "QRScannerViewController"
+        if ((sender as? String) != nil) {
+            let plantUUID = sender as? String ?? ""
+            if segue.destination is PlantViewController {
+                for p in plants {
+                    if p.id?.uuidString == plantUUID {
+                        let vc = segue.destination as? PlantViewController
+                        vc?.inputLogoIn = weatherLogo
+                        vc?.inputTempIn = weatherTemp
+                        vc?.inputCityIn = weatherCity
+                    
+                        vc?.currentPlant = p
+                    }
+                }
+            }
+          
+        }
 
     }
     
@@ -968,6 +998,7 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     @objc func refreshUserNotification() {
         if defaults.bool(forKey: "notificationOn") {
             setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
+            updateUnpresentedNotification()
             print("DEEEZ")
         }
     }

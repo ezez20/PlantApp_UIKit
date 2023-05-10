@@ -17,7 +17,6 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     var plants: [Plant]
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var scannedPlantUUID = ""
     
     var captureSession = AVCaptureSession()
     var previewLayer: AVCaptureVideoPreviewLayer?
@@ -57,6 +56,12 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         return uiImageViewDrop
     }()
     
+    let plantImageButton: UIButton = {
+       let button = UIButton()
+//        button.backgroundColor = .gray
+        return button
+    }()
+    
     var waterLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15)
@@ -93,7 +98,9 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
     var qrCodeScanned = false
     var scannedQRMatchedPlant = false
+    var scannedPlantUUID = ""
     var scannedPlant = ""
+    
     var waterDays = 0
     var waterHabitIn = 0
     var lastWateredDateIn = Date()
@@ -112,11 +119,11 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
-            return "):"
+            return "today"
         } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
-            return "in \(waterHabitIn) days"
+            return "\(waterHabitIn) days"
         } else {
-            return "in: \(formatted)"
+            return "\(formatted)"
         }
         
     }
@@ -158,7 +165,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
             waterButton.removeFromSuperview()
             stackView.removeFromSuperview()
             qrCodeFrameView.willRemoveSubview(plantFrameView)
-            
+            plantImageButton.removeFromSuperview()
             
             qrCodeScanned = false
            
@@ -207,16 +214,9 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                     
                     plantLabel.text = scannedPlant
                     waterLabel.text = "\(waterStatus)"
-                    
-//                    waterHabitIn = Int(p.waterHabit)
-//                    lastWateredDateIn = p.lastWateredDate!
-                    
-                    print("PLANT scanned: \(p.plant!)")
+
+                    print("PLANT scanned: \(scannedPlant)")
                      
-                   
-//                    plantLabel.text = scannedPlant
-//                    waterLabel.text = "\(waterStatus)"
-//                    stackView.frame.size.width = plantLabel.frame.width + 10
                   
                 }
             }
@@ -274,7 +274,7 @@ extension QRScannerViewController {
     func addQRCodeFrameView() {
         view.addSubview(qrCodeFrameView)
         view.bringSubviewToFront(qrCodeFrameView)
-//        qrCodeFrameView.frame = barCodeObject.bounds
+
     }
     
     func addPlantPhotoToFrameView(plant: Plant) {
@@ -299,6 +299,15 @@ extension QRScannerViewController {
         } else {
             plantImageView.image = loadedImage(with: plant.imageData)
         }
+        
+        view.addSubview(plantImageButton)
+        plantImageButton.addTarget(self, action: #selector(openPlantVC(sender: )), for: .touchUpInside)
+        plantImageButton.translatesAutoresizingMaskIntoConstraints = false
+        plantImageButton.topAnchor.constraint(equalTo: plantImageView.topAnchor).isActive = true
+        plantImageButton.bottomAnchor.constraint(equalTo: plantImageView.bottomAnchor).isActive = true
+        plantImageButton.leftAnchor.constraint(equalTo: plantImageView.leftAnchor).isActive = true
+        plantImageButton.rightAnchor.constraint(equalTo: plantImageView.rightAnchor).isActive = true
+    
         
     }
     
@@ -327,14 +336,15 @@ extension QRScannerViewController {
         uiImageViewDrop.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
         uiImageViewDrop.leftAnchor.constraint(equalTo: stackView.leftAnchor, constant: 0).isActive = true
         uiImageViewDrop.rightAnchor.constraint(equalTo: stackView.rightAnchor, constant: 0).isActive = true
-//        uiImageViewDrop.backgroundColor = .green
         uiImageViewDrop.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
+//        uiImageViewDrop.backgroundColor = .green
 
         // Second ArrangedSubview:
         stackView.addArrangedSubview(waterLabel)
         waterLabel.translatesAutoresizingMaskIntoConstraints = false
         waterLabel.topAnchor.constraint(equalTo: uiImageViewDrop.bottomAnchor).isActive = true
         waterLabel.centerXAnchor.constraint(equalTo: stackView.centerXAnchor).isActive = true
+        waterLabel.heightAnchor.constraint(equalTo: uiImageViewDrop.heightAnchor).isActive = true
 //        waterLabel.backgroundColor = .red
 
         // Third ArrangedSubview:
@@ -366,7 +376,7 @@ extension QRScannerViewController {
         view.bringSubviewToFront(waterButton)
         waterButton.translatesAutoresizingMaskIntoConstraints = false
         waterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        waterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
+        waterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         waterButton.addTarget(self, action: #selector(waterButtonPressed(sender:)), for: .touchUpInside)
     }
     
@@ -400,10 +410,6 @@ extension QRScannerViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
     }
     
-//    func updateUI(plant: Plant) {
-//        waterHabitIn = Int(plant.waterHabit)
-//        lastWateredDateIn = plant.lastWateredDate!
-//    }
     
     func authenticateFBUser() -> Bool {
         if Auth.auth().currentUser?.uid != nil {
@@ -454,6 +460,13 @@ extension QRScannerViewController {
             }
             
             print("Plant successfully edited on Firebase")
+        }
+    }
+    
+    @objc func openPlantVC(sender: Any) {
+        print("openPlantVC")
+        dismiss(animated: true) {
+            NotificationCenter.default.post(name: NSNotification.Name("qrVCDismissToPlantVC"), object: nil, userInfo: ["qrScannedPlantUUID" : self.scannedPlantUUID])
         }
     }
     

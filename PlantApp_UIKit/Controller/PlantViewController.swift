@@ -92,7 +92,7 @@ class PlantViewController: UIViewController {
         dateIntervalFormat.unitsStyle = .short
         let formatted = dateIntervalFormat.string(from: currentDate, to: nextWaterDate) ?? ""
         if formatted == "0 days" || nextWaterDate < currentDate {
-            return "):"
+            return "today"
         } else if dateFormatter.string(from:  lastWateredDateIn) == dateFormatter.string(from: currentDate) {
             return "Water in \(waterHabitIn) days"
         } else {
@@ -230,9 +230,9 @@ class PlantViewController: UIViewController {
     
     func updateWeatherUI() {
         if inputLogoIn   == "" {
-            weatherLogo.image = UIImage(systemName: "questionmark")
-            weatherTemp.text = "loading.."
-            weatherCity.text = "loading.."
+            weatherLogo.image = UIImage(systemName: "")
+            weatherTemp.text = "n/a"
+            weatherCity.text = "n/a"
         } else {
             weatherLogo.image = UIImage(systemName: inputLogoIn) ?? UIImage(systemName: "")
             weatherTemp.text = inputTempIn
