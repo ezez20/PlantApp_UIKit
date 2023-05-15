@@ -539,7 +539,7 @@ extension EditPlantViewController: UITextFieldDelegate, UITableViewDelegate, UIT
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: plantTextFieldView, attribute: .bottom, multiplier: 1.0, constant: -2)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .topMargin, relatedBy: .equal, toItem: plantTextField, attribute: .bottom, multiplier: 1.0, constant: 0)
         let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: plantTextFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
         containerView.addConstraints([leftConstraint, rightConstraint, topConstraint, heightConstraint])
@@ -976,21 +976,85 @@ extension EditPlantViewController {
             let transform = CGAffineTransform(scaleX: 3, y: 3)
             let cgImageIn = UIImage(ciImage: outputImage.transformed(by: transform))
             
-            let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
+            
+           
+            let imageView = UIImageView(image: imageWithBorder(cgImageIn)).viewPrintFormatter()
+        
             let printInfo = UIPrintInfo(dictionary:nil)
-            printInfo.outputType = UIPrintInfo.OutputType.photo
+            printInfo.outputType = .photo
             printInfo.jobName = "Printing Plant's QR"
             printInfo.orientation = .portrait
             
             let printController = UIPrintInteractionController.shared
             printController.printInfo = printInfo
             printController.showsNumberOfCopies = false
-            printController.printFormatter = imgP
-            
+            printController.printFormatter = imageView
+
+        
             printController.present(animated: true)
             
         }
         
     }
+    
+    
+    func imageWithBorder(_ image: UIImage) -> UIImage {
+        // Load the original image
+        let originalImage = image
+
+        // Set the border width and color
+        let borderWidth: CGFloat = 10.0
+        let borderColor = UIColor.black.cgColor
+
+        // Calculate the size of the new image
+        let size = CGSize(width: originalImage.size.width + borderWidth, height: originalImage.size.height + borderWidth)
+
+        // Create a new image context
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+
+        // Get the current context
+        let context = UIGraphicsGetCurrentContext()!
+
+        // Draw the border
+        context.setStrokeColor(borderColor)
+        context.setLineWidth(borderWidth)
+        let borderRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        context.stroke(borderRect)
+
+        // Draw the original image inside the border
+        let imageRect = CGRect(x: borderWidth/2, y: borderWidth/2, width: originalImage.size.width, height: originalImage.size.height)
+        originalImage.draw(in: imageRect)
+
+        // Get the new image
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+
+        // End the image context
+        UIGraphicsEndImageContext()
+        return newImage
+
+    }
+    
+//    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
+//        let textColor = UIColor.white
+//        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+//
+//        let scale = UIScreen.main.scale
+//        UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
+//
+//        let textFontAttributes = [
+//            NSAttributedString.Key.font: textFont,
+//            NSAttributedString.Key.foregroundColor: textColor,
+//            ] as [NSAttributedString.Key : Any]
+//        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+//
+//        let rect = CGRect(origin: point, size: image.size)
+//        text.draw(in: rect, withAttributes: textFontAttributes)
+//
+//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//
+//        return newImage!
+//    }
+
     
 }

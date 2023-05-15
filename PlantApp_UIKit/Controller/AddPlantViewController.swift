@@ -373,7 +373,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: textFieldView, attribute: .bottom, multiplier: 1.0, constant: -2)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: plantName, attribute: .bottom, multiplier: 1.0, constant: 0)
         // Below will adjust height constraint dynamically based on "itemsCount"
         let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: textFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         

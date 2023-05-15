@@ -21,6 +21,27 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     var captureSession = AVCaptureSession()
     var previewLayer: AVCaptureVideoPreviewLayer?
     
+    var instructionLabelFrame: UIView = {
+        let frameView = UIView()
+        frameView.layer.opacity = 0.2
+        frameView.layer.cornerRadius = 10
+        frameView.backgroundColor = .black
+        return frameView
+    }()
+    
+    var instrunctionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.adjustsFontSizeToFitWidth = true
+        label.textColor = .white
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.clipsToBounds = true
+        label.text = "Please scan plant's QR Code"
+        
+        return label
+    }()
+    
     var qrCodeFrameView: UIView = {
         let view = UIView()
         view.layer.borderColor = UIColor.systemGreen.cgColor
@@ -153,7 +174,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         super.viewDidLoad()
         
         setupCaptureSession()
-
+        addInstructionLabel()
     }
     
     // MARK: - AVCaptureMetadataOutputObjectsDelegate functions
@@ -326,7 +347,7 @@ extension QRScannerViewController {
         
         view.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: qrCodeFrameView.bottomAnchor, constant: 10).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+//        stackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         stackView.centerXAnchor.constraint(equalTo: qrCodeFrameView.centerXAnchor).isActive = true
         
         // First ArrangedSubview:
@@ -378,6 +399,28 @@ extension QRScannerViewController {
         waterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         waterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         waterButton.addTarget(self, action: #selector(waterButtonPressed(sender:)), for: .touchUpInside)
+    }
+    
+    func addInstructionLabel() {
+        view.addSubview(instructionLabelFrame)
+        view.bringSubviewToFront(instructionLabelFrame)
+        instructionLabelFrame.translatesAutoresizingMaskIntoConstraints = false
+        instrunctionLabel.translatesAutoresizingMaskIntoConstraints = false
+        instructionLabelFrame.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        instructionLabelFrame.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40).isActive = true
+        instructionLabelFrame.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -40).isActive = true
+        instructionLabelFrame.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        instructionLabelFrame.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        view.addSubview(instrunctionLabel)
+        view.bringSubviewToFront(instrunctionLabel)
+        instrunctionLabel.translatesAutoresizingMaskIntoConstraints = false
+        instrunctionLabel.topAnchor.constraint(equalTo: instructionLabelFrame.topAnchor).isActive = true
+        instrunctionLabel.leftAnchor.constraint(equalTo: instructionLabelFrame.leftAnchor).isActive = true
+        instrunctionLabel.rightAnchor.constraint(equalTo: instructionLabelFrame.rightAnchor).isActive = true
+        instrunctionLabel.bottomAnchor.constraint(equalTo: instructionLabelFrame.bottomAnchor).isActive = true
+
+        
     }
     
     @objc func waterButtonPressed(sender: Any) {

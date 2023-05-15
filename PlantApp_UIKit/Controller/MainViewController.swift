@@ -926,52 +926,6 @@ extension MainViewController {
         
     }
     
-//    func deleteUnsuccessfulUploadedPlant(completion: @escaping () -> Void) {
-//
-//        let db = Firestore.firestore()
-//
-//        guard let plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] else {
-//            print("deleteUnsuccessfulUploadedPlant returned")
-//            completion()
-//            return
-//
-//        }
-//
-//        print("plantIDuuidStringArray: \(plantIDuuidStringArray)")
-//
-//        guard let userID_FB = Auth.auth().currentUser?.uid else { return }
-//
-//        let currentUserCollection = db.collection("users").document(userID_FB)
-//        let plantsCollection = currentUserCollection.collection("plants")
-//
-//        for plantUUID in plantIDuuidStringArray {
-//            dispatchGroup.enter()
-//            print("deleteUnsuccessfulUploadedPlant dispatch - enter")
-//            plantsCollection.document("\(plantUUID)").delete() { [self] err in
-//                if let err = err {
-//                    print("Error removing document: \(err)")
-//                    dispatchGroup.leave()
-//                    print("deleteUnsuccessfulUploadedPlant dispatch - leave error")
-//                } else {
-//                    print("Document successfully removed!")
-//                    print("FB deleted plant: \(plantUUID)")
-//                    print("DEEZ 1: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
-//                    dispatchGroup.leave()
-//                    print("deleteUnsuccessfulUploadedPlant dispatch - leave success")
-//                }
-//            }
-//
-//        }
-//
-//        // Notify dispatchGroup when all work is done.
-//        dispatchGroup.notify(queue: .main) {
-//            self.defaults.set(nil, forKey: "plantIDuuidString")
-//            print("deleteUnsuccessfulUploadedPlant dispatch done")
-//            completion()
-//        }
-//
-//    }
-    
     
 }
 
