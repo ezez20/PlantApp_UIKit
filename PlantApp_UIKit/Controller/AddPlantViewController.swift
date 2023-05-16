@@ -84,7 +84,8 @@ class AddPlantViewController: UIViewController {
         suggestionTableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestionCell")
         
         imagePicker.delegate = self
-        imagePicker.allowsEditing = true
+        plantImageButton.imageView?.contentMode = .scaleAspectFit
+
         
         self.enableDismissKeyboardOnTapOutside()
         
@@ -149,6 +150,7 @@ class AddPlantViewController: UIViewController {
     @IBAction func cameraButtonPressed(_ sender: Any) {
         
         imagePicker.sourceType = .camera
+        imagePicker.allowsEditing = false
         present(imagePicker, animated: true)
         
     }
@@ -226,6 +228,7 @@ class AddPlantViewController: UIViewController {
     
     @IBAction func plantImageButtonTapped(_ sender: Any) {
         imagePicker.sourceType = .photoLibrary
+        imagePicker.allowsEditing = true
         present(imagePicker, animated: true)
     }
     
@@ -451,11 +454,29 @@ extension AddPlantViewController: UIImagePickerControllerDelegate, UINavigationC
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+//        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+//
+//            inputImage = image
+//            plantImageButton.setImage(inputImage, for: .normal)
+//        }
+        
+        // If source type is CAMERA
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+           
             inputImage = image
             plantImageButton.setImage(inputImage, for: .normal)
         }
+      
+        
+        // If source type is PHOTO LIBRARY
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            
+            inputImage = image
+            plantImageButton.setImage(inputImage, for: .normal)
+        }
+        
         picker.dismiss(animated: true, completion: nil)
+        
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -807,37 +828,6 @@ extension AddPlantViewController {
       
     }
     
-//    func shareQRCodeButton(uuidString: String) {
-//
-//        let filter = CIFilter.qrCodeGenerator()
-//        filter.message = Data(uuidString.utf8)
-//
-//
-//        if let outputImage = filter.outputImage {
-//
-//            let ciContext = CIContext()
-//
-//            if let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) {
-//
-//                let cgImageIn = UIImage(cgImage: cgImage)
-//
-//                let imgP = UIImageView(image: cgImageIn).viewPrintFormatter()
-//                let printInfo = UIPrintInfo(dictionary:nil)
-//                printInfo.outputType = UIPrintInfo.OutputType.photo
-//                printInfo.jobName = "Printing Plant's QR"
-//                printInfo.orientation = .portrait
-//
-//                let printController = UIPrintInteractionController.shared
-//                printController.printInfo = printInfo
-//                printController.showsNumberOfCopies = false
-//                printController.printFormatter = imgP
-//
-//                printController.present(animated: true)
-//            }
-//
-//        }
-//
-//    }
     
     
     

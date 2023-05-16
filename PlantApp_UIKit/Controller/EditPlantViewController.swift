@@ -76,7 +76,7 @@ class EditPlantViewController: UIViewController {
         print("View will appear")
         
         imagePicker.delegate = self
-        imagePicker.allowsEditing = true
+        plantImageButton.imageView?.contentMode = .scaleAspectFill
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -620,10 +620,27 @@ extension EditPlantViewController: UIImagePickerControllerDelegate, UINavigation
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+//        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+//            inputImage = image
+//            plantImageButton.setImage(inputImage, for: .normal)
+//        }
+        
+        // If source type is CAMERA
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+           
             inputImage = image
             plantImageButton.setImage(inputImage, for: .normal)
         }
+      
+        
+        // If source type is PHOTO LIBRARY
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            
+            inputImage = image
+            plantImageButton.setImage(inputImage, for: .normal)
+        }
+        
+        
         picker.dismiss(animated: true, completion: nil)
     }
     

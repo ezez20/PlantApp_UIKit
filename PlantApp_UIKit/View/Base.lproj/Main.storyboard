@@ -230,7 +230,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                                <rect key="frame" x="77.000000000000014" y="102.66666666666663" width="234.33333333333337" height="77.333333333333314"/>
+                                                <rect key="frame" x="75.666666666666671" y="102.66666666666663" width="236.66666666666663" height="77.333333333333314"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="KUl-8S-SLv">
                                                         <rect key="frame" x="0.0" y="0.0" width="103" height="77.333333333333329"/>
@@ -240,11 +240,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" id="gHH-X1-3wl">
-                                                        <rect key="frame" x="110" y="0.0" width="124.33333333333331" height="77.333333333333329"/>
+                                                        <rect key="frame" x="109.99999999999997" y="0.0" width="126.66666666666666" height="77.333333333333329"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="124.33333333333333" height="77.333333333333329"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="126.66666666666667" height="77.333333333333329"/>
                                                             </datePicker>
                                                         </subviews>
                                                     </stackView>

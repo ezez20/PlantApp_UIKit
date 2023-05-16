@@ -249,8 +249,11 @@ extension CollectionViewCell {
             trashCanView.frame = CGRect(origin: cellImageView.center, size: CGSize(width: 30, height: 30))
             trashCanView.center = cellImageView.center
             contentView.addSubview(trashCanView)
+            
+            contentView.layer.opacity = 0.7
         } else {
             trashCanView.removeFromSuperview()
+            contentView.layer.opacity = 1.0
         }
     }
     

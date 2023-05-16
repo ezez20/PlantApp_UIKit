@@ -1340,7 +1340,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        
         guard let collectionView = collectionView else { return }
+        guard self.editButton.title == "Done" else { return }
         
         switch gesture.state {
         case .began:
@@ -1353,8 +1355,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         default:
             collectionView.cancelInteractiveMovement()
         }
+        
     }
-    
+     
     // Adjust CollectionView cell's width/height
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
