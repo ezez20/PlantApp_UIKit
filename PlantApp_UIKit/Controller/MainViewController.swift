@@ -485,16 +485,30 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell  = tableView.dequeueReusableCell(withIdentifier: K.plantTableViewCellID, for: indexPath) as! PlantTableViewCell
         
-        // Later, assign values to cell's properties: EX below
+        // 1: Set Plant's name
         cell.plantName.text = plants[indexPath.row].plant
         
+        // 2: Set image
         if imageSetNames.contains(plants[indexPath.row].plantImageString!) {
             cell.plantImage.image = UIImage(named: plants[indexPath.row].plantImageString!)
         } else {
             cell.plantImage.image = loadedImage(with: plants[indexPath.row].imageData)
         }
         
+        // 3: Set water days
         cell.waterInDays.text = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate!, waterHabit: Int(plants[indexPath.row].waterHabit))
+        
+        // 4: Set Water level status
+        let waterStatus = displayedNextWaterDate(lastWateredDate: plants[indexPath.row].lastWateredDate!, waterHabit: Int(plants[indexPath.row].waterHabit))
+        
+        if waterStatus.localizedStandardContains("today") {
+            cell.tintColor = .systemRed
+        } else if waterStatus.localizedStandardContains("2") || waterStatus.localizedStandardContains("3"){
+            cell.tintColor = .systemYellow
+        } else {
+            cell.tintColor = .systemGreen
+        }
+        
         
         return cell
     }
@@ -1341,8 +1355,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
     }
     
+    // Adjust CollectionView cell's width/height
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (view.frame.size.width / 3) - 4, height: 150)
+        
+        return CGSize(width: (view.frame.size.width / 3) - 4, height: 200)
     }
     
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {

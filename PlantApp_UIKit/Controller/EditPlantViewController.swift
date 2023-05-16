@@ -977,8 +977,10 @@ extension EditPlantViewController {
             let cgImageIn = UIImage(ciImage: outputImage.transformed(by: transform))
             
             
+            let qrWithBorder = imageWithBorder(cgImageIn)
+            let qrWithBorderAndText = textToImage(drawText: "plant", inImage: qrWithBorder, atPoint: CGPoint(x: 10, y: 90))
            
-            let imageView = UIImageView(image: imageWithBorder(cgImageIn)).viewPrintFormatter()
+            let imageView = UIImageView(image: qrWithBorderAndText).viewPrintFormatter()
         
             let printInfo = UIPrintInfo(dictionary:nil)
             printInfo.outputType = .photo
@@ -1034,27 +1036,31 @@ extension EditPlantViewController {
 
     }
     
-//    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
-//        let textColor = UIColor.white
-//        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
-//
-//        let scale = UIScreen.main.scale
-//        UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
-//
-//        let textFontAttributes = [
-//            NSAttributedString.Key.font: textFont,
-//            NSAttributedString.Key.foregroundColor: textColor,
-//            ] as [NSAttributedString.Key : Any]
-//        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
-//
-//        let rect = CGRect(origin: point, size: image.size)
-//        text.draw(in: rect, withAttributes: textFontAttributes)
-//
-//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//
-//        return newImage!
-//    }
+    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
+        let textColor = UIColor.black
+        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+
+        let scale = UIScreen.main.scale
+        let imageSize = CGSize(width: image.size.width, height: image.size.height + 20)
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        let textFontAttributes = [
+            NSAttributedString.Key.font: textFont,
+            NSAttributedString.Key.foregroundColor: textColor,
+            ] as [NSAttributedString.Key : Any]
+        
+        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+
+   
+        let rect = CGRect(origin: point, size: imageSize)
+        
+        text.draw(in: rect, withAttributes: textFontAttributes)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
+    }
 
     
 }

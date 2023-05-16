@@ -25,6 +25,19 @@ class CollectionViewCell: UICollectionViewCell {
             labelName.text = plantIn.plant
             
             labelWaterDays.text = displayedNextWaterDate(lastWateredDate: plantIn.lastWateredDate ?? Date.now, waterHabit: Int(plantIn.waterHabit))
+            
+            
+            // Set Water level status color on dropletImage
+            let waterStatus = displayedNextWaterDate(lastWateredDate: plantIn.lastWateredDate!, waterHabit: Int(plantIn.waterHabit))
+            
+            if waterStatus.localizedStandardContains("today") {
+                dropletImage.tintColor = .systemRed
+            } else if waterStatus.localizedStandardContains("2") || waterStatus.localizedStandardContains("3"){
+                dropletImage.tintColor = .systemYellow
+            } else {
+                dropletImage.tintColor = .systemGreen
+            }
+            
         }
     }
     
@@ -40,8 +53,9 @@ class CollectionViewCell: UICollectionViewCell {
        let label = UILabel()
         label.textAlignment = .center
         label.clipsToBounds = true
-        label.adjustsFontSizeToFitWidth = true
-        label.backgroundColor = .secondarySystemBackground
+//        label.adjustsFontSizeToFitWidth = true
+        label.lineBreakMode = .byTruncatingTail
+//        label.backgroundColor = .secondarySystemBackground
         return label
     }()
     
@@ -56,15 +70,16 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "drop")
-        imageView.tintColor = .label
+//        imageView.tintColor = .label
         return imageView
     }()
     
     let labelWaterDays: UILabel = {
        let label = UILabel()
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.clipsToBounds = true
         label.adjustsFontSizeToFitWidth = true
+        label.lineBreakMode = .byCharWrapping
         return label
     }()
     
@@ -92,6 +107,9 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(cellImageView)
         contentView.addSubview(labelName)
         contentView.addSubview(waterStatusView)
+        contentView.addSubview(dropletImage)
+        contentView.addSubview(labelWaterDays)
+        
 
         NotificationCenter.default.addObserver(self, selector: #selector(toggleDeleteView), name: NSNotification.Name("toggleDeleteViewNoti"), object: nil)
     }
@@ -116,42 +134,59 @@ class CollectionViewCell: UICollectionViewCell {
     
    
     override func layoutSubviews() {
-        
-        cellImageView.frame = CGRect(x: 0,
-                                     y: 0,
-                                     width: contentView.frame.size.width,
-                                     height: contentView.frame.size.height / CGFloat(1.5)
-        )
+    
+        cellImageView.translatesAutoresizingMaskIntoConstraints = false
+        cellImageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        cellImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        cellImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
+        cellImageView.heightAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         cellImageView.backgroundColor = .clear
         
-        labelName.frame = CGRect(x: 0,
-                                 y: cellImageView.bounds.maxY,
-                                 width: contentView.frame.size.width,
-                                 height: 20
-        )
-        labelName.backgroundColor = .clear
-        labelName.tintColor = .label
-       
-        waterStatusView.frame = CGRect(x: cellImageView.bounds.midX - 30,
-                                   y:  cellImageView.bounds.maxY + CGFloat(20),
-                                   width: contentView.frame.size.width,
-                                   height: 20
-        )
-        waterStatusView.backgroundColor = .clear
-        waterStatusView.tintColor = .label
-        waterStatusView.addSubview(dropletImage)
-        dropletImage.frame = CGRect(x: 0,
-                                    y:  0,
-                                    width: 20,
-                                 height: 20
-        )
+        labelName.translatesAutoresizingMaskIntoConstraints = false
+        labelName.topAnchor.constraint(equalTo: cellImageView.bottomAnchor, constant: 2).isActive = true
+        labelName.centerXAnchor.constraint(equalTo: cellImageView.centerXAnchor).isActive = true
+        labelName.widthAnchor.constraint(equalTo: cellImageView.widthAnchor).isActive = true
         
-        waterStatusView.addSubview(labelWaterDays)
-        labelWaterDays.frame = CGRect(x: dropletImage.frame.maxX,
-                                 y:  0,
-                                 width: contentView.frame.size.width / 2,
-                                 height: 20
-        )
+        
+        dropletImage.translatesAutoresizingMaskIntoConstraints = false
+        dropletImage.topAnchor.constraint(equalTo: labelName.bottomAnchor, constant: 5).isActive = true
+        dropletImage.centerXAnchor.constraint(equalTo: cellImageView.centerXAnchor).isActive = true
+  
+        labelWaterDays.translatesAutoresizingMaskIntoConstraints = false
+        labelWaterDays.topAnchor.constraint(equalTo: dropletImage.bottomAnchor, constant: 2).isActive = true
+        labelWaterDays.centerXAnchor.constraint(equalTo: cellImageView.centerXAnchor).isActive = true
+        labelWaterDays.widthAnchor.constraint(equalTo: cellImageView.widthAnchor).isActive = true
+        
+        
+//        labelName.frame = CGRect(x: 0,
+//                                 y: cellImageView.bounds.maxY,
+//                                 width: contentView.frame.size.width,
+//                                 height: 20
+//        )
+//        labelName.backgroundColor = .clear
+//        labelName.tintColor = .label
+//
+//        waterStatusView.frame = CGRect(x: cellImageView.bounds.midX - 30,
+//                                   y:  cellImageView.bounds.maxY + CGFloat(20),
+//                                   width: contentView.frame.size.width,
+//                                   height: 20
+//        )
+//
+//        waterStatusView.backgroundColor = .clear
+//        waterStatusView.tintColor = .label
+//        waterStatusView.addSubview(dropletImage)
+//        dropletImage.frame = CGRect(x: 0,
+//                                    y:  0,
+//                                    width: 20,
+//                                 height: 20
+//        )
+//
+//        waterStatusView.addSubview(labelWaterDays)
+//        labelWaterDays.frame = CGRect(x: dropletImage.frame.maxX,
+//                                 y:  0,
+//                                 width: contentView.frame.size.width / 2,
+//                                 height: 20
+//        )
         
     
     }
@@ -194,7 +229,7 @@ extension CollectionViewCell {
             dateIntervalFormat.unitsStyle = .short
             let formatted = dateIntervalFormat.string(from: Date.now, to: nextWaterDate) ?? ""
             if formatted == "0 days" || nextWaterDate < Date.now {
-                return "due"
+                return "today"
             } else if dateFormatter.string(from: lastWateredDate) == dateFormatter.string(from: Date.now) {
                 return "\(waterHabit) days"
             } else {
