@@ -798,6 +798,7 @@ extension AddPlantViewController {
                     } else {
                         
                         print("Firebase Storage: putData is complete. Meta Data info: \(String(describing: downloadMetadata))")
+                    
                         
                         completion("success")
                     }

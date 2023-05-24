@@ -368,7 +368,7 @@ class EditPlantViewController: UIViewController {
     
     @objc func tappedQRButton() {
         print("tappedQRButton")
-        shareQRCodeButton(uuidString: currentPlant.id!.uuidString)
+        shareQRCodeButton(currentPlant: currentPlant)
     }
     
     func updateWaterButtonSelectionUI() {
@@ -983,10 +983,14 @@ extension EditPlantViewController {
         
     }
     
-    func shareQRCodeButton(uuidString: String) {
+    func shareQRCodeButton(currentPlant: Plant) {
         
         let filter = CIFilter.qrCodeGenerator()
-        filter.message = Data(uuidString.utf8)
+        
+        guard let uuidStringUnwrapped = currentPlant.id?.uuidString.utf8, let plantNameUnwrapped = currentPlant.plant else { return }
+      
+        
+        filter.message = Data(uuidStringUnwrapped)
         
         if let outputImage = filter.outputImage {
             
@@ -995,7 +999,9 @@ extension EditPlantViewController {
             
             
             let qrWithBorder = imageWithBorder(cgImageIn)
-            let qrWithBorderAndText = textToImage(drawText: "plant", inImage: qrWithBorder, atPoint: CGPoint(x: 10, y: 90))
+//            let qrWithBorderAndText = textToImage(drawText: plantNameUnwrapped, inImage: qrWithBorder, atPoint: CGPoint(x: 10, y: 90))
+            
+            let qrWithBorderAndText = textToImage(drawText: plantNameUnwrapped, inImage: qrWithBorder)
            
             let imageView = UIImageView(image: qrWithBorderAndText).viewPrintFormatter()
         
@@ -1046,34 +1052,93 @@ extension EditPlantViewController {
 
         // Get the new image
         let newImage = UIGraphicsGetImageFromCurrentImageContext()!
-
+        
         // End the image context
         UIGraphicsEndImageContext()
         return newImage
 
     }
     
-    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
-        let textColor = UIColor.black
-        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
-
+//    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
+//        let textColor = UIColor.black
+//        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+//
+//        let scale = UIScreen.main.scale
+//        let imageSize = CGSize(width: image.size.width, height: image.size.height + 20)
+//        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+//
+//        let textFontAttributes = [
+//            NSAttributedString.Key.font: textFont,
+//            NSAttributedString.Key.foregroundColor: textColor,
+//            ] as [NSAttributedString.Key : Any]
+//
+//        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+//
+//
+//        let rect = CGRect(origin: point, size: imageSize)
+//
+//        text.draw(in: rect, withAttributes: textFontAttributes)
+//
+//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//
+//        return newImage!
+//    }
+    
+    func textToImage(drawText text: String, inImage image: UIImage) -> UIImage {
+        
         let scale = UIScreen.main.scale
-        let imageSize = CGSize(width: image.size.width, height: image.size.height + 20)
+        let imageSize = CGSize(width: image.size.width, height: image.size.height + 15)
+        
         UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-
+        
+        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+        
+        // Define text font attributes
+        let textColor = UIColor.black
+//        var textFont = UIFont()
+//        switch text.count {
+//        case 14:
+//            textFont = UIFont(name: "Helvetica Bold", size: 11)!
+//        case 15:
+//            textFont = UIFont(name: "Helvetica Bold", size: 10)!
+//        case 16:
+//            textFont = UIFont(name: "Helvetica Bold", size: 9)!
+//        case 17:
+//            textFont = UIFont(name: "Helvetica Bold", size: 8)!
+//        case 18...100:
+//            textFont = UIFont(name: "Helvetica Bold", size: 7)!
+//        default:
+//            textFont = UIFont(name: "Helvetica Bold", size: 12)!
+//        }
+        
+        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+        let textBackgroundColor = UIColor(ciColor: .yellow)
         let textFontAttributes = [
             NSAttributedString.Key.font: textFont,
             NSAttributedString.Key.foregroundColor: textColor,
+            NSAttributedString.Key.backgroundColor: textBackgroundColor,
             ] as [NSAttributedString.Key : Any]
         
-        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
-
-   
-        let rect = CGRect(origin: point, size: imageSize)
+        // Calculate size of text.
+        var textSizeWidth = (text as NSString).size(withAttributes: textFontAttributes).width
+    
+        // Calculate origin point to draw "text" to be placed in middle
+        var imageCGPoint = CGPoint(x: image.size.width/2 - textSizeWidth/2, y: 90)
         
+        print("DDD1 textcount: \(text.count)")
+        if textSizeWidth >= image.size.width || text.count >= 19 {
+            imageCGPoint = CGPoint(x: 0, y: 91)
+        }
+        
+        
+        // Temp fix for text width
+        let cgSize = CGSize(width: image.size.width + 10, height: image.size.height + 15)
+        let rect = CGRect(origin: imageCGPoint, size: cgSize)
         text.draw(in: rect, withAttributes: textFontAttributes)
 
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        
         UIGraphicsEndImageContext()
 
         return newImage!
