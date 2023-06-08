@@ -808,9 +808,6 @@ extension EditPlantViewController {
                     
                 }
                 
-                
-                
-                
             } else {
                 print("Error getting documents from plant collection from firebase")
             }
@@ -1059,31 +1056,6 @@ extension EditPlantViewController {
 
     }
     
-//    func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
-//        let textColor = UIColor.black
-//        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
-//
-//        let scale = UIScreen.main.scale
-//        let imageSize = CGSize(width: image.size.width, height: image.size.height + 20)
-//        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-//
-//        let textFontAttributes = [
-//            NSAttributedString.Key.font: textFont,
-//            NSAttributedString.Key.foregroundColor: textColor,
-//            ] as [NSAttributedString.Key : Any]
-//
-//        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
-//
-//
-//        let rect = CGRect(origin: point, size: imageSize)
-//
-//        text.draw(in: rect, withAttributes: textFontAttributes)
-//
-//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//
-//        return newImage!
-//    }
     
     func textToImage(drawText text: String, inImage image: UIImage) -> UIImage {
         
@@ -1096,23 +1068,23 @@ extension EditPlantViewController {
         
         // Define text font attributes
         let textColor = UIColor.black
-//        var textFont = UIFont()
-//        switch text.count {
-//        case 14:
-//            textFont = UIFont(name: "Helvetica Bold", size: 11)!
-//        case 15:
-//            textFont = UIFont(name: "Helvetica Bold", size: 10)!
-//        case 16:
-//            textFont = UIFont(name: "Helvetica Bold", size: 9)!
-//        case 17:
-//            textFont = UIFont(name: "Helvetica Bold", size: 8)!
-//        case 18...100:
-//            textFont = UIFont(name: "Helvetica Bold", size: 7)!
-//        default:
-//            textFont = UIFont(name: "Helvetica Bold", size: 12)!
-//        }
+        var textFont = UIFont()
+        switch text.count {
+        case 14:
+            textFont = UIFont(name: "Helvetica Bold", size: 11)!
+        case 15:
+            textFont = UIFont(name: "Helvetica Bold", size: 10)!
+        case 16:
+            textFont = UIFont(name: "Helvetica Bold", size: 9)!
+        case 17:
+            textFont = UIFont(name: "Helvetica Bold", size: 8)!
+        case 18...100:
+            textFont = UIFont(name: "Helvetica Bold", size: 7)!
+        default:
+            textFont = UIFont(name: "Helvetica Bold", size: 12)!
+        }
         
-        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+//        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
         let textBackgroundColor = UIColor(ciColor: .yellow)
         let textFontAttributes = [
             NSAttributedString.Key.font: textFont,
@@ -1121,16 +1093,16 @@ extension EditPlantViewController {
             ] as [NSAttributedString.Key : Any]
         
         // Calculate size of text.
-        var textSizeWidth = (text as NSString).size(withAttributes: textFontAttributes).width
+        let textSizeWidth = (text as NSString).size(withAttributes: textFontAttributes).width
     
         // Calculate origin point to draw "text" to be placed in middle
         var imageCGPoint = CGPoint(x: image.size.width/2 - textSizeWidth/2, y: 90)
         
+        // Calculate origin point to draw "text" to be placed at very left
         print("DDD1 textcount: \(text.count)")
-        if textSizeWidth >= image.size.width || text.count >= 19 {
-            imageCGPoint = CGPoint(x: 0, y: 91)
+        if textSizeWidth >= image.size.width {
+            imageCGPoint = CGPoint(x: 0, y: 90)
         }
-        
         
         // Temp fix for text width
         let cgSize = CGSize(width: image.size.width + 10, height: image.size.height + 15)

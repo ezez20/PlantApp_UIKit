@@ -85,16 +85,73 @@ struct K {
     }
     
     static func navigateToMainVC(_ vc: UIViewController) {
+        let tbC = TabBarController()
+        tbC.tabBar.backgroundColor = .secondarySystemBackground
+        tbC.tabBar.tintColor = UIColor(named: K.customGreen2)
+        tbC.modalTransitionStyle = .crossDissolve
+        tbC.modalPresentationStyle = .fullScreen
+        
+        let vc1 = mainVC()
+        let vc2 = ViewController2()
+        let vc3 = QRScannerViewController(plants: [])
+        let vc4 = ViewController4()
+        let vc5 = ViewController5()
+       
+        vc1.tabBarItem.image = UIImage(systemName: "leaf")
+        vc1.title = "Plants"
+        vc2.tabBarItem.image = UIImage(systemName: "square.and.pencil")
+        vc2.title = "Notes"
+        vc3.tabBarItem.image = UIImage(systemName: "qrcode.viewfinder")
+        vc3.title = "Scan"
+        vc4.tabBarItem.image = UIImage(systemName: "bag")
+        vc4.title = "Wishlist"
+        vc5.tabBarItem.image = UIImage(systemName: "person.crop.circle")
+        vc5.title = "Profile"
+        
+        tbC.setViewControllers([vc1, vc2, vc3, vc4, vc5], animated: false)
+        vc.present(tbC, animated: true)
+   
+    }
+    
+    static func mainVC() -> UIViewController {
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let mainVC = storyboard.instantiateViewController(withIdentifier: "MainViewControllerID") as! MainViewController
         mainVC.modalTransitionStyle = .crossDissolve
         let navigation = UINavigationController(rootViewController: mainVC)
         navigation.navigationBar.tintColor = UIColor(named: K.customGreen2)
-        navigation.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2)]
-        navigation.modalPresentationStyle = .fullScreen
-        vc.present(navigation, animated: true)
+        navigation.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
+        return navigation
     }
     
-  
     
+}
+
+class ViewController2: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .blue
+        
+    }
+    
+}
+
+class ViewController3: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .green
+    }
+}
+
+class ViewController4: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .brown
+    }
+}
+
+class ViewController5: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemPink
+    }
 }

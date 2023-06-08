@@ -276,6 +276,7 @@ class LoginViewController: UIViewController {
                     removeLoadingView()
                     
                     self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
+                    
                     K.navigateToMainVC(self)
                 }
             }
@@ -295,7 +296,7 @@ class LoginViewController: UIViewController {
         }
         
         present(navVC, animated: true)
-    }
+    } 
     
     @objc func signUpButtonClicked(sender: UIButton) {
         // Add segue to SignUpViewController
@@ -429,5 +430,6 @@ extension LoginViewController {
         }
     }
     
-
 }
+
+

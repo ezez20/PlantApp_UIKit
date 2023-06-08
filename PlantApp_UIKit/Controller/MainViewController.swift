@@ -109,6 +109,7 @@ class MainViewController: UIViewController {
             loadPlants {
                 self.refreshUserNotification()
                 self.updateUnpresentedNotification()
+                self.passPlantsDataToQRVC()
                 self.removeLoadingView()
                 print("PlantsTableview reloaded")
             }
@@ -152,6 +153,7 @@ class MainViewController: UIViewController {
                     print("updateUserSettings completed")
                     self.updateUnpresentedNotification()
                     self.refreshUserNotification()
+                    self.passPlantsDataToQRVC()
                     self.defaults.set(false, forKey: "fbUserFirstLoggedIn")
                     self.removeLoadingView()
                 }
@@ -277,7 +279,6 @@ class MainViewController: UIViewController {
     @IBAction func qrButtonPressed(_ sender: Any) {
         print("QR buttton pressed")
         let qrVC = QRScannerViewController(plants: plants)
-        
         present(qrVC, animated: true)
     }
     
@@ -1200,6 +1201,18 @@ extension MainViewController: UNUserNotificationCenterDelegate {
                 }
             }
         
+    }
+    
+    func passPlantsDataToQRVC() {
+        if let tabBarController = self.tabBarController {
+            // Retrieve an instance of ViewController2
+            print("DDD: tabbars \(tabBarController.tabBar.selectedItem)")
+            if let qrVC = tabBarController.viewControllers?[2] as? QRScannerViewController {
+                // Assign the data to ViewController2
+                qrVC.plants = plants
+                print("DDD: data passed")
+            }
+        }
     }
     
 }
