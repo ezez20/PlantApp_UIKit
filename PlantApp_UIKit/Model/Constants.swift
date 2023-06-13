@@ -21,6 +21,7 @@ struct K {
     static let mainToAddPlantID = "MainToAddPlantView"
     
     static let plantTableViewCellID = "PlantTableViewCell"
+    static let notesTableViewCellID = "NotesTableViewCellID"
     static let cellReuseID = "cellReuseID"
     static let suggestionCell = "suggestionCell"
     static let tempLockMessageFB = "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
@@ -92,7 +93,7 @@ struct K {
         tbC.modalPresentationStyle = .fullScreen
         
         let vc1 = mainVC()
-        let vc2 = ViewController2()
+        let vc2 = notesNavVC()
         let vc3 = QRScannerViewController(plants: [])
         let vc4 = ViewController4()
         let vc5 = profileSettingsVC()
@@ -129,6 +130,12 @@ struct K {
         let settingsVC = SettingsViewController()
         let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
         return settingsPlantNavVC
+    }
+    
+    static func notesNavVC() -> UIViewController {
+        let notesVC = NotesViewController()
+        let notesNavVC = UINavigationController(rootViewController: notesVC)
+        return notesNavVC
     }
     
     

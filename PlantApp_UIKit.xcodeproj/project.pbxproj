@@ -41,6 +41,8 @@
 		51C1F28029621A9D00203E54 /* LogoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1F27F29621A9D00203E54 /* LogoViewController.swift */; };
 		51C78B9828B18C8D00CD728F /* PlantTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */; };
 		51C78B9928B18C8D00CD728F /* PlantTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */; };
+		51CFC39D2A38B546002D24CE /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CFC39C2A38B546002D24CE /* NotesViewController.swift */; };
+		51CFC39F2A38C066002D24CE /* NotesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CFC39E2A38C066002D24CE /* NotesTableViewCell.swift */; };
 		51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E6D9D628CBB11A0053E4EE /* Constants.swift */; };
 		51EA0F2F28B298CD0023A9D9 /* PlantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */; };
 		95A24EAD7D38C32067B3547B /* Pods_PlantApp_UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */; };
@@ -110,6 +112,8 @@
 		51C1F27F29621A9D00203E54 /* LogoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoViewController.swift; sourceTree = "<group>"; };
 		51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantTableViewCell.swift; sourceTree = "<group>"; };
 		51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlantTableViewCell.xib; sourceTree = "<group>"; };
+		51CFC39C2A38B546002D24CE /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
+		51CFC39E2A38C066002D24CE /* NotesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewCell.swift; sourceTree = "<group>"; };
 		51E6D9D628CBB11A0053E4EE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51EA0F2E28B298CD0023A9D9 /* PlantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantViewController.swift; sourceTree = "<group>"; };
 		762B89C1524CB7CB4228F17E /* Pods_PlantApp_UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlantApp_UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -197,6 +201,7 @@
 				51C78B9628B18C8D00CD728F /* PlantTableViewCell.swift */,
 				51C78B9728B18C8D00CD728F /* PlantTableViewCell.xib */,
 				51402CB829B2A01200441DBC /* CollectionViewCell.swift */,
+				51CFC39E2A38C066002D24CE /* NotesTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -236,6 +241,7 @@
 				51402CB629B299DA00441DBC /* CollectionViewController.swift */,
 				514FA18429EF73380021FB59 /* WebKitViewController.swift */,
 				51839C1D29FD68F100D17E75 /* QRScannerViewController.swift */,
+				51CFC39C2A38B546002D24CE /* NotesViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -426,9 +432,11 @@
 				517D84852A3113C700D39C70 /* TabBarController.swift in Sources */,
 				51839C1E29FD68F100D17E75 /* QRScannerViewController.swift in Sources */,
 				51A3BF202911936D0024E812 /* LoginViewController.swift in Sources */,
+				51CFC39F2A38C066002D24CE /* NotesTableViewCell.swift in Sources */,
 				51402CB729B299DA00441DBC /* CollectionViewController.swift in Sources */,
 				51E6D9D728CBB11A0053E4EE /* Constants.swift in Sources */,
 				51885F672995853D0080CC14 /* ForgotPasswordViewController.swift in Sources */,
+				51CFC39D2A38B546002D24CE /* NotesViewController.swift in Sources */,
 				5102E02728AFFDC6006AF2AA /* SceneDelegate.swift in Sources */,
 				51180ABA28CA80080072BC8E /* WaterHabitDaysViewController.swift in Sources */,
 				512515B0292C2873003FB226 /* PlantDataModel.swift in Sources */,
