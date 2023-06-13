@@ -201,7 +201,7 @@ class LoginViewController: UIViewController {
         // If FB User login, this will navigate to MainVC
         if authenticateFBUser() {
             self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
-            K.navigateToMainVC(self)
+            K.presentTabBarController(self)
         }
         
         print("defaults: \(String(describing: defaults.array(forKey: "plantIDuuidString")))")
@@ -277,7 +277,7 @@ class LoginViewController: UIViewController {
                     
                     self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
                     
-                    K.navigateToMainVC(self)
+                    K.presentTabBarController(self)
                 }
             }
             
@@ -307,14 +307,14 @@ class LoginViewController: UIViewController {
     
     @objc func useWithoutAccountButtonClicked(sender: UIButton) {
         self.defaults.set(true, forKey: "useWithoutFBAccount")
-        K.navigateToMainVC(self)
+        K.presentTabBarController(self)
         print("Use without login account - button clicked")
     }
     
     @objc func presentMainVC() {
         if self.authenticateFBUser() {
             self.defaults.set(true, forKey: "fbUserFirstLoggedIn")
-            K.navigateToMainVC(self)
+            K.presentTabBarController(self)
         }
     }
     

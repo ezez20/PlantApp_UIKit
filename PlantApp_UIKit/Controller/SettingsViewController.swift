@@ -122,6 +122,7 @@ class SettingsViewController: UIViewController {
         
         section1View.backgroundColor = UIColor(named: "customWhite")
         section1View.layer.cornerRadius = 10
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -321,6 +322,7 @@ class SettingsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Settings"
+        print("DEEZ: plantsCount\(plants.count)")
     }
     
     @objc func alertButtonPressed() {
@@ -361,6 +363,7 @@ extension SettingsViewController {
         if sender.isOn == true {
             defaults.set(true, forKey: "notificationOn")
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
             updateUserSettings_FB()
             print("UISwitch state is now ON")
         } else {
@@ -416,7 +419,7 @@ extension SettingsViewController {
             defaults.set(false, forKey: "notificationOn")
             defaults.set(0, forKey: "selectedAlertOption")
             defaults.set(false, forKey: "useWithoutFBAccount")
-            dismiss(animated: true)
+//            dismiss(animated: true)
         }
         
         authenticateFBUser() { [self] db in
@@ -609,6 +612,7 @@ extension SettingsViewController: PassAlertDelegate {
         
         if notificationToggleSwitch.isOn {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshUserNotification"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "triggerLoadPlants"), object: nil)
             print("Notification Time switched")
         }
         

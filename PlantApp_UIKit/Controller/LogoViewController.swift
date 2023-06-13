@@ -35,7 +35,7 @@ class LogoViewController: UIViewController {
         // MARK: - Add Animation to titleLogo when app is first loaded.
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
-                K.navigateToMainVC(self)
+                K.presentTabBarController(self)
             } else {
                 let vc = LoginViewController()
                 vc.modalTransitionStyle = .crossDissolve
@@ -79,7 +79,7 @@ extension LogoViewController {
         print("reloading view")
         titleLogo.fadeInAnimation {
             if self.authenticateFBUser() || self.defaults.bool(forKey: "useWithoutFBAccount") {
-                K.navigateToMainVC(self)
+                K.presentTabBarController(self)
                 print("LogoVC presenting: MainVC")
                 self.defaults.set(false, forKey: "logoVCReload")
             } else {

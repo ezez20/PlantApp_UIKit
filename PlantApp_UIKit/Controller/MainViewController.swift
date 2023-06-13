@@ -108,7 +108,6 @@ class MainViewController: UIViewController {
             addLoadingSpinner()
             loadPlants {
                 self.refreshUserNotification()
-                self.updateUnpresentedNotification()
                 self.passPlantsDataToQRVC()
                 self.removeLoadingView()
                 print("PlantsTableview reloaded")
@@ -121,7 +120,6 @@ class MainViewController: UIViewController {
             self.loadPlants {
                 print("Plants Loaded. Core Data count: \(self.plants.count)")
                 self.refreshUserNotification()
-                self.updateUnpresentedNotification()
                 self.removeLoadingView()
                 self.defaults.set(false, forKey: "userDiscardedApp")
             }
@@ -151,7 +149,6 @@ class MainViewController: UIViewController {
             loadPlantsFB {
                 self.updateUserSettings {
                     print("updateUserSettings completed")
-                    self.updateUnpresentedNotification()
                     self.refreshUserNotification()
                     self.passPlantsDataToQRVC()
                     self.defaults.set(false, forKey: "fbUserFirstLoggedIn")
@@ -170,6 +167,11 @@ class MainViewController: UIViewController {
             }
         }
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("viewWillDisappear")
+        passPlantsDataToQRVC()
     }
     
     
@@ -239,17 +241,17 @@ class MainViewController: UIViewController {
     }
     
     
-    @IBAction func settingButtonPressed(_ sender: Any) {
-        // lead to settings page
-        let settingsVC = SettingsViewController()
-        let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
-        settingsVC.context = context
-        settingsVC.plants = plants
-        settingsVC.userSettings = userSettings
-        settingsVC.modalPresentationStyle = .formSheet
-        present(settingsPlantNavVC, animated: true, completion: nil)
-
-    }
+//    @IBAction func settingButtonPressed(_ sender: Any) {
+//        // lead to settings page
+//        let settingsVC = SettingsViewController()
+//        let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
+//        settingsVC.context = context
+//        settingsVC.plants = plants
+//        settingsVC.userSettings = userSettings
+//        settingsVC.modalPresentationStyle = .formSheet
+//        present(settingsPlantNavVC, animated: true, completion: nil)
+//
+//    }
     
     @IBAction func addButtonPressed(_ sender: Any) {
         
@@ -276,11 +278,11 @@ class MainViewController: UIViewController {
         
     }
     
-    @IBAction func qrButtonPressed(_ sender: Any) {
-        print("QR buttton pressed")
-        let qrVC = QRScannerViewController(plants: plants)
-        present(qrVC, animated: true)
-    }
+//    @IBAction func qrButtonPressed(_ sender: Any) {
+//        print("QR buttton pressed")
+//        let qrVC = QRScannerViewController(plants: plants)
+//        present(qrVC, animated: true)
+//    }
     
     
     //MARK: - Data Manipulation Methods
@@ -331,6 +333,8 @@ class MainViewController: UIViewController {
         
         loadPlants {
             print("Plants Loaded. Core Data count: \(self.plants.count)")
+            self.refreshUserNotification()
+            self.passPlantsDataToQRVC()
         }
         
         if collectionViewBool {
@@ -339,7 +343,7 @@ class MainViewController: UIViewController {
             self.plantsTableView.deleteRows(at: [indexPathConst], with: .automatic)
         }
         
-        refreshUserNotification()
+       
 
         print("Core data deleted indexPath: \(indexPath)")
     }
@@ -504,7 +508,7 @@ extension MainViewController: UITableViewDataSource {
         
         if waterStatus.localizedStandardContains("today") {
             cell.tintColor = .systemRed
-        } else if waterStatus.localizedStandardContains("2") || waterStatus.localizedStandardContains("3"){
+        } else if waterStatus.localizedStandardContains("1") || waterStatus.localizedStandardContains("2") || waterStatus.localizedStandardContains("3"){
             cell.tintColor = .systemYellow
         } else {
             cell.tintColor = .systemGreen
@@ -967,8 +971,6 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     @objc func refreshUserNotification() {
         if defaults.bool(forKey: "notificationOn") {
             setupLocalUserNotification(selectedAlert: defaults.integer(forKey: "selectedAlertOption"))
-            updateUnpresentedNotification()
-            print("DEEEZ")
         }
     }
     
@@ -1159,59 +1161,73 @@ extension MainViewController: UNUserNotificationCenterDelegate {
             
             print("updateUnpresentedNotification")
             
-          
-                print("Plants Loaded")
-                var count = 0
-                for p in plants {
-                    let waterHabitIn = p.waterHabit
-                    let lastWateredDateIn = p.lastWateredDate
-                    var nextWaterDate: Date {
-                        let calculatedDate = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
-                        return calculatedDate!
-                    }
-                    
-                    var selectedNotificationTime = Date()
-                    switch defaults.integer(forKey: "selectedAlertOption") {
-                    case 0: // day of event
-                        // For debug purpose: Notification time - 10 seconds
-                        //                            selectedNotificationTime = Date.now.advanced(by: 10)
-                        
-                        // Uncomment below when not debugging:
-                        selectedNotificationTime = nextWaterDate.advanced(by: 100)
-    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                    case 1: // 1 day before
-                        selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
-    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                    case 2: // 2 days before
-                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
-    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                    default: // 3 days before
-                        selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
-    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
-                    }
-                    
-                    if selectedNotificationTime < Date.now {
-                        p.notificationPresented = true
-                        count += 1
-                        savePlants()
-                    }
+            var count = 0
+            
+            guard plants.count != 0 else { return }
+            
+            for p in plants {
+                
+                let waterHabitIn = p.waterHabit
+                let lastWateredDateIn = p.lastWateredDate
+                var nextWaterDate: Date {
+                    let calculatedDate  = Calendar.current.date(byAdding: Calendar.Component.day, value: Int(waterHabitIn), to:  (lastWateredDateIn)!)
+                    return calculatedDate!
                 }
-                DispatchQueue.main.async {
-                    UIApplication.shared.applicationIconBadgeNumber = count
+                
+                var selectedNotificationTime = Date()
+                switch defaults.integer(forKey: "selectedAlertOption") {
+                case 0: // day of event
+                    // For debug purpose: Notification time - 10 seconds
+                    //                            selectedNotificationTime = Date.now.advanced(by: 10)
+                    
+                    // Uncomment below when not debugging:
+                    selectedNotificationTime = nextWaterDate.advanced(by: 100)
+                    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                case 1: // 1 day before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400 + 50)
+                    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                case 2: // 2 days before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*2)
+                    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
+                default: // 3 days before
+                    selectedNotificationTime = nextWaterDate.advanced(by: -86400*3)
+                    //                    print("Plant: \(String(describing: p.plant)), Notification Time: \(selectedNotificationTime.formatted(date: .abbreviated, time: .standard))")
                 }
+                
+                if selectedNotificationTime < Date.now {
+                    p.notificationPresented = true
+                    count += 1
+                    savePlants()
+                }
+                
             }
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = count
+            }
+            
+        }
         
     }
     
     func passPlantsDataToQRVC() {
         if let tabBarController = self.tabBarController {
-            // Retrieve an instance of ViewController2
-            print("DDD: tabbars \(tabBarController.tabBar.selectedItem)")
+          
             if let qrVC = tabBarController.viewControllers?[2] as? QRScannerViewController {
                 // Assign the data to ViewController2
                 qrVC.plants = plants
                 print("DDD: data passed")
             }
+            
+            if let navigationController = tabBarController.viewControllers?[4] as? UINavigationController,
+               let settingsProfileVC = navigationController.topViewController as? SettingsViewController {
+                // Assign the data to SettingsViewController
+                print("Data passed to SettingsViewController")
+                settingsProfileVC.context = context
+                settingsProfileVC.plants = plants
+                settingsProfileVC.userSettings = userSettings
+            }
+            
         }
     }
     

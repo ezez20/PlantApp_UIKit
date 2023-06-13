@@ -66,7 +66,8 @@ class AccountViewController: UIViewController {
         
         containerView.addSubview(sectionView)
         sectionView.translatesAutoresizingMaskIntoConstraints = false
-        sectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 108).isActive = true
+//        sectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 108).isActive = true
+        sectionView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
         sectionView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 20).isActive = true
         sectionView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20).isActive = true
         sectionView.heightAnchor.constraint(equalToConstant: 200).isActive = true

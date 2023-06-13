@@ -84,7 +84,7 @@ struct K {
         }
     }
     
-    static func navigateToMainVC(_ vc: UIViewController) {
+    static func presentTabBarController(_ vc: UIViewController) {
         let tbC = TabBarController()
         tbC.tabBar.backgroundColor = .secondarySystemBackground
         tbC.tabBar.tintColor = UIColor(named: K.customGreen2)
@@ -95,7 +95,8 @@ struct K {
         let vc2 = ViewController2()
         let vc3 = QRScannerViewController(plants: [])
         let vc4 = ViewController4()
-        let vc5 = ViewController5()
+        let vc5 = profileSettingsVC()
+        
        
         vc1.tabBarItem.image = UIImage(systemName: "leaf")
         vc1.title = "Plants"
@@ -105,8 +106,9 @@ struct K {
         vc3.title = "Scan"
         vc4.tabBarItem.image = UIImage(systemName: "bag")
         vc4.title = "Wishlist"
-        vc5.tabBarItem.image = UIImage(systemName: "person.crop.circle")
-        vc5.title = "Profile"
+        vc5.tabBarItem.image = UIImage(systemName: "gear")
+        vc5.title = "Settings"
+        
         
         tbC.setViewControllers([vc1, vc2, vc3, vc4, vc5], animated: false)
         vc.present(tbC, animated: true)
@@ -121,6 +123,12 @@ struct K {
         navigation.navigationBar.tintColor = UIColor(named: K.customGreen2)
         navigation.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
         return navigation
+    }
+    
+    static func profileSettingsVC() -> UIViewController {
+        let settingsVC = SettingsViewController()
+        let settingsPlantNavVC = UINavigationController(rootViewController: settingsVC)
+        return settingsPlantNavVC
     }
     
     

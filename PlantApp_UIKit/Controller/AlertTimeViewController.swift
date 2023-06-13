@@ -28,10 +28,10 @@ class AlertTimeViewController: UIViewController {
         
         view.addSubview(alertTimeTable)
         alertTimeTable.translatesAutoresizingMaskIntoConstraints = false
-        alertTimeTable.topAnchor.constraint(equalTo: view.topAnchor, constant: 108).isActive = true
+        alertTimeTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
         alertTimeTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
         alertTimeTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-        alertTimeTable.bottomAnchor.constraint(equalTo: view.topAnchor, constant: (50 * 4) + 108).isActive = true
+        alertTimeTable.heightAnchor.constraint(equalToConstant: CGFloat(50 * 4)).isActive = true
         alertTimeTable.layer.cornerRadius = 10
         
         alertTimeTable.tableHeaderView = UIView()
