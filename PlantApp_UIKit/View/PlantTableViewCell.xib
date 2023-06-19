@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,10 +18,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="336.5" height="67"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="monstera" translatesAutoresizingMaskIntoConstraints="NO" id="axP-th-LAn">
-                        <rect key="frame" x="304.5" y="15" width="28" height="35"/>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="monstera" translatesAutoresizingMaskIntoConstraints="NO" id="axP-th-LAn">
+                        <rect key="frame" x="297.5" y="16" width="35" height="35"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="28" id="lsa-79-CwN"/>
+                            <constraint firstAttribute="width" constant="35" id="lsa-79-CwN"/>
                             <constraint firstAttribute="height" constant="35" id="r84-Hx-CI9"/>
                         </constraints>
                     </imageView>
@@ -35,7 +35,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Sc0-B0-IjK">
-                        <rect key="frame" x="239.5" y="13.5" width="50" height="40"/>
+                        <rect key="frame" x="232.5" y="13.5" width="50" height="40"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GP6-Ty-R76">
                                 <rect key="frame" x="17.5" y="0.5" width="15" height="19"/>
@@ -59,13 +59,13 @@
                     </stackView>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="axP-th-LAn" secondAttribute="trailing" constant="4" id="0bN-nn-jaM"/>
+                    <constraint firstItem="axP-th-LAn" firstAttribute="leading" secondItem="Sc0-B0-IjK" secondAttribute="trailing" constant="15" id="2ss-Mm-K60"/>
                     <constraint firstItem="Sc0-B0-IjK" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="619-Qy-cQB"/>
                     <constraint firstAttribute="bottom" secondItem="bfr-pW-Pmf" secondAttribute="bottom" constant="23" id="A8S-ZQ-CjC"/>
-                    <constraint firstAttribute="trailing" secondItem="axP-th-LAn" secondAttribute="trailing" constant="4" id="NBf-Jr-ySA"/>
-                    <constraint firstItem="axP-th-LAn" firstAttribute="leading" secondItem="Sc0-B0-IjK" secondAttribute="trailing" constant="15" id="ZuD-fW-BHa"/>
                     <constraint firstItem="bfr-pW-Pmf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="23" id="f7G-2L-jDC"/>
                     <constraint firstItem="bfr-pW-Pmf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="17" id="hK8-L0-mlB"/>
-                    <constraint firstItem="axP-th-LAn" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-1" id="wOk-XB-P8q"/>
+                    <constraint firstItem="axP-th-LAn" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="zel-va-Ffe"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

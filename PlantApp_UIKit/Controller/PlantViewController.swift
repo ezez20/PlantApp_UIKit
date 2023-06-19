@@ -229,7 +229,7 @@ class PlantViewController: UIViewController {
     }
     
     func updateWeatherUI() {
-        if inputLogoIn   == "" {
+        if inputLogoIn == "" {
             weatherLogo.image = UIImage(systemName: "")
             weatherTemp.text = "n/a"
             weatherCity.text = "n/a"

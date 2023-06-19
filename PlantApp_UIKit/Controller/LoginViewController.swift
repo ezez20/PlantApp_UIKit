@@ -350,7 +350,7 @@ extension LoginViewController: UITextFieldDelegate {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer( target: self, action:    #selector(dismissKeyboardTouchOutside))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-        
+       
     }
     
     @objc private func dismissKeyboardTouchOutside() {

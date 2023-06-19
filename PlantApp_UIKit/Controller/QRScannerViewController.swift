@@ -176,9 +176,31 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         
         view.backgroundColor = .secondarySystemBackground
         
+//        checkCameraPermission()
         setupCaptureSession()
         addInstructionLabel()
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.captureSession.startRunning()
+            
+            DispatchQueue.main.async {
+                self.previewLayer?.isHidden = false
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        DispatchQueue.global(qos: .background).async {
+            if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+                self.captureSession.stopRunning()
+                self.previewLayer?.isHidden = true
+            }
+        }
+    }
+    
     
     // MARK: - AVCaptureMetadataOutputObjectsDelegate functions
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
@@ -253,6 +275,29 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 }
 
 extension QRScannerViewController {
+    
+    func checkCameraPermission() {
+        print("Checking camera permission")
+        let avMediaType = AVMediaType.video
+        let avCaptureDeviceStatus = AVCaptureDevice.authorizationStatus(for: avMediaType)
+            
+        switch avCaptureDeviceStatus {
+        case .denied: break
+        case .authorized: break
+        case .restricted: break
+        case .notDetermined:
+            // Prompting user for the permission to use the camera.
+            AVCaptureDevice.requestAccess(for: avMediaType) { granted in
+                if granted {
+                    print("Granted access to \(avMediaType)")
+                    self.setupCaptureSession()
+                } else {
+                    print("Denied access to \(avMediaType)")
+                }
+            }
+        default: break
+        }
+    }
     
     func setupCaptureSession() {
         

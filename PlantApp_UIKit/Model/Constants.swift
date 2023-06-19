@@ -17,6 +17,8 @@ struct K {
     static let unknownPlant = "UnknownPlant"
     static let leaf = "leaf"
     
+    static let PlantViewControllerID = "PlantViewControllerID"
+    
     static let mainToPlantID = "MainToPlant"
     static let mainToAddPlantID = "MainToAddPlantView"
     
@@ -133,7 +135,7 @@ struct K {
     }
     
     static func notesNavVC() -> UIViewController {
-        let notesVC = NotesViewController()
+        let notesVC = NotesViewController(plants: [])
         let notesNavVC = UINavigationController(rootViewController: notesVC)
         return notesNavVC
     }

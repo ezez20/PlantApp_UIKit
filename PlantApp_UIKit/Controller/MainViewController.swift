@@ -1211,24 +1211,40 @@ extension MainViewController: UNUserNotificationCenterDelegate {
     }
     
     func passPlantsDataToQRVC() {
+        
+        // IF USER SELECTS TABBARCONTROLLER
         if let tabBarController = self.tabBarController {
-          
+            
+            // LEAD TO: NotesViewController
+            if let notesNavController = tabBarController.viewControllers?[1] as? UINavigationController,
+               let notesVC = notesNavController.topViewController as? NotesViewController {
+                // Assign the data to ViewController2
+                notesVC.plants = plants
+                notesVC.weatherLogo = weatherLogo
+                notesVC.weatherTemp = weatherTemp
+                notesVC.weatherCity = weatherCity
+                print("DDD: notesVC data passed")
+            }
+            
+            // LEAD TO: QRScannerViewController
             if let qrVC = tabBarController.viewControllers?[2] as? QRScannerViewController {
                 // Assign the data to ViewController2
                 qrVC.plants = plants
-                print("DDD: data passed")
+                print("DDD: qrVC data passed")
             }
             
-            if let navigationController = tabBarController.viewControllers?[4] as? UINavigationController,
-               let settingsProfileVC = navigationController.topViewController as? SettingsViewController {
+            // LEAD TO: SettingsViewController
+            if let settingsProfileNavController = tabBarController.viewControllers?[4] as? UINavigationController,
+               let settingsProfileVC = settingsProfileNavController.topViewController as? SettingsViewController {
                 // Assign the data to SettingsViewController
-                print("Data passed to SettingsViewController")
+                print("DDD: settingsProfileVC data passed")
                 settingsProfileVC.context = context
                 settingsProfileVC.plants = plants
                 settingsProfileVC.userSettings = userSettings
             }
             
         }
+        
     }
     
 }

@@ -76,7 +76,7 @@ class EditPlantViewController: UIViewController {
         print("View will appear")
         
         imagePicker.delegate = self
-        plantImageButton.imageView?.contentMode = .scaleAspectFill
+        plantImageButton.imageView?.contentMode = .scaleAspectFit
     }
     
     override func viewWillDisappear(_ animated: Bool) {

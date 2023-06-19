@@ -19,6 +19,7 @@ class PlantTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
+        plantImage.layer.cornerRadius = plantImage.frame.size.width / 2
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
