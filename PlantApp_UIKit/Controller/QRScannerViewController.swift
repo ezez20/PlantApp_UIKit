@@ -176,23 +176,30 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         
         view.backgroundColor = .secondarySystemBackground
         
-//        checkCameraPermission()
-        setupCaptureSession()
-        addInstructionLabel()
+        if AVCaptureDevice.authorizationStatus(for: .video) == .denied {
+            addGoToSettingsView()
+        }
+        
+        checkCameraPermission()
+//        setupCaptureSession()
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         DispatchQueue.global(qos: .userInitiated).async {
-            self.captureSession.startRunning()
-            
-            DispatchQueue.main.async {
-                self.previewLayer?.isHidden = false
+            if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+                self.captureSession.startRunning()
+                
+                DispatchQueue.main.async {
+                    self.previewLayer?.isHidden = false
+                    self.addInstructionLabel()
+                }
             }
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        self.removeInstructionLabel()
         DispatchQueue.global(qos: .background).async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 self.captureSession.stopRunning()
@@ -282,17 +289,22 @@ extension QRScannerViewController {
         let avCaptureDeviceStatus = AVCaptureDevice.authorizationStatus(for: avMediaType)
             
         switch avCaptureDeviceStatus {
-        case .denied: break
-        case .authorized: break
+        case .denied:
+            print("denied")
+        case .authorized:
+            self.setupCaptureSession()
+//            self.addInstructionLabel()
         case .restricted: break
         case .notDetermined:
             // Prompting user for the permission to use the camera.
-            AVCaptureDevice.requestAccess(for: avMediaType) { granted in
+            AVCaptureDevice.requestAccess(for: avMediaType) { [self] granted in
                 if granted {
                     print("Granted access to \(avMediaType)")
-                    self.setupCaptureSession()
+                    setupCaptureSession()
+                    addInstructionLabel()
                 } else {
                     print("Denied access to \(avMediaType)")
+                    addGoToSettingsView()
                 }
             }
         default: break
@@ -326,11 +338,12 @@ extension QRScannerViewController {
         capturedMetadataOutput.metadataObjectTypes = [.qr]
         
         // 5: Add previewLayer to view.
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        previewLayer?.frame = view.layer.bounds
-        view.layer.addSublayer(previewLayer!)
-        
+        DispatchQueue.main.async { [self] in
+            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+            previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
+            previewLayer?.frame = view.layer.bounds
+            view.layer.addSublayer(previewLayer!)
+        }
         
         // 6: Start video capture session
         DispatchQueue.global(qos: .background).async {
@@ -470,6 +483,39 @@ extension QRScannerViewController {
         
     }
     
+    func removeInstructionLabel() {
+        instructionLabelFrame.removeFromSuperview()
+        instrunctionLabel.removeFromSuperview()
+    }
+    
+    func addGoToSettingsView() {
+        DispatchQueue.main.async { [self] in
+            let label = UILabel()
+            label.text = "Please allow access to the camera to enable QR code reader function"
+            label.font = .boldSystemFont(ofSize: 20)
+            label.numberOfLines = 2
+            label.textAlignment = .center
+            view.addSubview(label)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40).isActive = true
+            label.widthAnchor.constraint(equalToConstant: view.frame.width - 10).isActive = true
+            label.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            
+            let button = UIButton()
+            button.setTitle("Open Settings", for: .normal)
+            button.setTitleColor(.systemBlue, for: .normal)
+            button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+            view.addSubview(button)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10).isActive = true
+            button.centerXAnchor.constraint(equalTo: label.centerXAnchor).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 150).isActive = true
+            button.addTarget(self, action: #selector(leadUserToSettings(sender:)), for: .touchUpInside)
+        }
+    }
+    
     @objc func waterButtonPressed(sender: Any) {
         for p in plants {
             if p.id?.uuidString == scannedPlantUUID {
@@ -555,14 +601,14 @@ extension QRScannerViewController {
     
     @objc func openPlantVC(sender: Any) {
         print("openPlantVC")
-//        dismiss(animated: true) {
-//            NotificationCenter.default.post(name: NSNotification.Name("qrVCDismissToPlantVC"), object: nil, userInfo: ["qrScannedPlantUUID" : self.scannedPlantUUID])
-//        }
-        
         // Switch tabBar to "plantsTab/MainVC then open plantVC.
         tabBarController?.selectedIndex = 0
         NotificationCenter.default.post(name: NSNotification.Name("qrVCDismissToPlantVC"), object: nil, userInfo: ["qrScannedPlantUUID" : self.scannedPlantUUID])
     }
     
+    @objc func leadUserToSettings(sender: Any) {
+        print("leadUserToSettings")
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+    }
     
 }
