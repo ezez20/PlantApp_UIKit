@@ -143,7 +143,7 @@ class EditPlantViewController: UIViewController {
         
         plantTextField.backgroundColor = .clear
         plantTextField.placeholder = "Type of plant"
-        
+        plantTextField.tintColor = UIColor(named: K.customGreen2)
         
         // wateringLabel
         containerView.addSubview(wateringLabel)

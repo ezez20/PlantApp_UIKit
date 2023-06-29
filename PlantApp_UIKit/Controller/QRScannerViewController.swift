@@ -196,6 +196,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                 }
             }
         }
+        removeQRFrameView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -214,12 +215,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     
         guard metadataObjects.count != 0 else {
             print("No QR code found")
-            qrCodeFrameView.removeFromSuperview()
-            waterButton.removeFromSuperview()
-            stackView.removeFromSuperview()
-            qrCodeFrameView.willRemoveSubview(plantFrameView)
-            plantImageButton.removeFromSuperview()
-            
+            removeQRFrameView()
             qrCodeScanned = false
            
             return
@@ -254,7 +250,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                 if p.id?.uuidString == scannedResult {
                     
                     addWaterButton()
-                    addStackView()
+                    addPlantQRFrameView()
                     
                     addPlantPhotoToFrameView(plant: p)
                     
@@ -358,6 +354,14 @@ extension QRScannerViewController {
 
     }
     
+    func removeQRFrameView() {
+        qrCodeFrameView.removeFromSuperview()
+        waterButton.removeFromSuperview()
+        stackView.removeFromSuperview()
+        qrCodeFrameView.willRemoveSubview(plantFrameView)
+        plantImageButton.removeFromSuperview()
+    }
+    
     func addPlantPhotoToFrameView(plant: Plant) {
         print("Deez")
         qrCodeFrameView.addSubview(plantFrameView)
@@ -403,7 +407,7 @@ extension QRScannerViewController {
     }
 
     
-    func addStackView() {
+    func addPlantQRFrameView() {
         
         view.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: qrCodeFrameView.bottomAnchor, constant: 10).isActive = true

@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import Network
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseStorage
 
 class NotesTableViewCell: UITableViewCell {
 
@@ -20,8 +24,17 @@ class NotesTableViewCell: UITableViewCell {
     var notesTextViewContrainer = UIView()
     var notesTextView = UITextView()
     var saveButton = UIButton()
+
+    private let loadingSpinnerView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        spinner.color = .white
+        return spinner
+    }()
     
     weak var plant: Plant?
+    let networkMonitor = NWPathMonitor()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -89,6 +102,7 @@ extension NotesTableViewCell {
         notesTextView.font = .systemFont(ofSize: 15)
         notesTextView.text = "Add a note..."
         notesTextView.textColor = UIColor.lightGray
+        notesTextView.tintColor = UIColor(named: K.customGreen2)
 
         notesTextView.delegate = self
         
@@ -165,5 +179,128 @@ extension NotesTableViewCell: UITextViewDelegate {
             saveButton.isEnabled = false
         }
     }
+    
+}
+
+extension NotesTableViewCell {
+    
+    func authenticateFBUser() -> Bool {
+        if Auth.auth().currentUser?.uid != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func editPlant_FB(_ currentPlantID: UUID) {
+        
+        addLoadingView()
+        
+        networkConnectionBool { [self] boolIn in
+            
+            if boolIn {
+                print("boolIn: true")
+                
+                DispatchQueue.main.async { [self] in
+                    
+                    
+                    let db = Firestore.firestore()
+                    
+                    //2: FIREBASE: Get currentUser UID to use as document's ID.
+                    guard let currentUser = Auth.auth().currentUser?.uid else { return }
+                    
+                    let userFireBase = db.collection("users").document(currentUser)
+                    
+                    //3: FIREBASE: Declare collection("plants)
+                    let plantCollection =  userFireBase.collection("plants")
+                    
+                    //4: FIREBASE: Plant entity input
+                    let plantEditedData: [String: Any] = [
+                        "plantNotes": ""
+                    ]
+                    
+                    // 5: FIREBASE: Set doucment name(use index# to later use in core data)
+                    let plantDoc = plantCollection.document("\(plant!.id!.uuidString)")
+                    print("plantDoc edited uuid: \(currentPlantID.uuidString)")
+                    
+                    // 6: Edited data for "Plant entity input"
+                    plantDoc.updateData(plantEditedData) { error in
+                        if error != nil {
+//                            K.presentAlert(self, error!)
+                            print("Error updating data on FB: \(String(describing: error))")
+                        }
+                    }
+                    
+                    // 7: Add edited doc date on FB
+                    plantDoc.setData(["Edited Doc date": Date.now], merge: true) { error in
+                        if error != nil {
+//                            K.presentAlert(self, error!)
+                            print("Error updating data on FB: \(String(describing: error))")
+                        }
+                    }
+                    
+                    
+                    print("Plant successfully edited on Firebase")
+                    
+                }
+                
+            } else {
+                print("boolIn: false")
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error uploading plant:", message: "Please try again or check your network.", preferredStyle: .alert)
+                    
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                        NSLog("The \"OK\" alert occured.")
+                        self.removeLoadingView()
+                    }))
+                    
+//                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+        
+    }
+    
+    func addLoadingView() {
+        DispatchQueue.main.async { [self] in
+            loadingSpinnerView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(loadingSpinnerView)
+            loadingSpinnerView.centerXAnchor.constraint(equalTo: saveButton.centerXAnchor).isActive = true
+            loadingSpinnerView.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor).isActive = true
+            loadingSpinnerView.startAnimating()
+            saveButton.isHidden = true
+            print("addLoadingView")
+        }
+    }
+    
+    func removeLoadingView() {
+        DispatchQueue.main.async {
+            self.loadingSpinnerView.stopAnimating()
+            self.loadingSpinnerView.removeFromSuperview()
+            print("removedLoadingView")
+        }
+    }
+    
+    func networkConnectionBool(completion: @escaping (Bool) -> Void) {
+        
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        networkMonitor.start(queue: queue)
+        
+        networkMonitor.pathUpdateHandler = { path in
+           if path.status == .satisfied {
+              print("Network Connected")
+               self.networkMonitor.cancel()
+               completion(true)
+           } else {
+              print("Network Disconnected")
+               self.networkMonitor.cancel()
+               completion(false)
+           }
+            print("path.isExpensive: \(path.isExpensive)"
+            )
+        }
+      
+    }
+    
     
 }

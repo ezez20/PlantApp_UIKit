@@ -32,6 +32,7 @@ class NotesViewController: UIViewController {
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
         title = "Notes"
         
         setupNotesTableView()
@@ -119,7 +120,6 @@ extension NotesViewController: UITableViewDelegate, UITableViewDataSource, UITex
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:    #selector(dismissKeyboardTouchOutside))
         tap.cancelsTouchesInView = false
-        print("DDD view: \(tap.view)")
         view.addGestureRecognizer(tap)
         print("enableDismissKeyboardOnTapOutside")
     }
@@ -130,3 +130,5 @@ extension NotesViewController: UITableViewDelegate, UITableViewDataSource, UITex
     }
     
 }
+
+

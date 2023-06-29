@@ -125,6 +125,7 @@ struct K {
         let navigation = UINavigationController(rootViewController: mainVC)
         navigation.navigationBar.tintColor = UIColor(named: K.customGreen2)
         navigation.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
+        navigation.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: K.customGreen2) ?? .label]
         return navigation
     }
     

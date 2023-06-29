@@ -19,7 +19,13 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="zSy-Il-5LQ">
                         <rect key="frame" x="0.0" y="47" width="428" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="tintColor" red="0.49132967150000001" green="0.76871567959999998" blue="0.53374622250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="tintColor" name="customGreen2"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" name="customGreen2"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" name="customGreen2"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -211,7 +217,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="Swz-Yh-6Av" userLabel="Last watered: Stack View">
-                                                <rect key="frame" x="77.666666666666671" y="102.66666666666663" width="232.66666666666663" height="77.333333333333314"/>
+                                                <rect key="frame" x="76.666666666666686" y="102.66666666666663" width="235" height="77.333333333333314"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last watered:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="KUl-8S-SLv">
                                                         <rect key="frame" x="0.0" y="0.0" width="103" height="77.333333333333329"/>
@@ -221,11 +227,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" id="gHH-X1-3wl">
-                                                        <rect key="frame" x="109.99999999999997" y="0.0" width="122.66666666666666" height="77.333333333333329"/>
+                                                        <rect key="frame" x="110" y="0.0" width="125" height="77.333333333333329"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="ihZ-jD-hNq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="122.66666666666667" height="77.333333333333329"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="125" height="77.333333333333329"/>
                                                             </datePicker>
                                                         </subviews>
                                                     </stackView>
@@ -337,6 +343,13 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="T6R-pD-q5l">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="108"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" name="customGreen2"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" name="customGreen2"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" name="customGreen2"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -367,6 +380,7 @@
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type of plant" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="loM-xs-Wmd" userLabel="Type Of Plant: UITextfield">
                                                         <rect key="frame" x="20" y="8" width="348" height="29"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <color key="tintColor" name="customGreen2"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
@@ -519,7 +533,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="KyK-WP-2xe">
-                        <barButtonItem key="rightBarButtonItem" id="TGa-na-oAo">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="TGa-na-oAo">
                             <imageReference key="image" image="camera.viewfinder" catalog="system" symbolScale="default"/>
                             <button key="customView" opaque="NO" contentMode="right" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="6GI-sJ-bpy">
                                 <rect key="frame" x="313" y="6" width="95" height="44"/>
@@ -535,6 +549,7 @@
                                     <action selector="cameraButtonPressed:" destination="pC5-p4-qVx" eventType="touchUpInside" id="Qnk-1Q-JX3"/>
                                 </connections>
                             </button>
+                            <color key="tintColor" name="customGreen2"/>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -543,7 +558,7 @@
                         <outlet property="containerView" destination="HpS-kL-IzJ" id="yHr-nD-Ovo"/>
                         <outlet property="datePicker" destination="5Cs-ay-bIU" id="dmL-2W-t5f"/>
                         <outlet property="plantImageButton" destination="xkH-z3-d1e" id="CRF-vd-Ksu"/>
-                        <outlet property="plantName" destination="loM-xs-Wmd" id="8gC-QM-orH"/>
+                        <outlet property="plantNameTextField" destination="loM-xs-Wmd" id="8gC-QM-orH"/>
                         <outlet property="scrollView" destination="96Q-xU-KS5" id="ude-dY-wWz"/>
                         <outlet property="textFieldBottomWateringLabelTopConstraint" destination="KIv-mb-Ddo" id="2My-87-yHd"/>
                         <outlet property="textFieldView" destination="Ean-US-zjr" id="dIH-Um-Zfr"/>
@@ -597,6 +612,9 @@
         <image name="face.smiling" catalog="system" width="128" height="123"/>
         <image name="leaf.circle" catalog="system" width="128" height="123"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
+        <namedColor name="customGreen2">
+            <color red="0.14499999582767487" green="0.60000002384185791" blue="0.35699999332427979" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="custom_blue_1">
             <color red="0.2460000067949295" green="0.76800000667572021" blue="0.77999997138977051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

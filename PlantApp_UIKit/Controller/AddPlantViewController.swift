@@ -22,7 +22,7 @@ class AddPlantViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet weak var textFieldView: UIView!
-    @IBOutlet weak var plantName: UITextField!
+    @IBOutlet weak var plantNameTextField: UITextField!
     
     @IBOutlet weak var wateringLabel: UILabel!
     @IBOutlet weak var textFieldBottomWateringLabelTopConstraint: NSLayoutConstraint!
@@ -76,7 +76,7 @@ class AddPlantViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         title = "Add Plant"
-        plantName.delegate = self
+        plantNameTextField.delegate = self
         loadPlants()
         
         suggestionTableView.delegate = self
@@ -90,7 +90,7 @@ class AddPlantViewController: UIViewController {
         self.enableDismissKeyboardOnTapOutside()
         
         datePicker.maximumDate = Date.now
-        plantName.autocorrectionType = .no
+        plantNameTextField.autocorrectionType = .no
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -123,9 +123,9 @@ class AddPlantViewController: UIViewController {
     }
     
     func updateInputImage() {
-        if imageSetNames.contains(plantName.text!.lowercased()) && inputImage == nil {
-            plantImageButton.setImage(UIImage(named: plantName.text!.lowercased()), for: .normal)
-        } else if imageSetNames.contains(plantName.text!) && inputImage != nil {
+        if imageSetNames.contains(plantNameTextField.text!.lowercased()) && inputImage == nil {
+            plantImageButton.setImage(UIImage(named: plantNameTextField.text!.lowercased()), for: .normal)
+        } else if imageSetNames.contains(plantNameTextField.text!) && inputImage != nil {
             plantImageButton.setImage(inputImage, for: .normal)
         } else if inputImage != nil  {
             plantImageButton.setImage(inputImage, for: .normal)
@@ -184,7 +184,7 @@ class AddPlantViewController: UIViewController {
             let newPlant = Plant(context: self.context)
             let newPlantID = UUID()
             newPlant.id = newPlantID
-            newPlant.plant = self.plantName.text
+            newPlant.plant = self.plantNameTextField.text
             newPlant.waterHabit = Int16(selectedHabitDay)
             newPlant.dateAdded = Date.now
             newPlant.order = Int32(plants.endIndex)
@@ -220,7 +220,7 @@ class AddPlantViewController: UIViewController {
             dismiss(animated: true)
             
             // Debug area
-            print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantName.text!)")
+            print("Plant added on \(String(describing: newPlant.dateAdded)): \(self.plantNameTextField.text!)")
             print("Plant order: \(newPlant.order)")
         }
         
@@ -293,7 +293,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        plantName.text = filteredSuggestion[indexPath.row]
+        plantNameTextField.text = filteredSuggestion[indexPath.row]
         plantImageString = filteredSuggestion[indexPath.row]
         updateInputImage()
         removeSuggestionScrollView()
@@ -305,9 +305,9 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         updateInputImage()
         
         // Ensure there is at least one character in textfield. If not, addPlantButton.isEnabled = false.
-        let trimmedAndLoweredText = plantName.text?.trimmingCharacters(in: .whitespaces).lowercased()
+        let trimmedAndLoweredText = plantNameTextField.text?.trimmingCharacters(in: .whitespaces).lowercased()
         
-        guard plantName.text!.count >= 1, trimmedAndLoweredText != "" else {
+        guard plantNameTextField.text!.count >= 1, trimmedAndLoweredText != "" else {
             plantImageString = ""
             addPlantButton.isEnabled = false
             removeSuggestionScrollView()
@@ -321,7 +321,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         }
         
         func validateEntry() -> Bool {
-            if plantName.text!.isEmpty {
+            if plantNameTextField.text!.isEmpty {
                 return false
             } else {
                 return true
@@ -376,7 +376,7 @@ extension AddPlantViewController: UITextFieldDelegate, UITableViewDelegate, UITa
         
         let leftConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .leftMargin, relatedBy: .equal, toItem: textFieldView, attribute: .leftMargin, multiplier: 1.0, constant: 0)
         let rightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .rightMargin, relatedBy: .equal, toItem: textFieldView, attribute: .rightMargin, multiplier: 1.0, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: plantName, attribute: .bottom, multiplier: 1.0, constant: 0)
+        let topConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .top, relatedBy: .equal, toItem: plantNameTextField, attribute: .bottom, multiplier: 1.0, constant: 0)
         // Below will adjust height constraint dynamically based on "itemsCount"
         let heightConstraint = NSLayoutConstraint(item: suggestionScrollView, attribute: .height, relatedBy: .equal, toItem: textFieldView, attribute: .height, multiplier: CGFloat(itemsCount), constant: 0)
         
@@ -504,19 +504,6 @@ extension AddPlantViewController {
                 
                 addLoadingView()
                 
-                // Save UUID to UserDefaults to reference later for deletion if user cancels/discards app during upload.
-//                var plantIDuuidStringArray = defaults.object(forKey: "plantIDuuidString") as? [String] ?? []
-//                if !plantIDuuidStringArray.isEmpty {
-//                    plantIDuuidStringArray.append(newPlantID.uuidString)
-//                    defaults.set(plantIDuuidStringArray, forKey: "plantIDuuidString")
-//                    print("DDD - 1: \(plantIDuuidStringArray)")
-//                } else {
-//                    var array = [String]()
-//                    array.append(newPlantID.uuidString)
-//                    defaults.set(array, forKey: "plantIDuuidString")
-//                    print("DDD - 2: \(plantIDuuidStringArray)")
-//                }
-                
                 DispatchQueue.main.async { [self] in
                     
                     print("networkConnectionBool: true")
@@ -542,7 +529,7 @@ extension AddPlantViewController {
                     let plantAddedData = PlantDataModel_FB(
                         dateAdded: Date.now,
                         plantUUID: newPlantID.uuidString,
-                        plantName: self.plantName.text!,
+                        plantName: self.plantNameTextField.text!,
                         waterHabit: Int16(selectedHabitDay),
                         plantOrder: Int32(plants.endIndex),
                         lastWatered: datePicker.date,
